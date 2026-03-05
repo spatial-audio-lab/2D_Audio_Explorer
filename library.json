@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "generated": "2026-03-05T18:11:02.261396",
-  "total_sounds": 28,
+  "generated": "2026-03-05T18:20:12.059303",
+  "total_sounds": 33,
   "stats": {
     "local_only": 0,
     "stream_only": 28,
-    "local_and_stream": 0
+    "local_and_stream": 5
   },
   "categories": [
     {
@@ -18,6 +18,77 @@
           "label": "Woda",
           "icon": "💧",
           "sounds": [
+            {
+              "id": "sound_191360",
+              "label": "Small rocks in a creek",
+              "file": "audio/191360__hitrison__small-rocks-in-a-creek.flac",
+              "preview_url": "https://cdn.freesound.org/previews/191/191360_2549002-hq.mp3",
+              "freesound_id": 191360,
+              "freesound_url": "https://freesound.org/s/191360/",
+              "author": "Hitrison",
+              "duration": 206.4,
+              "channels": 2,
+              "type": "flac",
+              "samplerate": 96000.0,
+              "tags": [
+                "ambience",
+                "calm",
+                "campsite",
+                "creek",
+                "flow",
+                "light",
+                "nature",
+                "outdoors",
+                "rocks",
+                "water"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_water",
+              "source": "freesound",
+              "has_local": true,
+              "has_stream": true
+            },
+            {
+              "id": "sound_231536",
+              "label": "Creek 06 (loop)",
+              "file": "audio/231536__vkproduktion__creek-06-loop.wav",
+              "preview_url": "https://cdn.freesound.org/previews/231/231536_4034520-hq.mp3",
+              "freesound_id": 231536,
+              "freesound_url": "https://freesound.org/s/231536/",
+              "author": "VKProduktion",
+              "duration": 36.0,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "babbling",
+                "brook",
+                "creek",
+                "flow",
+                "flowing",
+                "liquid",
+                "river",
+                "stream",
+                "water"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_water",
+              "source": "freesound",
+              "has_local": true,
+              "has_stream": true
+            },
             {
               "id": "sound_243777",
               "label": "Distant rain and thunder",
@@ -85,6 +156,42 @@
               "category": "nature_water",
               "source": "freesound",
               "has_local": false,
+              "has_stream": true
+            }
+          ]
+        },
+        {
+          "id": "nature_fire",
+          "label": "Ogień",
+          "icon": "🔥",
+          "sounds": [
+            {
+              "id": "sound_371781",
+              "label": "G10 fireplace",
+              "file": "audio/371781__iamgiorgio__g10_fireplace.mp3",
+              "preview_url": "https://cdn.freesound.org/previews/371/371781_5302340-hq.mp3",
+              "freesound_id": 371781,
+              "freesound_url": "https://freesound.org/s/371781/",
+              "author": "Iamgiorgio",
+              "duration": 9.9,
+              "channels": 2,
+              "type": "mp3",
+              "samplerate": 48000.0,
+              "tags": [
+                "burning",
+                "fireplace",
+                "wood"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_fire",
+              "source": "freesound",
+              "has_local": true,
               "has_stream": true
             }
           ]
@@ -864,6 +971,71 @@
           "label": "Spokój",
           "icon": "😌",
           "sounds": [
+            {
+              "id": "sound_133677",
+              "label": "Singing bowl wood02",
+              "file": "audio/133677__lectronice__singing-bowl-wood02.wav",
+              "preview_url": "https://cdn.freesound.org/previews/133/133677_549516-hq.mp3",
+              "freesound_id": 133677,
+              "freesound_url": "https://freesound.org/s/133677/",
+              "author": "lectronice",
+              "duration": 107.4,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "bowl",
+                "drone",
+                "harmonic",
+                "singing-bowl",
+                "thalamus-lab",
+                "tibetan",
+                "tibetan-bowl"
+              ],
+              "license": {
+                "short": "CC BY 4.0",
+                "commercial": true,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "mood_calm",
+              "source": "freesound",
+              "has_local": true,
+              "has_stream": true
+            },
+            {
+              "id": "sound_661232",
+              "label": "Tibetan bell",
+              "file": "audio/661232__doeroo__tibetan-bell.m4a",
+              "preview_url": "https://cdn.freesound.org/previews/661/661232_14083991-hq.mp3",
+              "freesound_id": 661232,
+              "freesound_url": "https://freesound.org/s/661232/",
+              "author": "DoeRoo",
+              "duration": 46.1,
+              "channels": 2,
+              "type": "m4a",
+              "samplerate": 44100.0,
+              "tags": [
+                "Bell",
+                "bowl-bell",
+                "Ring",
+                "Ringing",
+                "Tibet",
+                "Tibetan-singing-bowl"
+              ],
+              "license": {
+                "short": "CC BY 4.0",
+                "commercial": true,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "mood_calm",
+              "source": "freesound",
+              "has_local": true,
+              "has_stream": true
+            },
             {
               "id": "sound_417117",
               "label": "Tibetan bowl left hit",
