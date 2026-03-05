@@ -1,0 +1,666 @@
+{
+  "version": 2,
+  "generated": "2026-02-26T20:17:41.369143",
+  "total_sounds": 18,
+  "stats": {
+    "local_only": 0,
+    "stream_only": 13,
+    "local_and_stream": 5
+  },
+  "categories": [
+    {
+      "id": "nature",
+      "label": "Natura",
+      "icon": "🌿",
+      "subcategories": [
+        {
+          "id": "nature_water",
+          "label": "Woda",
+          "icon": "💧",
+          "sounds": [
+            {
+              "id": "sound_191360",
+              "label": "Small rocks in a creek",
+              "file": "audio/191360__hitrison__small-rocks-in-a-creek.flac",
+              "preview_url": "https://cdn.freesound.org/previews/191/191360_2549002-hq.mp3",
+              "freesound_id": 191360,
+              "freesound_url": "https://freesound.org/s/191360/",
+              "author": "Hitrison",
+              "duration": 206.4,
+              "channels": 2,
+              "type": "flac",
+              "samplerate": 96000.0,
+              "tags": [
+                "ambience",
+                "calm",
+                "campsite",
+                "creek",
+                "flow",
+                "light",
+                "nature",
+                "outdoors",
+                "rocks",
+                "water"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_water",
+              "source": "freesound",
+              "has_local": true,
+              "has_stream": true
+            },
+            {
+              "id": "sound_231536",
+              "label": "Creek 06 (loop)",
+              "file": "audio/231536__vkproduktion__creek-06-loop.wav",
+              "preview_url": "https://cdn.freesound.org/previews/231/231536_4034520-hq.mp3",
+              "freesound_id": 231536,
+              "freesound_url": "https://freesound.org/s/231536/",
+              "author": "VKProduktion",
+              "duration": 36.0,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "babbling",
+                "brook",
+                "creek",
+                "flow",
+                "flowing",
+                "liquid",
+                "river",
+                "stream",
+                "water"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_water",
+              "source": "freesound",
+              "has_local": true,
+              "has_stream": true
+            }
+          ]
+        },
+        {
+          "id": "nature_fire",
+          "label": "Ogień",
+          "icon": "🔥",
+          "sounds": [
+            {
+              "id": "sound_371781",
+              "label": "G10 fireplace",
+              "file": "audio/371781__iamgiorgio__g10_fireplace.mp3",
+              "preview_url": "https://cdn.freesound.org/previews/371/371781_5302340-hq.mp3",
+              "freesound_id": 371781,
+              "freesound_url": "https://freesound.org/s/371781/",
+              "author": "Iamgiorgio",
+              "duration": 9.9,
+              "channels": 2,
+              "type": "mp3",
+              "samplerate": 48000.0,
+              "tags": [
+                "burning",
+                "fireplace",
+                "wood"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_fire",
+              "source": "freesound",
+              "has_local": true,
+              "has_stream": true
+            }
+          ]
+        },
+        {
+          "id": "nature_birds",
+          "label": "Ptaki",
+          "icon": "🐦",
+          "sounds": [
+            {
+              "id": "sound_661909",
+              "label": "Blackbird in the roof of a well",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/661/661909_14502819-hq.mp3",
+              "freesound_id": 661909,
+              "freesound_url": "https://freesound.org/s/661909/",
+              "author": "sertuser",
+              "duration": 14.5,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "Birdsong",
+                "Blackbird",
+                "Evening"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_birds",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_725046",
+              "label": "Blackbird song",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/725/725046_14889307-hq.mp3",
+              "freesound_id": 725046,
+              "freesound_url": "https://freesound.org/s/725046/",
+              "author": "Sacha.Julien",
+              "duration": 115.9,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "bird",
+                "birdsong",
+                "blackbird",
+                "field-recording"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_birds",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            }
+          ]
+        },
+        {
+          "id": "nature_insects",
+          "label": "Owady",
+          "icon": "🦗",
+          "sounds": [
+            {
+              "id": "sound_484033",
+              "label": "Cricket, close recording: dante",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/484/484033_1661766-hq.mp3",
+              "freesound_id": 484033,
+              "freesound_url": "https://freesound.org/s/484033/",
+              "author": "felix.blume",
+              "duration": 51.2,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "blume",
+                "cecrea",
+                "children",
+                "chile",
+                "cricket",
+                "crickets",
+                "Dante",
+                "dream",
+                "dreams",
+                "Felix"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_insects",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_805466",
+              "label": "Night crickets 02",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/805/805466_13973196-hq.mp3",
+              "freesound_id": 805466,
+              "freesound_url": "https://freesound.org/s/805466/",
+              "author": "Vrymaa",
+              "duration": 61.1,
+              "channels": 1,
+              "type": "wav",
+              "samplerate": 48000.0,
+              "tags": [
+                "ambiance",
+                "ambience",
+                "ambient",
+                "camp",
+                "camping",
+                "campsite",
+                "cowboy",
+                "cricket",
+                "crickets",
+                "evening"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_insects",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            }
+          ]
+        },
+        {
+          "id": "nature_mammals",
+          "label": "Ssaki",
+          "icon": "🐺",
+          "sounds": [
+            {
+              "id": "sound_148873",
+              "label": "Voice elephant",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/148/148873_2378499-hq.mp3",
+              "freesound_id": 148873,
+              "freesound_url": "https://freesound.org/s/148873/",
+              "author": "vataaa",
+              "duration": 7.4,
+              "channels": 2,
+              "type": "mp3",
+              "samplerate": 44100.0,
+              "tags": [
+                "bell",
+                "brass",
+                "chime",
+                "clang",
+                "ding",
+                "dong",
+                "elephant",
+                "ethnic",
+                "ring",
+                "slon"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_mammals",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_586396",
+              "label": "Tails of the dying elephants",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/586/586396_9341034-hq.mp3",
+              "freesound_id": 586396,
+              "freesound_url": "https://freesound.org/s/586396/",
+              "author": "jcookvoice",
+              "duration": 11.4,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "Africa",
+                "bush",
+                "elephant",
+                "jungle",
+                "mystical-Creature",
+                "Tanzania"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_mammals",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_214864",
+              "label": "Two cats eating food in stereo",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/214/214864_2297996-hq.mp3",
+              "freesound_id": 214864,
+              "freesound_url": "https://freesound.org/s/214864/",
+              "author": "Acegunfighter",
+              "duration": 61.9,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "bite",
+                "Cats",
+                "chomp",
+                "crunch",
+                "dry",
+                "eat",
+                "eating",
+                "food",
+                "munch",
+                "snack"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_mammals",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_380156",
+              "label": "Howl echo",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/380/380156_2940947-hq.mp3",
+              "freesound_id": 380156,
+              "freesound_url": "https://freesound.org/s/380156/",
+              "author": "taure",
+              "duration": 28.0,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "animal",
+                "beast",
+                "dog",
+                "growl",
+                "howl",
+                "monster",
+                "werewolf",
+                "wolf"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_mammals",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_378334",
+              "label": "Howling wolves",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/378/378334_4804147-hq.mp3",
+              "freesound_id": 378334,
+              "freesound_url": "https://freesound.org/s/378334/",
+              "author": "Kingcornz",
+              "duration": 7.9,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 48000.0,
+              "tags": [
+                "coyote",
+                "dog",
+                "howl",
+                "howling",
+                "wolf",
+                "wolves"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "nature_mammals",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mood",
+      "label": "Nastrój",
+      "icon": "🎭",
+      "subcategories": [
+        {
+          "id": "mood_calm",
+          "label": "Spokój",
+          "icon": "😌",
+          "sounds": [
+            {
+              "id": "sound_133677",
+              "label": "Singing bowl wood02",
+              "file": "audio/133677__lectronice__singing-bowl-wood02.wav",
+              "preview_url": "https://cdn.freesound.org/previews/133/133677_549516-hq.mp3",
+              "freesound_id": 133677,
+              "freesound_url": "https://freesound.org/s/133677/",
+              "author": "lectronice",
+              "duration": 107.4,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "bowl",
+                "drone",
+                "harmonic",
+                "singing-bowl",
+                "thalamus-lab",
+                "tibetan",
+                "tibetan-bowl"
+              ],
+              "license": {
+                "short": "CC BY 4.0",
+                "commercial": true,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "mood_calm",
+              "source": "freesound",
+              "has_local": true,
+              "has_stream": true
+            },
+            {
+              "id": "sound_661232",
+              "label": "Tibetan bell",
+              "file": "audio/661232__doeroo__tibetan-bell.m4a",
+              "preview_url": "https://cdn.freesound.org/previews/661/661232_14083991-hq.mp3",
+              "freesound_id": 661232,
+              "freesound_url": "https://freesound.org/s/661232/",
+              "author": "DoeRoo",
+              "duration": 46.1,
+              "channels": 2,
+              "type": "m4a",
+              "samplerate": 44100.0,
+              "tags": [
+                "Bell",
+                "bowl-bell",
+                "Ring",
+                "Ringing",
+                "Tibet",
+                "Tibetan-singing-bowl"
+              ],
+              "license": {
+                "short": "CC BY 4.0",
+                "commercial": true,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "mood_calm",
+              "source": "freesound",
+              "has_local": true,
+              "has_stream": true
+            },
+            {
+              "id": "sound_417117",
+              "label": "Tibetan bowl left hit",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/417/417117_8224400-hq.mp3",
+              "freesound_id": 417117,
+              "freesound_url": "https://freesound.org/s/417117/",
+              "author": "dersinnsspace",
+              "duration": 13.4,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "bowl",
+                "field-recording",
+                "ringing",
+                "singing",
+                "tibetan"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "mood_calm",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_389522",
+              "label": "Singing bowl 23042017 03 [raw]",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/389/389522_5450487-hq.mp3",
+              "freesound_id": 389522,
+              "freesound_url": "https://freesound.org/s/389522/",
+              "author": "cabled_mess",
+              "duration": 10.8,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 96000.0,
+              "tags": [
+                "bell",
+                "bowl",
+                "hit",
+                "meditation",
+                "metal",
+                "metallic",
+                "percussion",
+                "raw",
+                "recording",
+                "singing-bowl"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "mood_calm",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_421829",
+              "label": "Tibetan bowl center hit",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/421/421829_8224400-hq.mp3",
+              "freesound_id": 421829,
+              "freesound_url": "https://freesound.org/s/421829/",
+              "author": "dersinnsspace",
+              "duration": 19.4,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100.0,
+              "tags": [
+                "bell",
+                "bowl",
+                "clang",
+                "ding",
+                "ethnic",
+                "field-recording",
+                "gong",
+                "harmonic",
+                "hit",
+                "metal"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "mood_calm",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_170671",
+              "label": "Singing bowl, high and loud",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/170/170671_1407-hq.mp3",
+              "freesound_id": 170671,
+              "freesound_url": "https://freesound.org/s/170671/",
+              "author": "eliasheuninck",
+              "duration": 23.1,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 96000.0,
+              "tags": [
+                "gong",
+                "klankschaal",
+                "Singing-bowl"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "mood_calm",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
