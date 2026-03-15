@@ -6,291 +6,238 @@
 <title>SAL — Scenografia Dźwiękowa</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
-:root {
-  --black:#060608; --white:#f0ede8; --cyan:#00e5cc; --amber:#d4a574;
-  --dim:#3a3a42; --mid:#9a9aa6; --grid:rgba(255,255,255,0.04); --danger:#c44;
-  --xs:4px; --sm:8px; --md:16px; --lg:24px; --xl:40px;
-  --nav-h:48px; --left-w:280px; --side-w:340px; --transport-h:56px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--black);color:var(--white);font-family:'Space Mono',monospace;font-size:12px;line-height:1.6;overflow:hidden;height:100vh;height:100dvh}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
-::selection{background:rgba(0,229,204,0.25)}
-::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
 
-.app{position:relative;z-index:1;display:grid;grid-template-rows:var(--nav-h) 1fr var(--transport-h);grid-template-columns:var(--left-w) 1fr var(--side-w);grid-template-areas:"nav nav nav" "left canvas side" "left transport side";height:100vh;height:100dvh}
+:root {
+  --black:  #060608;
+  --white:  #f0ede8;
+  --cyan:   #00e5cc;
+  --amber:  #d4a574;
+  --dim:    #2a2a30;
+  --mid:    #8a8a96;
+  --grid:   rgba(255,255,255,0.04);
+  --danger: #c44;
+  --surface: #0e0e12;
+  --xs: 4px; --sm: 8px; --md: 16px; --lg: 24px; --xl: 40px;
+  --nav-h: 48px; --lib-w: 280px; --side-w: 340px; --transport-h: 56px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--black); color: var(--white); font-family: 'Space Mono', monospace; font-size: 12px; line-height: 1.6; overflow: hidden; height: 100vh; height: 100dvh; }
+body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; z-index: 0; }
+::selection { background: rgba(0,229,204,0.25); }
+::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
+
+.app-layout { position: relative; z-index: 1; display: grid; grid-template-rows: var(--nav-h) 1fr var(--transport-h); grid-template-columns: var(--lib-w) 1fr var(--side-w); grid-template-areas: "nav nav nav" "lib canvas side" "lib transport side"; height: 100vh; height: 100dvh; }
 
 /* NAV */
-.nav{grid-area:nav;display:flex;justify-content:space-between;align-items:center;padding:0 var(--lg);border-bottom:1px solid var(--dim);background:rgba(6,6,8,0.92);backdrop-filter:blur(20px);z-index:50}
-.nav-brand{display:flex;align-items:baseline;gap:var(--sm)}
-.nav-brand-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300}
-.nav-brand-name em{font-style:italic;color:var(--cyan)}
-.nav-brand-sep{color:var(--dim);font-size:14px}
-.nav-brand-page{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--mid)}
-.nav-actions{display:flex;align-items:center;gap:var(--md)}
-.nav-btn{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;padding:var(--xs) 12px;border:1px solid var(--dim);background:none;color:var(--mid);cursor:pointer;transition:all 0.3s}
-.nav-btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.nav-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,204,0.06)}
+.nav { grid-area: nav; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--lg); border-bottom: 1px solid var(--dim); background: rgba(6,6,8,0.92); backdrop-filter: blur(20px); z-index: 50; }
+.nav-brand { display: flex; align-items: baseline; gap: var(--sm); }
+.nav-brand-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; }
+.nav-brand-name em { font-style: italic; color: var(--cyan); }
+.nav-brand-sep { color: var(--dim); font-size: 14px; }
+.nav-brand-page { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid); }
+.nav-actions { display: flex; align-items: center; gap: var(--md); }
+.nav-link { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); text-decoration: none; cursor: pointer; background: none; border: none; font-family: inherit; transition: color 0.3s; }
+.nav-link:hover { color: var(--white); }
+.btn-sound-toggle { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: var(--xs) 10px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.3s; }
+.btn-sound-toggle:hover, .btn-sound-toggle.active { border-color: var(--cyan); color: var(--cyan); }
 
-/* LEFT PANEL — shared area */
-.left-area{grid-area:left;position:relative;border-right:1px solid var(--dim);overflow:hidden}
-.left-view{position:absolute;inset:0;display:flex;flex-direction:column;background:rgba(6,6,8,0.5);transition:opacity 0.3s,transform 0.3s;overflow:hidden}
-.left-view.hidden{opacity:0;pointer-events:none;transform:translateX(-20px)}
-
-/* Legend panel */
-.legend{padding:var(--lg);overflow-y:auto}
-.legend-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;margin-bottom:var(--lg)}
-.legend-section{margin-bottom:var(--lg)}
-.legend-label{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--mid);margin-bottom:var(--sm);padding-bottom:var(--xs);border-bottom:1px solid var(--dim)}
-.legend-item{display:flex;align-items:center;gap:var(--sm);padding:4px 0;font-size:11px;color:var(--white)}
-.legend-dot{width:12px;height:12px;border-radius:50%;border:2px solid;flex-shrink:0}
-.legend-line{width:12px;height:2px;flex-shrink:0}
-.legend-info{font-size:10px;color:var(--mid);line-height:1.7;margin-top:var(--sm)}
-.legend-data{display:grid;grid-template-columns:1fr 1fr;gap:var(--sm);margin-top:var(--sm)}
-.legend-data-cell{border:1px solid var(--dim);padding:var(--sm);text-align:center}
-.legend-data-val{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cyan);line-height:1}
-.legend-data-lbl{font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-top:2px}
-.legend-mini{width:100%;aspect-ratio:1;border:1px solid var(--dim);margin-top:var(--md);overflow:hidden;position:relative}
-.legend-mini canvas{width:100%;height:100%}
-
-/* Library panel */
-.lib-header{padding:var(--md) var(--lg);border-bottom:1px solid var(--dim);flex-shrink:0}
-.lib-header-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--sm)}
-.lib-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300}
-.lib-count-badge{font-size:9px;letter-spacing:0.15em;color:var(--amber)}
-.lib-search{width:100%;background:transparent;border:1px solid var(--dim);color:var(--white);font-family:'Space Mono',monospace;font-size:10px;padding:var(--sm) 10px;outline:none;transition:border-color 0.3s}
-.lib-search:focus{border-color:var(--cyan)}
-.lib-search::placeholder{color:var(--mid)}
-.lib-tree{flex:1;overflow-y:auto;padding:var(--sm) 0}
-.lib-cat{border-bottom:1px solid rgba(58,58,66,0.5)}
-.lib-cat-head{display:flex;align-items:center;gap:var(--sm);padding:10px var(--lg);cursor:pointer;font-size:11px;color:var(--white);transition:background 0.2s}
-.lib-cat-head:hover{background:rgba(0,229,204,0.03)}
-.lib-cat-head .ico{font-size:11px;color:var(--amber);width:16px;text-align:center;font-style:normal}
-.lib-cat-head .label{flex:1;font-weight:700;letter-spacing:0.05em}
-.lib-cat-head .cnt{font-size:9px;color:var(--mid)}
-.lib-cat-head .arrow{font-size:8px;color:var(--mid);transition:transform 0.2s}
-.lib-cat-head.collapsed .arrow{transform:rotate(-90deg)}
-.lib-cat-body{display:block}
-.lib-cat-head.collapsed + .lib-cat-body{display:none}
-.lib-sub-head{display:flex;align-items:center;gap:6px;padding:6px var(--lg) 6px 36px;cursor:pointer;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);transition:color 0.2s}
-.lib-sub-head:hover{color:var(--white)}
-.lib-sub-head .ico{font-size:9px;color:var(--dim);font-style:normal}
-.lib-sub-head .cnt{font-size:8px;color:var(--mid);margin-left:auto}
-.lib-sub-head .arrow{font-size:7px;transition:transform 0.2s}
-.lib-sub-head.collapsed .arrow{transform:rotate(-90deg)}
-.lib-sub-body{display:block}
-.lib-sub-head.collapsed + .lib-sub-body{display:none}
-.lib-sound{display:grid;grid-template-columns:1fr auto;align-items:center;gap:var(--sm);padding:6px var(--lg) 6px 44px;transition:background 0.15s,padding-left 0.2s;position:relative}
-.lib-sound::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--cyan);transform:scaleY(0);transition:transform 0.2s}
-.lib-sound:hover::before{transform:scaleY(1)}
-.lib-sound:hover{background:rgba(0,229,204,0.03);padding-left:48px}
-.lib-sound-name{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--white)}
-.lib-sound-meta{display:flex;gap:6px;margin-top:2px;font-size:9px;color:var(--mid)}
-.lib-badge{font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:1px 5px;border:1px solid var(--dim);color:var(--mid)}
-.lib-badge.cc0{border-color:rgba(0,229,204,0.3);color:var(--cyan)}
-.lib-badge.stream{color:var(--amber);border-color:rgba(212,165,116,0.3)}
-.lib-add-btn{width:26px;height:26px;border:1px solid var(--dim);background:none;color:var(--mid);cursor:pointer;font-family:'Space Mono',monospace;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
-.lib-add-btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.lib-add-btn.in-scene{border-color:rgba(0,229,204,0.3);color:var(--cyan);cursor:default;font-size:10px}
-.lib-add-btn.loading{color:var(--dim);cursor:wait;font-size:10px}
-.lib-empty-msg{padding:var(--xl) var(--lg);text-align:center;color:var(--mid);font-size:10px}
+/* LIBRARY */
+.library-panel { grid-area: lib; display: flex; flex-direction: column; border-right: 1px solid var(--dim); background: rgba(6,6,8,0.5); overflow: hidden; transition: margin-left 0.4s ease; }
+.library-panel.collapsed { margin-left: calc(-1 * var(--lib-w)); }
+.lib-header { padding: var(--md) var(--lg); border-bottom: 1px solid var(--dim); flex-shrink: 0; }
+.lib-header-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--sm); }
+.lib-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; }
+.lib-count-badge { font-size: 9px; letter-spacing: 0.15em; color: var(--amber); }
+.lib-search { width: 100%; background: transparent; border: 1px solid var(--dim); color: var(--white); font-family: 'Space Mono', monospace; font-size: 10px; padding: var(--sm) 10px; outline: none; transition: border-color 0.3s; }
+.lib-search:focus { border-color: var(--cyan); }
+.lib-search::placeholder { color: var(--mid); }
+.lib-tree { flex: 1; overflow-y: auto; padding: var(--sm) 0; }
+.lib-cat { border-bottom: 1px solid rgba(42,42,48,0.5); }
+.lib-cat-head { display: flex; align-items: center; gap: var(--sm); padding: 10px var(--lg); cursor: pointer; font-size: 11px; color: var(--white); transition: background 0.2s; }
+.lib-cat-head:hover { background: rgba(0,229,204,0.03); }
+.lib-cat-head .ico { font-size: 11px; color: var(--amber); width: 16px; text-align: center; font-style: normal; }
+.lib-cat-head .label { flex: 1; font-weight: 700; letter-spacing: 0.05em; }
+.lib-cat-head .cnt { font-size: 9px; color: var(--mid); }
+.lib-cat-head .arrow { font-size: 8px; color: var(--mid); transition: transform 0.2s; }
+.lib-cat-head.collapsed .arrow { transform: rotate(-90deg); }
+.lib-cat-body { display: block; }
+.lib-cat-head.collapsed + .lib-cat-body { display: none; }
+.lib-sub-head { display: flex; align-items: center; gap: 6px; padding: 6px var(--lg) 6px 36px; cursor: pointer; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); transition: color 0.2s; }
+.lib-sub-head:hover { color: var(--white); }
+.lib-sub-head .ico { font-size: 9px; color: var(--dim); font-style: normal; }
+.lib-sub-head .cnt { font-size: 8px; color: var(--dim); margin-left: auto; }
+.lib-sub-head .arrow { font-size: 7px; transition: transform 0.2s; }
+.lib-sub-head.collapsed .arrow { transform: rotate(-90deg); }
+.lib-sub-body { display: block; }
+.lib-sub-head.collapsed + .lib-sub-body { display: none; }
+.lib-sound { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--sm); padding: 6px var(--lg) 6px 44px; transition: background 0.15s, padding-left 0.2s; position: relative; }
+.lib-sound::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--cyan); transform: scaleY(0); transition: transform 0.2s; }
+.lib-sound:hover::before { transform: scaleY(1); }
+.lib-sound:hover { background: rgba(0,229,204,0.03); padding-left: 48px; }
+.lib-sound-name { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--white); }
+.lib-sound-meta { display: flex; gap: 6px; margin-top: 2px; font-size: 9px; color: var(--mid); }
+.lib-badge { font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; padding: 1px 5px; border: 1px solid var(--dim); color: var(--mid); }
+.lib-badge.cc0 { border-color: rgba(0,229,204,0.3); color: var(--cyan); }
+.lib-badge.stream { color: var(--amber); border-color: rgba(212,165,116,0.3); }
+.lib-add-btn { width: 26px; height: 26px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; font-family: 'Space Mono', monospace; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+.lib-add-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.lib-add-btn.in-scene { border-color: rgba(0,229,204,0.3); color: var(--cyan); cursor: default; font-size: 10px; }
+.lib-add-btn.loading { color: var(--dim); cursor: wait; font-size: 10px; }
+.lib-empty-msg { padding: var(--xl) var(--lg); text-align: center; color: var(--mid); font-size: 10px; }
 
 /* CANVAS */
-.canvas-area{grid-area:canvas;position:relative;overflow:hidden;background:var(--black)}
-#mainCanvas{width:100%;height:100%;display:block}
-.app.edit-mode #mainCanvas{cursor:crosshair}
-.app.explore-mode #mainCanvas{cursor:grab}
-.app.explore-mode #mainCanvas:active{cursor:grabbing}
-.hud{position:absolute;top:var(--md);left:var(--md);padding:10px 14px;border:1px solid var(--dim);background:rgba(6,6,8,0.88);backdrop-filter:blur(12px);font-size:10px;z-index:5}
-.hud-row{display:flex;justify-content:space-between;gap:var(--lg);margin-bottom:2px}
-.hud-row:last-child{margin-bottom:0}
-.hud-label{color:var(--mid)}
-.hud-val{color:var(--cyan);font-weight:700}
-.mode-switch{position:absolute;top:var(--md);left:50%;transform:translateX(-50%);display:flex;border:1px solid var(--dim);background:rgba(6,6,8,0.88);backdrop-filter:blur(12px);z-index:5}
-.mode-btn{padding:var(--sm) var(--md);background:none;border:none;border-right:1px solid var(--dim);color:var(--mid);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.3s}
-.mode-btn:last-child{border-right:none}
-.mode-btn:hover{color:var(--white)}
-.mode-btn.active{color:var(--cyan);background:rgba(0,229,204,0.06)}
-.compass{position:absolute;top:var(--md);right:var(--md);width:48px;height:48px;border:1px solid var(--dim);border-radius:50%;background:rgba(6,6,8,0.88);display:flex;align-items:center;justify-content:center;z-index:5}
-.compass-n{position:absolute;top:4px;font-size:8px;font-weight:700;color:var(--cyan)}
-.compass-needle{width:2px;height:20px;background:linear-gradient(to bottom,var(--cyan) 50%,var(--dim) 50%);border-radius:1px;transform-origin:center center;transition:transform 0.15s ease-out}
-.minimap{position:absolute;bottom:var(--md);left:var(--md);width:120px;height:120px;border:1px solid var(--dim);background:rgba(6,6,8,0.88);overflow:hidden;z-index:5}
-.minimap-label{position:absolute;top:4px;left:6px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--mid)}
-#minimapCanvas{width:100%;height:100%}
-.target-indicator{position:absolute;pointer-events:none;display:none;z-index:4}
-.target-indicator.visible{display:block}
-.target-marker{width:20px;height:20px;border:2px solid var(--cyan);border-radius:50%;animation:tp 1.2s ease-out infinite}
-@keyframes tp{0%{transform:scale(1);opacity:0.8}100%{transform:scale(2.5);opacity:0}}
-.control-hints{position:absolute;bottom:var(--md);right:var(--md);display:flex;gap:var(--sm);z-index:5}
-.hint{padding:var(--xs) var(--sm);border:1px solid var(--dim);background:rgba(6,6,8,0.88);font-size:9px;color:var(--mid)}
-.hint kbd{color:var(--white);font-family:inherit}
+.canvas-area { grid-area: canvas; position: relative; overflow: hidden; background: var(--black); }
+#mainCanvas { width: 100%; height: 100%; display: block; }
+.app-layout.edit-mode #mainCanvas { cursor: crosshair; }
+.app-layout.explore-mode #mainCanvas { cursor: grab; }
+.app-layout.explore-mode #mainCanvas:active { cursor: grabbing; }
+.hud { position: absolute; top: var(--md); left: var(--md); padding: 10px 14px; border: 1px solid var(--dim); background: rgba(6,6,8,0.88); backdrop-filter: blur(12px); font-size: 10px; letter-spacing: 0.08em; z-index: 5; }
+.hud-row { display: flex; justify-content: space-between; gap: var(--lg); margin-bottom: 2px; }
+.hud-row:last-child { margin-bottom: 0; }
+.hud-label { color: var(--mid); }
+.hud-val { color: var(--cyan); font-weight: 700; }
+.mode-switch-float { position: absolute; top: var(--md); left: 50%; transform: translateX(-50%); display: flex; border: 1px solid var(--dim); background: rgba(6,6,8,0.88); backdrop-filter: blur(12px); z-index: 5; }
+.mode-btn { padding: var(--sm) var(--md); background: none; border: none; border-right: 1px solid var(--dim); color: var(--mid); font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+.mode-btn:last-child { border-right: none; }
+.mode-btn:hover { color: var(--white); }
+.mode-btn.active { color: var(--cyan); background: rgba(0,229,204,0.06); }
+.compass { position: absolute; top: var(--md); right: var(--md); width: 48px; height: 48px; border: 1px solid var(--dim); border-radius: 50%; background: rgba(6,6,8,0.88); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 5; }
+.compass-n { position: absolute; top: 4px; font-size: 8px; font-weight: 700; color: var(--cyan); }
+.compass-needle { width: 2px; height: 20px; background: linear-gradient(to bottom, var(--cyan) 50%, var(--dim) 50%); border-radius: 1px; transform-origin: center center; transition: transform 0.15s ease-out; }
+.minimap { position: absolute; bottom: var(--md); left: var(--md); width: 120px; height: 120px; border: 1px solid var(--dim); background: rgba(6,6,8,0.88); overflow: hidden; z-index: 5; }
+.minimap-label { position: absolute; top: 4px; left: 6px; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+#minimapCanvas { width: 100%; height: 100%; }
+.target-indicator { position: absolute; pointer-events: none; display: none; z-index: 4; }
+.target-indicator.visible { display: block; }
+.target-marker { width: 20px; height: 20px; border: 2px solid var(--cyan); border-radius: 50%; animation: tp 1.2s ease-out infinite; }
+@keyframes tp { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
+.control-hints { position: absolute; bottom: var(--md); right: var(--md); display: flex; gap: var(--sm); z-index: 5; }
+.hint { padding: var(--xs) var(--sm); border: 1px solid var(--dim); background: rgba(6,6,8,0.88); font-size: 8px; color: var(--mid); }
+.hint kbd { color: var(--white); font-family: inherit; }
 
-/* SIDEBAR */
-.sidebar{grid-area:side;display:flex;flex-direction:column;border-left:1px solid var(--dim);background:rgba(6,6,8,0.5);overflow-y:auto;overflow-x:hidden}
-.acc-panel{border-bottom:1px solid var(--dim)}
-.acc-head{display:flex;align-items:center;justify-content:space-between;padding:12px var(--lg);cursor:pointer;transition:background 0.2s;user-select:none}
-.acc-head:hover{background:rgba(0,229,204,0.03)}
-.acc-head-left{display:flex;align-items:center;gap:var(--sm)}
-.acc-num{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--dim);width:28px}
-.acc-title{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--white)}
-.acc-count{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--cyan)}
-.acc-arrow{font-size:9px;color:var(--mid);transition:transform 0.3s;margin-left:var(--sm)}
-.acc-head.collapsed .acc-arrow{transform:rotate(-90deg)}
-.acc-body{max-height:2000px;overflow:hidden;transition:max-height 0.4s ease,padding 0.3s ease;padding:0 var(--lg) var(--md)}
-.acc-head.collapsed + .acc-body{max-height:0;padding-top:0;padding-bottom:0}
+/* SIDEBAR ACCORDION */
+.sidebar { grid-area: side; display: flex; flex-direction: column; border-left: 1px solid var(--dim); background: rgba(6,6,8,0.5); overflow-y: auto; overflow-x: hidden; }
+.acc-panel { border-bottom: 1px solid var(--dim); }
+.acc-head { display: flex; align-items: center; justify-content: space-between; padding: 12px var(--lg); cursor: pointer; transition: background 0.2s; user-select: none; }
+.acc-head:hover { background: rgba(0,229,204,0.03); }
+.acc-head-left { display: flex; align-items: center; gap: var(--sm); }
+.acc-num { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--dim); width: 28px; }
+.acc-title { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white); }
+.acc-count { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: var(--cyan); }
+.acc-arrow { font-size: 9px; color: var(--mid); transition: transform 0.3s; margin-left: var(--sm); }
+.acc-head.collapsed .acc-arrow { transform: rotate(-90deg); }
+.acc-body { max-height: 2000px; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; padding: 0 var(--lg) var(--md); }
+.acc-head.collapsed + .acc-body { max-height: 0; padding-top: 0; padding-bottom: 0; }
 
-.file-drop{border:1px dashed var(--dim);padding:var(--md);text-align:center;cursor:pointer;transition:all 0.3s;font-size:11px;color:var(--mid)}
-.file-drop:hover,.file-drop.dragover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,204,0.03)}
-.source-item{display:grid;grid-template-columns:28px 1fr 26px 26px;align-items:center;gap:6px;padding:8px 10px;border:1px solid var(--dim);margin-bottom:2px;cursor:pointer;transition:all 0.2s;position:relative}
-.source-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--cyan);transform:scaleY(0);transition:transform 0.2s}
-.source-item:hover::before{transform:scaleY(1)}
-.source-item:hover{background:rgba(0,229,204,0.03)}
-.source-item.selected{border-color:var(--cyan);background:rgba(0,229,204,0.04)}
-.source-item.selected::before{transform:scaleY(1)}
-.source-item.playing{border-color:rgba(0,229,204,0.4)}
-.src-num{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--mid);text-align:center}
-.source-item.playing .src-num{color:var(--cyan)}
-.src-info{min-width:0}
-.src-name{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--white)}
-.src-meta{font-size:9px;color:var(--mid)}
-.src-btn{width:26px;height:26px;border:1px solid var(--dim);background:none;color:var(--mid);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:'Space Mono',monospace}
-.src-btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.src-btn.active{border-color:var(--cyan);color:var(--cyan)}
-.src-btn.del:hover{border-color:var(--danger);color:var(--danger)}
-.sources-empty{padding:var(--lg) var(--sm);text-align:center;color:var(--mid);font-size:11px}
-.src-actions-row{display:flex;gap:var(--xs);margin-bottom:var(--sm)}
-.btn-sm{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;padding:4px 10px;border:1px solid var(--dim);background:none;color:var(--mid);cursor:pointer;transition:all 0.2s;flex:1;text-align:center}
-.btn-sm:hover{border-color:var(--cyan);color:var(--cyan)}
-.sel-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;margin-bottom:var(--sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--amber)}
-.sel-name.empty{color:var(--mid);font-style:italic}
-.vol-row{display:flex;align-items:center;gap:var(--sm)}
-.vol-row label{font-size:9px;letter-spacing:0.15em;color:var(--mid);text-transform:uppercase;width:32px}
-.vol-row input[type="range"]{flex:1;height:2px;-webkit-appearance:none;appearance:none;background:var(--dim);outline:none}
-.vol-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:var(--cyan);border-radius:50%;cursor:pointer}
-.vol-val{font-size:10px;color:var(--cyan);width:30px;text-align:right}
-.export-row{display:flex;gap:var(--sm);margin-bottom:var(--sm)}
-.export-row:last-child{margin-bottom:0}
-.export-label{font-size:9px;color:var(--amber);margin-bottom:var(--xs)}
-.export-input{width:100%;background:transparent;border:1px solid var(--dim);color:var(--white);font-family:'Space Mono',monospace;font-size:10px;padding:var(--xs) 6px;outline:none;text-align:center}
-.export-input:focus{border-color:var(--cyan)}
-.btn-export{flex:1;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:8px var(--md);border:1px solid var(--dim);background:none;color:var(--white);cursor:pointer;transition:all 0.3s}
-.btn-export:hover{border-color:var(--cyan);color:var(--cyan)}
-.btn-export.recording{border-color:var(--danger);color:var(--danger);animation:rp 1.5s ease-in-out infinite}
-@keyframes rp{0%,100%{opacity:1}50%{opacity:0.6}}
-.btn-export:disabled{opacity:0.3;cursor:not-allowed}
-.export-progress{font-size:9px;color:var(--cyan);min-height:14px;margin-top:var(--xs)}
+.file-drop { border: 1px dashed var(--dim); padding: var(--md); text-align: center; cursor: pointer; transition: all 0.3s; font-size: 11px; color: var(--mid); }
+.file-drop:hover, .file-drop.dragover { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,204,0.03); }
 
-/* MIC */
-.mic-status{font-size:10px;color:var(--mid);margin-top:var(--sm);min-height:16px}
-.mic-status.rec{color:var(--danger)}
+.source-item { display: grid; grid-template-columns: 28px 1fr 26px 26px; align-items: center; gap: 6px; padding: 8px 10px; border: 1px solid var(--dim); margin-bottom: 2px; cursor: pointer; transition: all 0.2s; position: relative; }
+.source-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--cyan); transform: scaleY(0); transition: transform 0.2s; }
+.source-item:hover::before { transform: scaleY(1); }
+.source-item:hover { background: rgba(0,229,204,0.03); }
+.source-item.selected { border-color: var(--cyan); background: rgba(0,229,204,0.04); }
+.source-item.selected::before { transform: scaleY(1); }
+.source-item.playing { border-color: rgba(0,229,204,0.4); }
+.src-num { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: var(--dim); text-align: center; }
+.source-item.playing .src-num { color: var(--cyan); }
+.src-info { min-width: 0; }
+.src-name { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--white); }
+.src-meta { font-size: 9px; color: var(--mid); }
+.src-btn { width: 26px; height: 26px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-family: 'Space Mono', monospace; }
+.src-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.src-btn.active { border-color: var(--cyan); color: var(--cyan); }
+.src-btn.del:hover { border-color: var(--danger); color: var(--danger); }
+.sources-empty { padding: var(--lg) var(--sm); text-align: center; color: var(--mid); font-size: 10px; }
+.src-actions-row { display: flex; gap: var(--xs); margin-bottom: var(--sm); }
+.btn-sm { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.1em; padding: 4px 10px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.2s; flex: 1; text-align: center; }
+.btn-sm:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.sel-name { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 300; margin-bottom: var(--sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--amber); }
+.sel-name.empty { color: var(--dim); font-style: italic; }
+.vol-row { display: flex; align-items: center; gap: var(--sm); }
+.vol-row label { font-size: 9px; letter-spacing: 0.15em; color: var(--mid); text-transform: uppercase; width: 32px; }
+.vol-row input[type="range"] { flex: 1; height: 2px; -webkit-appearance: none; appearance: none; background: var(--dim); outline: none; }
+.vol-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--cyan); border-radius: 50%; cursor: pointer; }
+.vol-val { font-size: 10px; color: var(--cyan); width: 30px; text-align: right; }
+
+.export-row { display: flex; gap: var(--sm); margin-bottom: var(--sm); }
+.export-row:last-child { margin-bottom: 0; }
+.export-label { font-size: 9px; color: var(--amber); margin-bottom: var(--xs); }
+.export-input { width: 100%; background: transparent; border: 1px solid var(--dim); color: var(--white); font-family: 'Space Mono', monospace; font-size: 10px; padding: var(--xs) 6px; outline: none; text-align: center; }
+.export-input:focus { border-color: var(--cyan); }
+.btn-export { flex: 1; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px var(--md); border: 1px solid var(--dim); background: none; color: var(--white); cursor: pointer; transition: all 0.3s; }
+.btn-export:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-export.recording { border-color: var(--danger); color: var(--danger); animation: rp 1.5s ease-in-out infinite; }
+@keyframes rp { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+.btn-export:disabled { opacity: 0.3; cursor: not-allowed; }
+.export-progress { font-size: 9px; color: var(--cyan); min-height: 14px; margin-top: var(--xs); }
+.scene-row { display: flex; gap: var(--sm); }
+.btn-export.ambix { border-color: rgba(212,165,116,0.4); color: var(--amber); }
+.btn-export.ambix:hover { border-color: var(--amber); color: var(--amber); }
 
 /* TRANSPORT */
-.transport{grid-area:transport;display:flex;align-items:center;gap:var(--lg);padding:0 var(--lg);border-top:1px solid var(--dim);background:rgba(6,6,8,0.88);backdrop-filter:blur(12px);z-index:10}
-.transport-btns{display:flex;gap:2px}
-.transport-btn{width:36px;height:36px;border:1px solid var(--dim);background:none;color:var(--mid);cursor:pointer;font-family:'Space Mono',monospace;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
-.transport-btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.transport-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,204,0.06)}
-.transport-info{flex:1;display:flex;align-items:center;gap:var(--lg)}
-.transport-scene{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:300;color:var(--mid);font-style:italic}
-.transport-scene span{color:var(--cyan);font-style:normal}
-.t-counters{display:flex;gap:var(--lg)}
-.t-counter{text-align:center}
-.t-counter-num{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cyan);line-height:1}
-.t-counter-label{font-size:7px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid)}
-.transport-right{display:flex;gap:var(--sm)}
+.transport { grid-area: transport; display: flex; align-items: center; gap: var(--lg); padding: 0 var(--lg); border-top: 1px solid var(--dim); background: rgba(6,6,8,0.88); backdrop-filter: blur(12px); z-index: 10; }
+.transport-btns { display: flex; gap: 2px; }
+.transport-btn { width: 36px; height: 36px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; font-family: 'Space Mono', monospace; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.transport-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.transport-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,204,0.06); }
+.transport-info { flex: 1; display: flex; align-items: center; gap: var(--lg); }
+.transport-scene { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 300; color: var(--mid); font-style: italic; }
+.transport-scene span { color: var(--cyan); font-style: normal; }
+.t-counters { display: flex; gap: var(--lg); }
+.t-counter { text-align: center; }
+.t-counter-num { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--cyan); line-height: 1; }
+.t-counter-label { font-size: 7px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); }
+.transport-right { display: flex; gap: var(--sm); }
 
-.toast{position:fixed;bottom:calc(var(--transport-h) + var(--md));left:50%;transform:translateX(-50%) translateY(60px);border:1px solid var(--dim);background:rgba(6,6,8,0.95);backdrop-filter:blur(12px);padding:var(--sm) var(--lg);font-size:10px;color:var(--white);z-index:200;opacity:0;transition:all 0.4s ease;pointer-events:none}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast { position: fixed; bottom: calc(var(--transport-h) + var(--md)); left: 50%; transform: translateX(-50%) translateY(60px); border: 1px solid var(--dim); background: rgba(6,6,8,0.95); backdrop-filter: blur(12px); padding: var(--sm) var(--lg); font-size: 10px; color: var(--white); z-index: 200; opacity: 0; transition: all 0.4s ease; pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-/* HELP */
-.help-overlay{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;background:rgba(6,6,8,0.85);backdrop-filter:blur(8px)}
-.help-overlay.open{display:flex}
-.help-box{width:580px;max-width:92vw;max-height:85vh;border:1px solid var(--dim);background:var(--black);overflow-y:auto;padding:var(--xl)}
-.help-box h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;margin-bottom:var(--lg)}
-.help-box h2 em{font-style:italic;color:var(--cyan)}
-.help-box h3{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--amber);margin:var(--lg) 0 var(--sm);padding-bottom:var(--xs);border-bottom:1px solid var(--dim)}
-.help-box p,.help-box li{font-size:11px;color:var(--white);line-height:1.9;margin-bottom:var(--sm);opacity:0.9}
-.help-box ul{padding-left:var(--md);margin-bottom:var(--sm)}
-.help-box kbd{display:inline-block;padding:1px 5px;border:1px solid var(--dim);font-family:'Space Mono',monospace;font-size:9px;color:var(--cyan)}
-.help-box a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(0,229,204,0.3);transition:border-color 0.2s}
-.help-box a:hover{border-color:var(--cyan)}
-.help-close-btn{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;padding:var(--sm) var(--lg);border:1px solid var(--dim);background:none;color:var(--mid);cursor:pointer;margin-top:var(--lg);transition:all 0.3s;display:block}
-.help-close-btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.hidden-input{display:none}
+.help-overlay { position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center; background: rgba(6,6,8,0.8); backdrop-filter: blur(8px); }
+.help-overlay.open { display: flex; }
+.help-box { width: 500px; max-width: 90vw; max-height: 80vh; border: 1px solid var(--dim); background: var(--black); overflow-y: auto; padding: var(--xl); }
+.help-box h2 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; margin-bottom: var(--lg); }
+.help-box h2 em { font-style: italic; color: var(--cyan); }
+.help-box h3 { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--amber); margin: var(--lg) 0 var(--sm); padding-bottom: var(--xs); border-bottom: 1px solid var(--dim); }
+.help-box p { font-size: 11px; color: var(--white); line-height: 1.8; margin-bottom: var(--sm); opacity: 0.85; }
+.help-box kbd { display: inline-block; padding: 1px 5px; border: 1px solid var(--dim); font-family: 'Space Mono', monospace; font-size: 9px; color: var(--cyan); }
+.help-close-btn { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: var(--sm) var(--lg); border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; margin-top: var(--lg); transition: all 0.3s; }
+.help-close-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.hidden-input { display: none; }
 
-@media(max-width:900px){
-  .app{grid-template-columns:1fr;grid-template-rows:var(--nav-h) 1fr var(--transport-h);grid-template-areas:"nav" "canvas" "transport"}
-  .left-area,.sidebar,.control-hints{display:none}
+@media (max-width: 900px) {
+  .app-layout { grid-template-columns: 1fr; grid-template-rows: var(--nav-h) 1fr var(--transport-h); grid-template-areas: "nav" "canvas" "transport"; }
+  .library-panel, .sidebar, .control-hints { display: none; }
 }
 </style>
 </head>
 <body>
-<div class="app edit-mode" id="app">
+<div class="app-layout edit-mode" id="app">
   <nav class="nav">
     <div class="nav-brand"><span class="nav-brand-name"><em>SAL</em></span><span class="nav-brand-sep">—</span><span class="nav-brand-page">Scenografia dźwiękowa</span></div>
-    <div class="nav-actions">
-      <button class="nav-btn" id="helpBtn">Pomoc</button>
-      <button class="nav-btn" id="libToggle">Biblioteka</button>
-    </div>
+    <div class="nav-actions"><button class="nav-link" id="helpBtn">Pomoc</button><button class="nav-link" id="libToggle">Biblioteka</button><button class="btn-sound-toggle" id="ambientToggle">◎ Ambient</button></div>
   </nav>
-
-  <!-- LEFT: Legend (default) / Library (toggled) -->
-  <div class="left-area">
-    <div class="left-view" id="legendView">
-      <div class="legend">
-        <div class="legend-title">Informacje</div>
-        <div class="legend-section">
-          <div class="legend-label">Dane sceny</div>
-          <div class="legend-data">
-            <div class="legend-data-cell"><div class="legend-data-val" id="lgSrcCount">0</div><div class="legend-data-lbl">Źródeł</div></div>
-            <div class="legend-data-cell"><div class="legend-data-val" id="lgPlayCount">0</div><div class="legend-data-lbl">Aktywnych</div></div>
-            <div class="legend-data-cell"><div class="legend-data-val" id="lgPosX">0.0</div><div class="legend-data-lbl">Pozycja X</div></div>
-            <div class="legend-data-cell"><div class="legend-data-val" id="lgPosY">0.0</div><div class="legend-data-lbl">Pozycja Y</div></div>
-          </div>
-        </div>
-        <div class="legend-section">
-          <div class="legend-label">Legenda mapy</div>
-          <div class="legend-item"><div class="legend-dot" style="border-color:#d4a574;background:rgba(212,165,116,0.2)"></div> Słuchacz (Ty)</div>
-          <div class="legend-item"><div class="legend-dot" style="border-color:var(--dim);background:rgba(58,58,66,0.3)"></div> Źródło — nieaktywne</div>
-          <div class="legend-item"><div class="legend-dot" style="border-color:var(--cyan);background:rgba(0,229,204,0.15)"></div> Źródło — odtwarzane</div>
-          <div class="legend-item"><div class="legend-dot" style="border-color:var(--cyan);background:rgba(0,229,204,0.15);box-shadow:0 0 6px var(--cyan)"></div> Źródło — wybrane</div>
-          <div class="legend-item"><div class="legend-line" style="background:rgba(0,229,204,0.2);border-top:1px dashed var(--cyan)"></div> Ścieżka do celu</div>
-        </div>
-        <div class="legend-section">
-          <div class="legend-label">Minimapa</div>
-          <div class="legend-mini"><canvas id="legendMiniCanvas"></canvas></div>
-        </div>
-        <div class="legend-section">
-          <div class="legend-label">Skróty klawiszowe</div>
-          <div class="legend-info"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> — ruch w przestrzeni<br><kbd>Q</kbd><kbd>E</kbd> — obrót słuchacza<br><kbd>Space</kbd> — play/pause wybranego<br><kbd>Ctrl+S</kbd> — zapisz scenę jako JSON</div>
-        </div>
-      </div>
-    </div>
-    <div class="left-view hidden" id="libView">
-      <div class="lib-header"><div class="lib-header-row"><span class="lib-title">Biblioteka</span><span class="lib-count-badge" id="libCountBadge">—</span></div><input class="lib-search" id="libSearch" type="text" placeholder="Szukaj dźwięków…"></div>
-      <div class="lib-tree" id="libTree"><div class="lib-empty-msg">Kliknij „Biblioteka" aby załadować</div></div>
-    </div>
-  </div>
-
-  <div class="canvas-area">
+  <aside class="library-panel" id="libraryPanel">
+    <div class="lib-header"><div class="lib-header-row"><span class="lib-title">Biblioteka</span><span class="lib-count-badge" id="libCountBadge">—</span></div><input class="lib-search" id="libSearch" type="text" placeholder="Szukaj dźwięków…"></div>
+    <div class="lib-tree" id="libTree"><div class="lib-empty-msg">Ładowanie…</div></div>
+  </aside>
+  <div class="canvas-area" id="canvasArea">
     <canvas id="mainCanvas"></canvas>
     <div class="hud"><div class="hud-row"><span class="hud-label">POS</span><span class="hud-val" id="hudPos">0.0, 0.0</span></div><div class="hud-row"><span class="hud-label">ROT</span><span class="hud-val" id="hudRot">0°</span></div><div class="hud-row"><span class="hud-label">SRC</span><span class="hud-val" id="hudSrc">0</span></div></div>
-    <div class="mode-switch"><button class="mode-btn active" data-mode="edit">Edycja</button><button class="mode-btn" data-mode="explore">Eksploracja</button></div>
+    <div class="mode-switch-float"><button class="mode-btn active" data-mode="edit">Edycja</button><button class="mode-btn" data-mode="explore">Eksploracja</button></div>
     <div class="compass"><span class="compass-n">N</span><div class="compass-needle" id="compassNeedle"></div></div>
     <div class="minimap"><span class="minimap-label">Mapa</span><canvas id="minimapCanvas"></canvas></div>
     <div class="control-hints"><div class="hint"><kbd>WASD</kbd> ruch</div><div class="hint"><kbd>QE</kbd> obrót</div><div class="hint"><kbd>Space</kbd> play</div></div>
     <div class="target-indicator" id="targetIndicator"><div class="target-marker"></div></div>
   </div>
-
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="acc-panel"><div class="acc-head" data-acc="add"><div class="acc-head-left"><span class="acc-num">01</span><span class="acc-title">Dodaj dźwięki</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="file-drop" id="fileDrop"><div style="font-size:16px;margin-bottom:4px">+</div><div>Kliknij lub upuść pliki audio</div></div><input type="file" class="hidden-input" id="fileInput" accept="audio/*" multiple></div></div>
-    <div class="acc-panel"><div class="acc-head" data-acc="mic"><div class="acc-head-left"><span class="acc-num">02</span><span class="acc-title">Mikrofon</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="export-row"><button class="btn-export" id="micStartBtn">● Nagrywaj</button><button class="btn-export" id="micStopBtn" disabled>◼ Zakończ</button></div><div class="mic-status" id="micStatus">Nagraj głos i umieść w przestrzeni</div></div></div>
-    <div class="acc-panel"><div class="acc-head" data-acc="src"><div class="acc-head-left"><span class="acc-num">03</span><span class="acc-title">Źródła</span></div><span class="acc-count" id="accSrcCount">0</span><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="src-actions-row"><button class="btn-sm" id="playAllBtn">▶ Wszystkie</button><button class="btn-sm" id="stopAllBtn">◼ Stop</button></div><div id="sourcesList"><div class="sources-empty">Brak źródeł dźwięku</div></div></div></div>
-    <div class="acc-panel"><div class="acc-head" data-acc="sel"><div class="acc-head-left"><span class="acc-num">04</span><span class="acc-title">Wybrany</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="sel-name empty" id="selName">— brak wyboru —</div><div class="vol-row"><label>Vol</label><input type="range" id="volSlider" min="0" max="100" value="70"><span class="vol-val" id="volVal">70%</span></div></div></div>
-    <div class="acc-panel"><div class="acc-head collapsed" data-acc="exp"><div class="acc-head-left"><span class="acc-num">05</span><span class="acc-title">Eksport</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="export-row"><div style="flex:1"><div class="export-label">Czas (s)</div><input class="export-input" id="exportDuration" type="number" value="30" min="1" max="600"></div><div style="flex:1"><div class="export-label">Sample rate</div><input class="export-input" id="exportSR" type="number" value="44100"></div></div><div class="export-row"><button class="btn-export" id="exportWav">Eksport WAV</button><button class="btn-export" id="exportWebm">Eksport WebM</button></div><div class="export-progress" id="exportProgress"></div></div></div>
-    <div class="acc-panel"><div class="acc-head collapsed" data-acc="scene"><div class="acc-head-left"><span class="acc-num">06</span><span class="acc-title">Scena</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="export-row"><button class="btn-export" id="saveSceneBtn">Zapisz scenę</button><button class="btn-export" id="loadSceneBtn">Wczytaj scenę</button></div><input type="file" class="hidden-input" id="sceneFileInput" accept=".json"></div></div>
+    <div class="acc-panel"><div class="acc-head" data-acc="sources"><div class="acc-head-left"><span class="acc-num">02</span><span class="acc-title">Źródła</span></div><span class="acc-count" id="accSrcCount">0</span><span class="acc-arrow">▾</span></div><div class="acc-body" id="accSources"><div class="src-actions-row"><button class="btn-sm" id="playAllBtn">▶ Wszystkie</button><button class="btn-sm" id="stopAllBtn">◼ Stop</button></div><div id="sourcesList"><div class="sources-empty">Brak źródeł dźwięku</div></div></div></div>
+    <div class="acc-panel"><div class="acc-head" data-acc="selected"><div class="acc-head-left"><span class="acc-num">03</span><span class="acc-title">Wybrany</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="sel-name empty" id="selName">— brak wyboru —</div><div class="vol-row"><label>Vol</label><input type="range" id="volSlider" min="0" max="100" value="70"><span class="vol-val" id="volVal">70%</span></div></div></div>
+    <div class="acc-panel"><div class="acc-head collapsed" data-acc="export"><div class="acc-head-left"><span class="acc-num">04</span><span class="acc-title">Eksport</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="export-row"><div style="flex:1"><div class="export-label">Czas (s)</div><input class="export-input" id="exportDuration" type="number" value="30" min="1" max="600"></div><div style="flex:1"><div class="export-label">Sample rate</div><input class="export-input" id="exportSR" type="number" value="44100"></div></div><div class="export-row"><button class="btn-export" id="exportWav">Eksport WAV</button><button class="btn-export" id="exportWebm">Eksport WebM</button></div><div class="export-row"><button class="btn-export ambix" id="exportAmbix">Eksport AmbiX (B-format)</button></div><div class="export-progress" id="exportProgress"></div></div></div>
+    <div class="acc-panel"><div class="acc-head collapsed" data-acc="scene"><div class="acc-head-left"><span class="acc-num">05</span><span class="acc-title">Scena</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="scene-row"><button class="btn-export" id="saveSceneBtn">Zapisz scenę</button><button class="btn-export" id="loadSceneBtn">Wczytaj scenę</button></div><input type="file" class="hidden-input" id="sceneFileInput" accept=".json"></div></div>
   </aside>
-
   <div class="transport">
     <div class="transport-btns"><button class="transport-btn" id="tPlayAll">▶</button><button class="transport-btn" id="tStopAll">◼</button></div>
     <div class="transport-info"><div class="transport-scene" id="tSceneName"><span>SAL</span> — nowa scena</div><div class="t-counters"><div class="t-counter"><div class="t-counter-num" id="tSrcCount">00</div><div class="t-counter-label">Źródeł</div></div><div class="t-counter"><div class="t-counter-num" id="tPlayCount">00</div><div class="t-counter-label">Aktywnych</div></div></div></div>
@@ -298,56 +245,36 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
   </div>
 </div>
 <div class="toast" id="toast"></div>
-
-<!-- HELP -->
 <div class="help-overlay" id="helpOverlay"><div class="help-box">
   <h2>Spatial Audio <em>Lab</em></h2>
-  <h3>Czym jest dźwięk przestrzenny?</h3>
-  <p>Dźwięk przestrzenny (spatial audio) to technologia, która pozwala odtwarzać dźwięki tak, jakby pochodziły z konkretnych miejsc w trójwymiarowej przestrzeni wokół Ciebie. W przeciwieństwie do zwykłego stereo (lewo-prawo), spatial audio symuluje pełne 360° — dźwięk może dochodzić z przodu, z tyłu, z góry, z dołu.</p>
-  <p>Do tego służy algorytm <strong style="color:var(--cyan)">HRTF</strong> (Head-Related Transfer Function) — model matematyczny ludzkiego ucha. Dzięki niemu zwykłe słuchawki potrafią „oszukać" mózg, że dźwięk naprawdę jest gdzieś w przestrzeni.</p>
-  <p style="color:var(--amber)">Używaj słuchawek — bez nich efekt przestrzenny nie zadziała poprawnie.</p>
-
-  <h3>Jak korzystać z programu?</h3>
-  <ul>
-    <li><strong style="color:var(--white)">Dodaj dźwięki</strong> — przeciągnij pliki audio na panel „01 Dodaj dźwięki" po prawej stronie, lub kliknij panel i wybierz pliki z dysku.</li>
-    <li><strong style="color:var(--white)">Biblioteka</strong> — kliknij „Biblioteka" w nawigacji, aby przeglądać gotowe dźwięki z Freesound.org. Kliknij [+] aby dodać dźwięk do sceny.</li>
-    <li><strong style="color:var(--white)">Mikrofon</strong> — panel „02 Mikrofon" pozwala nagrać swój głos (mono) i umieścić go jako źródło w przestrzeni.</li>
-    <li><strong style="color:var(--white)">Tryb Edycja</strong> — przeciągaj źródła dźwięku po mapie, ustawiaj ich pozycję.</li>
-    <li><strong style="color:var(--white)">Tryb Eksploracja</strong> — poruszaj się po przestrzeni (WASD lub kliknij na mapie), obracaj się (QE lub przeciąganie myszą), słuchaj jak zmienia się dźwięk w zależności od Twojej pozycji.</li>
-    <li><strong style="color:var(--white)">Eksport</strong> — panel „05 Eksport" pozwala zapisać scenografię jako plik WAV (offline render) lub WebM (nagranie w czasie rzeczywistym).</li>
-  </ul>
-
-  <h3>Skróty klawiszowe</h3>
-  <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> — ruch w przestrzeni · <kbd>Q</kbd><kbd>E</kbd> — obrót · <kbd>Space</kbd> — play/pause wybranego źródła · <kbd>Ctrl+S</kbd> — zapisz scenę jako JSON</p>
-
-  <h3>Darmowe dźwięki — gdzie szukać?</h3>
-  <ul>
-    <li><a href="https://freesound.org" target="_blank" rel="noopener">Freesound.org</a> — ogromna baza dźwięków CC0 i CC BY (ta aplikacja korzysta z niej)</li>
-    <li><a href="https://archive.org/details/audio" target="_blank" rel="noopener">Internet Archive — Audio</a> — tysiące nagrań w domenie publicznej</li>
-    <li><a href="https://soundbible.com" target="_blank" rel="noopener">SoundBible.com</a> — efekty dźwiękowe na wolnych licencjach</li>
-    <li><a href="https://www.zapsplat.com" target="_blank" rel="noopener">ZapSplat.com</a> — duża biblioteka darmowych efektów dźwiękowych</li>
-    <li><a href="https://bbcsfx.acropolis.org.uk" target="_blank" rel="noopener">BBC Sound Effects</a> — archiwum BBC udostępnione do celów niekomercyjnych</li>
-  </ul>
-
-  <h3>GitHub Pages — jak uruchomić?</h3>
-  <p>Umieść <strong style="color:var(--white)">index.html</strong> i <strong style="color:var(--white)">library.json</strong> w głównym katalogu repozytorium. Wejdź w Settings → Pages → Source: wybierz gałąź „main". Strona pojawi się pod adresem <em>username.github.io/repo-name</em>. Pliki audio nie są potrzebne w repozytorium — są pobierane bezpośrednio z CDN Freesound.</p>
-
+  <h3>Dźwięk przestrzenny</h3><p>Umieszczaj źródła dźwięku w przestrzeni 3D z HRTF. Używaj słuchawek!</p>
+  <h3>Biblioteka</h3><p>Dźwięki z Freesound.org pobierane jako bufor audio (pełne HRTF). Kliknij [+] aby dodać do sceny.</p>
+  <h3>Sterowanie</h3><p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> — ruch · <kbd>Q</kbd><kbd>E</kbd> — obrót · <kbd>Space</kbd> — play/pause · <kbd>Ctrl+S</kbd> — zapisz</p>
+  <h3>Eksport</h3><p>WAV — offline render binauralny z HRTF (2ch). AmbiX — B-format FOA (4ch W,Y,Z,X) do dalszej obróbki w DAW. WebM — nagrywanie w czasie rzeczywistym.</p>
+  <h3>GitHub Pages</h3><p>Umieść index.html i library.json w tym samym katalogu repozytorium. Włącz Pages w Settings → Pages → Source: main branch. Dźwięki streamowane z CDN Freesound — pliki audio nie są potrzebne w repo.</p>
   <button class="help-close-btn" id="helpClose">Zamknij</button>
 </div></div>
 
 <script>
 const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-document.addEventListener('click',()=>{if(audioCtx.state==='suspended')audioCtx.resume();},{once:true});
+function resumeCtx(){if(audioCtx.state==='suspended')audioCtx.resume();}
+document.addEventListener('click',resumeCtx,{once:true});
+document.addEventListener('touchstart',resumeCtx,{once:true});
 
 let compassRotation=0;
 const S={mode:'edit',sceneName:null,listener:{x:0,y:0,angle:0},target:null,sources:[],buffers:{},selectedSource:null,keys:{},worldSize:25,moveSpeed:6,rotSpeed:90,dragStartAngle:0};
-let libraryData=null,libSearchQuery='',libVisible=false;
+let libraryData=null,libSearchQuery='';
 
 const $=id=>document.getElementById(id);
 const app=$('app'),mainCanvas=$('mainCanvas'),ctx=mainCanvas.getContext('2d');
 const minimapCanvas=$('minimapCanvas'),minimapCtx=minimapCanvas.getContext('2d');
-const legendMiniCanvas=$('legendMiniCanvas'),legendMiniCtx=legendMiniCanvas.getContext('2d');
-const compassNeedle=$('compassNeedle'),toastEl=$('toast');
+const compassNeedle=$('compassNeedle'),hudPos=$('hudPos'),hudRot=$('hudRot'),hudSrc=$('hudSrc');
+const targetIndicator=$('targetIndicator'),toastEl=$('toast');
+const fileInput=$('fileInput'),fileDrop=$('fileDrop'),sceneFileInput=$('sceneFileInput');
+const sourcesList=$('sourcesList'),selName=$('selName');
+const volSlider=$('volSlider'),volVal=$('volVal');
+const libPanel=$('libraryPanel'),libTree=$('libTree'),libSearch=$('libSearch'),libCountBadge=$('libCountBadge');
+const exportProgress=$('exportProgress');
 
 function showToast(m,d=2500){toastEl.textContent=m;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),d);}
 
@@ -355,122 +282,248 @@ function showToast(m,d=2500){toastEl.textContent=m;toastEl.classList.add('show')
 document.querySelectorAll('.acc-head').forEach(h=>{h.addEventListener('click',()=>h.classList.toggle('collapsed'));});
 
 // CANVAS
-function resizeCanvases(){
-  const r=mainCanvas.parentElement.getBoundingClientRect(),dpr=devicePixelRatio||1;
-  mainCanvas.width=r.width*dpr;mainCanvas.height=r.height*dpr;
-  mainCanvas.style.width=r.width+'px';mainCanvas.style.height=r.height+'px';
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  [minimapCanvas,legendMiniCanvas].forEach(c=>{c.width=c.parentElement.clientWidth*dpr;c.height=c.parentElement.clientHeight*dpr;const cx=c.getContext('2d');cx.setTransform(dpr,0,0,dpr,0,0);});
-}
+function resizeCanvases(){const r=mainCanvas.parentElement.getBoundingClientRect(),dpr=devicePixelRatio||1;mainCanvas.width=r.width*dpr;mainCanvas.height=r.height*dpr;mainCanvas.style.width=r.width+'px';mainCanvas.style.height=r.height+'px';ctx.setTransform(dpr,0,0,dpr,0,0);minimapCanvas.width=120*dpr;minimapCanvas.height=120*dpr;minimapCtx.setTransform(dpr,0,0,dpr,0,0);}
 addEventListener('resize',resizeCanvases);resizeCanvases();
 
 // MODE
 document.querySelectorAll('.mode-btn').forEach(b=>{b.addEventListener('click',()=>{S.mode=b.dataset.mode;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');app.classList.remove('edit-mode','explore-mode');app.classList.add(S.mode+'-mode');S.target=null;});});
 
-// LEFT PANEL TOGGLE
-$('libToggle').addEventListener('click',()=>{
-  libVisible=!libVisible;
-  $('libToggle').classList.toggle('active',libVisible);
-  $('legendView').classList.toggle('hidden',libVisible);
-  $('libView').classList.toggle('hidden',!libVisible);
-  if(libVisible&&!libraryData)loadLibrary();
-});
-
 // LIBRARY
-const catIcons={nature:'∿',mood:'◐'},subIcons={nature_water:'≋',nature_fire:'△',nature_birds:'♪',nature_insects:'⁘',nature_mammals:'◦',mood_calm:'○'};
-async function loadLibrary(){$('libTree').innerHTML='<div class="lib-empty-msg">Ładowanie…</div>';try{const r=await fetch('library.json');if(!r.ok)throw new Error('HTTP '+r.status);libraryData=await r.json();$('libCountBadge').textContent=(libraryData.total_sounds||0)+' dźwięków';renderLibTree();}catch(e){$('libTree').innerHTML='<div class="lib-empty-msg">Nie można załadować library.json</div>';}}
+$('libToggle').addEventListener('click',()=>{const c=libPanel.classList.toggle('collapsed');if(!c&&!libraryData)loadLibrary();});
+const catIcons={nature:'∿',mood:'◐'};
+const subIcons={nature_water:'≋',nature_fire:'△',nature_birds:'♪',nature_insects:'⁘',nature_mammals:'◦',mood_calm:'○'};
+
+async function loadLibrary(){libTree.innerHTML='<div class="lib-empty-msg">Ładowanie…</div>';try{const r=await fetch('library.json');if(!r.ok)throw new Error('HTTP '+r.status);libraryData=await r.json();libCountBadge.textContent=(libraryData.total_sounds||0)+' dźwięków';renderLibTree();}catch(e){libTree.innerHTML='<div class="lib-empty-msg">Nie można załadować library.json</div>';}}
 
 function renderLibTree(){if(!libraryData)return;const q=libSearchQuery.toLowerCase().trim();let html='';
-for(const cat of libraryData.categories){let subs=[];for(const sub of(cat.subcategories||[])){const sounds=(sub.sounds||[]).filter(s=>{if(!q)return true;return s.label.toLowerCase().includes(q)||(s.tags||[]).some(t=>t.toLowerCase().includes(q))||s.author.toLowerCase().includes(q);});if(!sounds.length)continue;
-const sh=sounds.map(s=>{const dur=s.duration?Math.round(s.duration)+'s':'';const lic=s.license?.short||'?';const licCls=lic==='CC0'?'cc0':'';return`<div class="lib-sound"><div><div class="lib-sound-name" title="${s.label}">${s.label}</div><div class="lib-sound-meta">${dur?'<span>'+dur+'</span>':''}<span class="lib-badge ${licCls}">${lic}</span>${!s.file?'<span class="lib-badge stream">Stream</span>':''}</div></div><button class="lib-add-btn" data-add="${s.id}">+</button></div>`;}).join('');
+for(const cat of libraryData.categories){let subs=[];
+for(const sub of(cat.subcategories||[])){const sounds=(sub.sounds||[]).filter(s=>{if(!q)return true;return s.label.toLowerCase().includes(q)||(s.tags||[]).some(t=>t.toLowerCase().includes(q))||s.author.toLowerCase().includes(q);});
+if(!sounds.length)continue;
+const sh=sounds.map(s=>{const dur=s.duration?Math.round(s.duration)+'s':'';const lic=s.license?.short||'?';const licCls=lic==='CC0'?'cc0':'';const isStream=!s.file;return`<div class="lib-sound"><div><div class="lib-sound-name" title="${s.label}">${s.label}</div><div class="lib-sound-meta">${dur?'<span>'+dur+'</span>':''}<span class="lib-badge ${licCls}">${lic}</span>${isStream?'<span class="lib-badge stream">Stream</span>':''}</div></div><button class="lib-add-btn" data-add="${s.id}">+</button></div>`;}).join('');
 subs.push(`<div><div class="lib-sub-head" data-tsub="${sub.id}"><i class="ico">${subIcons[sub.id]||'·'}</i><span>${sub.label}</span><span class="cnt">${sounds.length}</span><span class="arrow">▾</span></div><div class="lib-sub-body" id="sub-${sub.id}">${sh}</div></div>`);}
-if(!subs.length)continue;html+=`<div class="lib-cat"><div class="lib-cat-head" data-tcat="${cat.id}"><i class="ico">${catIcons[cat.id]||'◈'}</i><span class="label">${cat.label}</span><span class="cnt">${subs.length}</span><span class="arrow">▾</span></div><div class="lib-cat-body" id="cat-${cat.id}">${subs.join('')}</div></div>`;}
-if(!html){$('libTree').innerHTML='<div class="lib-empty-msg">Brak wyników</div>';return;}$('libTree').innerHTML=html;
-$('libTree').querySelectorAll('[data-tcat]').forEach(el=>{el.addEventListener('click',()=>{el.classList.toggle('collapsed');document.getElementById('cat-'+el.dataset.tcat).style.display=el.classList.contains('collapsed')?'none':'';});});
-$('libTree').querySelectorAll('[data-tsub]').forEach(el=>{el.addEventListener('click',()=>{el.classList.toggle('collapsed');document.getElementById('sub-'+el.dataset.tsub).style.display=el.classList.contains('collapsed')?'none':'';});});
-$('libTree').querySelectorAll('[data-add]').forEach(btn=>{btn.addEventListener('click',async e=>{e.stopPropagation();if(btn.classList.contains('in-scene')||btn.classList.contains('loading'))return;const snd=findInLib(btn.dataset.add);if(snd)await loadFromLib(snd,btn);});});updateLibBtns();}
+if(!subs.length)continue;
+html+=`<div class="lib-cat"><div class="lib-cat-head" data-tcat="${cat.id}"><i class="ico">${catIcons[cat.id]||'◈'}</i><span class="label">${cat.label}</span><span class="cnt">${subs.length}</span><span class="arrow">▾</span></div><div class="lib-cat-body" id="cat-${cat.id}">${subs.join('')}</div></div>`;}
+if(!html){libTree.innerHTML='<div class="lib-empty-msg">Brak wyników</div>';return;}
+libTree.innerHTML=html;
+libTree.querySelectorAll('[data-tcat]').forEach(el=>{el.addEventListener('click',()=>{el.classList.toggle('collapsed');document.getElementById('cat-'+el.dataset.tcat).style.display=el.classList.contains('collapsed')?'none':'';});});
+libTree.querySelectorAll('[data-tsub]').forEach(el=>{el.addEventListener('click',()=>{el.classList.toggle('collapsed');document.getElementById('sub-'+el.dataset.tsub).style.display=el.classList.contains('collapsed')?'none':'';});});
+libTree.querySelectorAll('[data-add]').forEach(btn=>{btn.addEventListener('click',async e=>{e.stopPropagation();if(btn.classList.contains('in-scene')||btn.classList.contains('loading'))return;const snd=findInLib(btn.dataset.add);if(snd)await loadFromLib(snd,btn);});});
+updateLibBtns();}
+
 function findInLib(id){if(!libraryData)return null;for(const c of libraryData.categories)for(const s of(c.subcategories||[]))for(const x of(s.sounds||[]))if(x.id===id)return x;return null;}
-function updateLibBtns(){const ids=new Set(S.sources.map(s=>s.libraryId).filter(Boolean));$('libTree').querySelectorAll('[data-add]').forEach(b=>{if(ids.has(b.dataset.add)){b.classList.add('in-scene');b.classList.remove('loading');b.textContent='✓';}else{b.classList.remove('in-scene');if(!b.classList.contains('loading'))b.textContent='+';}});}
-$('libSearch').addEventListener('input',()=>{libSearchQuery=$('libSearch').value;if(libraryData)renderLibTree();});
+function updateLibBtns(){const ids=new Set(S.sources.map(s=>s.libraryId).filter(Boolean));libTree.querySelectorAll('[data-add]').forEach(b=>{if(ids.has(b.dataset.add)){b.classList.add('in-scene');b.classList.remove('loading');b.textContent='✓';}else{b.classList.remove('in-scene');if(!b.classList.contains('loading'))b.textContent='+';}});}
+libSearch.addEventListener('input',()=>{libSearchQuery=libSearch.value;if(libraryData)renderLibTree();});
 
+// LOAD FROM LIB
 async function loadFromLib(def,btn){if(btn){btn.classList.add('loading');btn.textContent='…';}
-try{const a=Math.random()*Math.PI*2,d=4+Math.random()*8,x=Math.cos(a)*d,y=Math.sin(a)*d;
-if(def.file){try{const r=await fetch(def.file);if(r.ok){const ab=await r.arrayBuffer();const dec=await audioCtx.decodeAudioData(ab);createFromBuf(dec,def.label,x,y,def.id,def.defaultVolume||0.7);showToast('✓ '+def.label);return;}}catch(e){}}
-if(def.preview_url){try{const r=await fetch(def.preview_url);if(r.ok){const ab=await r.arrayBuffer();const dec=await audioCtx.decodeAudioData(ab);createFromBuf(dec,def.label,x,y,def.id,def.defaultVolume||0.7);showToast('✓ '+def.label);return;}}catch(e){await createFromStream(def.preview_url,def.label,x,y,def.id,def.defaultVolume||0.7);showToast('✓ '+def.label+' (fallback)');return;}}
-throw 0;}catch(err){showToast('⚠ '+def.label);if(btn){btn.classList.remove('loading');btn.textContent='+';}}finally{updateLibBtns();}}
+try{const angle=Math.random()*Math.PI*2,dist=4+Math.random()*8,x=Math.cos(angle)*dist,y=Math.sin(angle)*dist;
+if(def.file){try{const r=await fetch(def.file);if(r.ok){const ab=await r.arrayBuffer();const d=await audioCtx.decodeAudioData(ab);createFromBuffer(d,def.label,x,y,def.id,def.defaultVolume||0.7);showToast('✓ '+def.label);return;}}catch(e){}}
+if(def.preview_url){try{const r=await fetch(def.preview_url);if(r.ok){const ab=await r.arrayBuffer();const d=await audioCtx.decodeAudioData(ab);createFromBuffer(d,def.label,x,y,def.id,def.defaultVolume||0.7);showToast('✓ '+def.label);return;}}catch(e){
+await createFromStream(def.preview_url,def.label,x,y,def.id,def.defaultVolume||0.7);showToast('✓ '+def.label+' (bez HRTF)');return;}}
+throw new Error('Brak źródła');}catch(err){showToast('⚠ '+def.label);if(btn){btn.classList.remove('loading');btn.textContent='+';}}finally{updateLibBtns();}}
 
-// SOURCE
-function buildSrc(id,nm,x,y,vol,lid){const p=audioCtx.createPanner(),g=audioCtx.createGain();p.panningModel='HRTF';p.distanceModel='inverse';p.refDistance=1;p.maxDistance=50;p.rolloffFactor=1;g.connect(p);p.connect(audioCtx.destination);g.gain.value=vol;const s={id,name:nm,x,y,volume:vol,playing:false,node:null,panner:p,gain:g,libraryId:lid||null,isStream:false,audioElement:null,mediaSource:null};updP(s);return s;}
-function createFromBuf(dec,nm,x,y,lid=null,vol=0.7){const id='s'+Date.now()+'_'+Math.random().toString(36).slice(2,7);S.buffers[id]=dec;const s=buildSrc(id,nm,x,y,vol,lid);S.sources.push(s);renderSources();return s;}
-async function createFromStream(url,nm,x,y,lid=null,vol=0.7){const id='s'+Date.now()+'_'+Math.random().toString(36).slice(2,7);const a=new Audio();a.crossOrigin='anonymous';a.loop=true;a.preload='auto';a.src=url;await new Promise((ok,fail)=>{a.addEventListener('canplay',ok,{once:true});a.addEventListener('error',()=>fail(0),{once:true});setTimeout(()=>fail(0),15000);});const ms=audioCtx.createMediaElementSource(a);const s=buildSrc(id,nm,x,y,vol,lid);s.isStream=true;s.audioElement=a;s.mediaSource=ms;ms.connect(s.gain);S.sources.push(s);renderSources();return s;}
+// SOURCE CREATION
+function buildSrc(id,name,x,y,vol,libId){const p=audioCtx.createPanner(),g=audioCtx.createGain();p.panningModel='HRTF';p.distanceModel='inverse';p.refDistance=1;p.maxDistance=50;p.rolloffFactor=1;g.connect(p);p.connect(audioCtx.destination);g.gain.value=vol;const s={id,name,x,y,volume:vol,playing:false,node:null,panner:p,gain:g,libraryId:libId||null,isStream:false,audioElement:null,mediaSource:null};updPanner(s);return s;}
+function createFromBuffer(decoded,name,x,y,libId=null,vol=0.7){const id='s'+Date.now()+'_'+Math.random().toString(36).slice(2,7);S.buffers[id]=decoded;const s=buildSrc(id,name,x,y,vol,libId);S.sources.push(s);renderSources();return s;}
+async function createFromStream(url,name,x,y,libId=null,vol=0.7){const id='s'+Date.now()+'_'+Math.random().toString(36).slice(2,7);const a=new Audio();a.crossOrigin='anonymous';a.loop=true;a.preload='auto';a.src=url;await new Promise((ok,fail)=>{a.addEventListener('canplay',ok,{once:true});a.addEventListener('error',()=>fail(new Error('Load error')),{once:true});setTimeout(()=>fail(new Error('Timeout')),15000);});const ms=audioCtx.createMediaElementSource(a);const s=buildSrc(id,name,x,y,vol,libId);s.isStream=true;s.audioElement=a;s.mediaSource=ms;ms.connect(s.gain);S.sources.push(s);renderSources();return s;}
 
 // FILES
-const fileDrop=$('fileDrop'),fileInput=$('fileInput');
 fileDrop.addEventListener('click',()=>fileInput.click());
 fileDrop.addEventListener('dragover',e=>{e.preventDefault();fileDrop.classList.add('dragover');});
 fileDrop.addEventListener('dragleave',()=>fileDrop.classList.remove('dragover'));
 fileDrop.addEventListener('drop',e=>{e.preventDefault();fileDrop.classList.remove('dragover');handleFiles(e.dataTransfer.files);});
 fileInput.addEventListener('change',()=>{handleFiles(fileInput.files);fileInput.value='';});
-async function handleFiles(files){let n=0;for(const f of files){try{const b=await f.arrayBuffer();const d=await audioCtx.decodeAudioData(b);const a=Math.random()*Math.PI*2,r=4+Math.random()*10;createFromBuf(d,f.name,Math.cos(a)*r,Math.sin(a)*r);n++;}catch(e){showToast('⚠ '+f.name);}}if(n)showToast('Dodano '+n+' plik(ów)');}
-
-// MIC RECORDING
-let micStream=null,micRecorder=null,micChunks=[];
-$('micStartBtn').addEventListener('click',async()=>{
-  try{micStream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false}});
-  micChunks=[];micRecorder=new MediaRecorder(micStream);
-  micRecorder.ondataavailable=e=>{if(e.data.size>0)micChunks.push(e.data);};
-  micRecorder.onstop=async()=>{micStream.getTracks().forEach(t=>t.stop());const blob=new Blob(micChunks,{type:'audio/webm'});
-  try{const ab=await blob.arrayBuffer();const dec=await audioCtx.decodeAudioData(ab);const a=Math.random()*Math.PI*2,d=3+Math.random()*5;createFromBuf(dec,'Mikrofon_'+new Date().toLocaleTimeString(),Math.cos(a)*d,Math.sin(a)*d);showToast('✓ Nagranie dodane do sceny');}catch(e){showToast('⚠ Błąd dekodowania nagrania');}
-  $('micStatus').textContent='Nagraj głos i umieść w przestrzeni';$('micStatus').classList.remove('rec');$('micStartBtn').disabled=false;$('micStopBtn').disabled=true;};
-  micRecorder.start();$('micStatus').textContent='● Nagrywanie…';$('micStatus').classList.add('rec');$('micStartBtn').disabled=true;$('micStopBtn').disabled=false;
-  }catch(e){showToast('⚠ Brak dostępu do mikrofonu');$('micStatus').textContent='Brak dostępu do mikrofonu';}
-});
-$('micStopBtn').addEventListener('click',()=>{if(micRecorder&&micRecorder.state==='recording')micRecorder.stop();});
+async function handleFiles(files){let n=0;for(const f of files){try{const b=await f.arrayBuffer();const d=await audioCtx.decodeAudioData(b);const a=Math.random()*Math.PI*2,r=4+Math.random()*10;createFromBuffer(d,f.name,Math.cos(a)*r,Math.sin(a)*r);n++;}catch(e){showToast('⚠ '+f.name);}}if(n)showToast('Dodano '+n+' plik(ów)');}
 
 // PANNER/LISTENER
-function updP(s){if(s.panner.positionX){s.panner.positionX.setValueAtTime(s.x,audioCtx.currentTime);s.panner.positionY.setValueAtTime(0,audioCtx.currentTime);s.panner.positionZ.setValueAtTime(s.y,audioCtx.currentTime);}else s.panner.setPosition(s.x,0,s.y);}
-function updateListener(){const l=audioCtx.listener,rad=S.listener.angle*Math.PI/180;if(l.positionX){l.positionX.setValueAtTime(S.listener.x,audioCtx.currentTime);l.positionY.setValueAtTime(0,audioCtx.currentTime);l.positionZ.setValueAtTime(S.listener.y,audioCtx.currentTime);l.forwardX.setValueAtTime(Math.sin(rad),audioCtx.currentTime);l.forwardY.setValueAtTime(0,audioCtx.currentTime);l.forwardZ.setValueAtTime(-Math.cos(rad),audioCtx.currentTime);l.upX.setValueAtTime(0,audioCtx.currentTime);l.upY.setValueAtTime(1,audioCtx.currentTime);l.upZ.setValueAtTime(0,audioCtx.currentTime);}else{l.setPosition(S.listener.x,0,S.listener.y);l.setOrientation(Math.sin(rad),0,-Math.cos(rad),0,1,0);}
-$('hudPos').textContent=S.listener.x.toFixed(1)+', '+S.listener.y.toFixed(1);$('hudRot').textContent=Math.round(S.listener.angle)+'°';$('lgPosX').textContent=S.listener.x.toFixed(1);$('lgPosY').textContent=S.listener.y.toFixed(1);
-const ta=-S.listener.angle;let d=ta-compassRotation;while(d>180)d-=360;while(d<-180)d+=360;compassRotation+=d;compassNeedle.style.transform='rotate('+compassRotation+'deg)';}
+function updPanner(s){if(s.panner.positionX){s.panner.positionX.setValueAtTime(s.x,audioCtx.currentTime);s.panner.positionY.setValueAtTime(0,audioCtx.currentTime);s.panner.positionZ.setValueAtTime(s.y,audioCtx.currentTime);}else s.panner.setPosition(s.x,0,s.y);}
+function updateListener(){const l=audioCtx.listener,rad=S.listener.angle*Math.PI/180;if(l.positionX){l.positionX.setValueAtTime(S.listener.x,audioCtx.currentTime);l.positionY.setValueAtTime(0,audioCtx.currentTime);l.positionZ.setValueAtTime(S.listener.y,audioCtx.currentTime);l.forwardX.setValueAtTime(Math.sin(rad),audioCtx.currentTime);l.forwardY.setValueAtTime(0,audioCtx.currentTime);l.forwardZ.setValueAtTime(-Math.cos(rad),audioCtx.currentTime);l.upX.setValueAtTime(0,audioCtx.currentTime);l.upY.setValueAtTime(1,audioCtx.currentTime);l.upZ.setValueAtTime(0,audioCtx.currentTime);}else{l.setPosition(S.listener.x,0,S.listener.y);l.setOrientation(Math.sin(rad),0,-Math.cos(rad),0,1,0);}hudPos.textContent=S.listener.x.toFixed(1)+', '+S.listener.y.toFixed(1);hudRot.textContent=Math.round(S.listener.angle)+'°';const ta=-S.listener.angle;let d=ta-compassRotation;while(d>180)d-=360;while(d<-180)d+=360;compassRotation+=d;compassNeedle.style.transform='rotate('+compassRotation+'deg)';}
 
 // PLAY/STOP
 function playSource(s){if(!s||s.playing)return;if(s.isStream&&s.audioElement){audioCtx.resume().then(()=>s.audioElement.play());s.playing=true;}else if(!s.isStream&&S.buffers[s.id]){s.node=audioCtx.createBufferSource();s.node.buffer=S.buffers[s.id];s.node.loop=true;s.node.connect(s.gain);s.node.start();s.playing=true;}renderSources();updateCounters();}
 function stopSource(s){if(!s||!s.playing)return;if(s.isStream&&s.audioElement){s.audioElement.pause();s.audioElement.currentTime=0;}else if(s.node){try{s.node.stop();}catch(e){}s.node=null;}s.playing=false;renderSources();updateCounters();}
 function removeSource(id){const i=S.sources.findIndex(s=>s.id===id);if(i===-1)return;const s=S.sources[i];stopSource(s);if(S.selectedSource===s){S.selectedSource=null;updateSel();}s.gain.disconnect();s.panner.disconnect();if(s.audioElement)s.audioElement.src='';delete S.buffers[id];S.sources.splice(i,1);renderSources();updateLibBtns();showToast('Usunięto');}
 function selectSource(s){S.selectedSource=s;updateSel();renderSources();}
-function updateSel(){const s=S.selectedSource;if(s){$('selName').textContent=s.name;$('selName').classList.remove('empty');$('volSlider').value=Math.round(s.volume*100);$('volVal').textContent=$('volSlider').value+'%';}else{$('selName').textContent='— brak wyboru —';$('selName').classList.add('empty');}}
+function updateSel(){const s=S.selectedSource;if(s){selName.textContent=s.name;selName.classList.remove('empty');volSlider.value=Math.round(s.volume*100);volVal.textContent=volSlider.value+'%';}else{selName.textContent='— brak wyboru —';selName.classList.add('empty');}}
 
-function renderSources(){$('accSrcCount').textContent=String(S.sources.length).padStart(2,'0');$('hudSrc').textContent=S.sources.length;const sl=$('sourcesList');if(!S.sources.length){sl.innerHTML='<div class="sources-empty">Brak źródeł dźwięku</div>';updateCounters();return;}
-sl.innerHTML=S.sources.map((s,i)=>{const d=Math.hypot(s.x-S.listener.x,s.y-S.listener.y).toFixed(1);return`<div class="source-item ${S.selectedSource===s?'selected':''} ${s.playing?'playing':''}" data-id="${s.id}"><div class="src-num">${String(i+1).padStart(2,'0')}</div><div class="src-info"><div class="src-name">${s.name}</div><div class="src-meta">${d}m · ${Math.round(s.volume*100)}%${s.isStream?' · stream':''}</div></div><button class="src-btn ${s.playing?'active':''}" data-a="t">${s.playing?'‖':'▶'}</button><button class="src-btn del" data-a="d">✕</button></div>`;}).join('');
-sl.querySelectorAll('.source-item').forEach(el=>{const s=S.sources.find(x=>x.id===el.dataset.id);el.addEventListener('click',e=>{if(!e.target.closest('.src-btn'))selectSource(s);});el.querySelector('[data-a="t"]').addEventListener('click',e=>{e.stopPropagation();s.playing?stopSource(s):playSource(s);});el.querySelector('[data-a="d"]').addEventListener('click',e=>{e.stopPropagation();removeSource(s.id);});});updateCounters();}
-function updateCounters(){const p=S.sources.filter(s=>s.playing).length;$('tSrcCount').textContent=String(S.sources.length).padStart(2,'0');$('tPlayCount').textContent=String(p).padStart(2,'0');$('tPlayAll').classList.toggle('active',p>0);$('lgSrcCount').textContent=S.sources.length;$('lgPlayCount').textContent=p;}
+// RENDER SOURCES
+function renderSources(){$('accSrcCount').textContent=String(S.sources.length).padStart(2,'0');hudSrc.textContent=S.sources.length;if(!S.sources.length){sourcesList.innerHTML='<div class="sources-empty">Brak źródeł dźwięku</div>';updateCounters();return;}
+sourcesList.innerHTML=S.sources.map((s,i)=>{const d=Math.hypot(s.x-S.listener.x,s.y-S.listener.y).toFixed(1);return`<div class="source-item ${S.selectedSource===s?'selected':''} ${s.playing?'playing':''}" data-id="${s.id}"><div class="src-num">${String(i+1).padStart(2,'0')}</div><div class="src-info"><div class="src-name">${s.name}</div><div class="src-meta">${d}m · ${Math.round(s.volume*100)}%${s.isStream?' · stream':''}</div></div><button class="src-btn ${s.playing?'active':''}" data-a="t">${s.playing?'‖':'▶'}</button><button class="src-btn del" data-a="d">✕</button></div>`;}).join('');
+sourcesList.querySelectorAll('.source-item').forEach(el=>{const s=S.sources.find(x=>x.id===el.dataset.id);el.addEventListener('click',e=>{if(!e.target.closest('.src-btn'))selectSource(s);});el.querySelector('[data-a="t"]').addEventListener('click',e=>{e.stopPropagation();s.playing?stopSource(s):playSource(s);});el.querySelector('[data-a="d"]').addEventListener('click',e=>{e.stopPropagation();removeSource(s.id);});});updateCounters();}
+function updateCounters(){const p=S.sources.filter(s=>s.playing).length;$('tSrcCount').textContent=String(S.sources.length).padStart(2,'0');$('tPlayCount').textContent=String(p).padStart(2,'0');$('tPlayAll').classList.toggle('active',p>0);}
 
+// CONTROLS
 $('playAllBtn').addEventListener('click',()=>S.sources.forEach(s=>playSource(s)));
 $('stopAllBtn').addEventListener('click',()=>S.sources.forEach(s=>stopSource(s)));
 $('tPlayAll').addEventListener('click',()=>{S.sources.some(s=>s.playing)?S.sources.forEach(s=>stopSource(s)):S.sources.forEach(s=>playSource(s));});
 $('tStopAll').addEventListener('click',()=>S.sources.forEach(s=>stopSource(s)));
-$('volSlider').addEventListener('input',()=>{$('volVal').textContent=$('volSlider').value+'%';if(S.selectedSource){S.selectedSource.volume=$('volSlider').value/100;S.selectedSource.gain.gain.setValueAtTime(S.selectedSource.volume,audioCtx.currentTime);renderSources();}});
+volSlider.addEventListener('input',()=>{volVal.textContent=volSlider.value+'%';if(S.selectedSource){S.selectedSource.volume=volSlider.value/100;S.selectedSource.gain.gain.setValueAtTime(S.selectedSource.volume,audioCtx.currentTime);renderSources();}});
 
 // SCENE
 function exportScene(){return{version:1,name:S.sceneName||'Scena_'+new Date().toISOString().slice(0,10),createdAt:new Date().toISOString(),listener:{...S.listener},sources:S.sources.map(s=>({id:s.id,name:s.name,x:s.x,y:s.y,volume:s.volume,libraryId:s.libraryId||null}))};}
 function downloadScene(){const sc=exportScene();const b=new Blob([JSON.stringify(sc,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=sc.name.replace(/[^a-zA-Z0-9_-]/g,'_')+'.json';a.click();URL.revokeObjectURL(a.href);S.sceneName=sc.name;$('tSceneName').innerHTML='<span>SAL</span> — '+sc.name;showToast('Zapisano: '+sc.name);}
-async function loadSceneFile(f){try{const t=await f.text();const sc=JSON.parse(t);if(!sc.version||!sc.sources)throw 0;if(sc.listener){Object.assign(S.listener,{x:sc.listener.x||0,y:sc.listener.y||0,angle:sc.listener.angle||0});updateListener();}let m=0;for(const ss of sc.sources){const e=S.sources.find(s=>s.name===ss.name);if(e){e.x=ss.x;e.y=ss.y;e.volume=ss.volume;e.gain.gain.setValueAtTime(e.volume,audioCtx.currentTime);updP(e);m++;}}S.sceneName=sc.name;$('tSceneName').innerHTML='<span>SAL</span> — '+sc.name;renderSources();showToast(m===sc.sources.length?'Wczytano: '+sc.name:'Wczytano '+m+'/'+sc.sources.length);}catch(e){showToast('Błąd wczytywania');}}
+async function loadSceneFile(f){try{const t=await f.text();const sc=JSON.parse(t);if(!sc.version||!sc.sources)throw 0;if(sc.listener){Object.assign(S.listener,{x:sc.listener.x||0,y:sc.listener.y||0,angle:sc.listener.angle||0});updateListener();}let m=0;for(const ss of sc.sources){const e=S.sources.find(s=>s.name===ss.name);if(e){e.x=ss.x;e.y=ss.y;e.volume=ss.volume;e.gain.gain.setValueAtTime(e.volume,audioCtx.currentTime);updPanner(e);m++;}}S.sceneName=sc.name;$('tSceneName').innerHTML='<span>SAL</span> — '+sc.name;renderSources();showToast(m===sc.sources.length?'Wczytano: '+sc.name:'Wczytano '+m+'/'+sc.sources.length);}catch(e){showToast('Błąd wczytywania');}}
 $('saveSceneBtn').addEventListener('click',downloadScene);$('tSave').addEventListener('click',downloadScene);
-$('loadSceneBtn').addEventListener('click',()=>$('sceneFileInput').click());$('tLoad').addEventListener('click',()=>$('sceneFileInput').click());
-$('sceneFileInput').addEventListener('change',()=>{if($('sceneFileInput').files.length){loadSceneFile($('sceneFileInput').files[0]);$('sceneFileInput').value='';}});
+$('loadSceneBtn').addEventListener('click',()=>sceneFileInput.click());$('tLoad').addEventListener('click',()=>sceneFileInput.click());
+sceneFileInput.addEventListener('change',()=>{if(sceneFileInput.files.length){loadSceneFile(sceneFileInput.files[0]);sceneFileInput.value='';}});
 
-// EXPORT WAV
-$('exportWav').addEventListener('click',async()=>{const srcs=S.sources.filter(s=>S.buffers[s.id]);if(!srcs.length){showToast('Brak źródeł z buforem');return;}const dur=parseFloat($('exportDuration').value)||30,sr=parseInt($('exportSR').value)||44100;const btn=$('exportWav');btn.disabled=true;btn.textContent='Renderowanie…';$('exportProgress').textContent='Offline render…';
+// EXPORT WAV (binaural)
+$('exportWav').addEventListener('click',async()=>{const srcs=S.sources.filter(s=>S.buffers[s.id]);if(!srcs.length){showToast('Brak źródeł z buforem');return;}const dur=parseFloat($('exportDuration').value)||30,sr=parseInt($('exportSR').value)||44100;const btn=$('exportWav');btn.disabled=true;btn.textContent='Renderowanie…';exportProgress.textContent='Offline render…';
 try{const len=sr*dur,off=new OfflineAudioContext(2,len,sr);const ol=off.listener,rad=S.listener.angle*Math.PI/180;if(ol.positionX){ol.positionX.setValueAtTime(S.listener.x,0);ol.positionY.setValueAtTime(0,0);ol.positionZ.setValueAtTime(S.listener.y,0);ol.forwardX.setValueAtTime(Math.sin(rad),0);ol.forwardY.setValueAtTime(0,0);ol.forwardZ.setValueAtTime(-Math.cos(rad),0);ol.upX.setValueAtTime(0,0);ol.upY.setValueAtTime(1,0);ol.upZ.setValueAtTime(0,0);}
 for(const s of srcs){const p=off.createPanner();p.panningModel='HRTF';p.distanceModel='inverse';p.refDistance=1;p.maxDistance=50;p.rolloffFactor=1;if(p.positionX){p.positionX.setValueAtTime(s.x,0);p.positionY.setValueAtTime(0,0);p.positionZ.setValueAtTime(s.y,0);}const g=off.createGain();g.gain.value=s.volume;const n=off.createBufferSource();n.buffer=S.buffers[s.id];n.loop=true;n.connect(g);g.connect(p);p.connect(off.destination);n.start(0);n.stop(dur);}
-$('exportProgress').textContent='Renderowanie…';const rendered=await off.startRendering();$('exportProgress').textContent='Kodowanie WAV…';const wav=bufToWav(rendered);dlBlob(wav,'SAL_'+Date.now()+'.wav');$('exportProgress').textContent='✓ WAV gotowy';showToast('WAV wyeksportowany');}catch(e){$('exportProgress').textContent='⚠ '+e.message;}finally{btn.disabled=false;btn.textContent='Eksport WAV';setTimeout(()=>$('exportProgress').textContent='',4000);}});
+exportProgress.textContent='Renderowanie…';const rendered=await off.startRendering();exportProgress.textContent='Kodowanie WAV…';const wav=bufToWav(rendered);dlBlob(wav,'SAL_binaural_'+Date.now()+'.wav');exportProgress.textContent='✓ WAV binauralny gotowy';showToast('WAV binauralny wyeksportowany');}catch(e){exportProgress.textContent='⚠ '+e.message;}finally{btn.disabled=false;btn.textContent='Eksport WAV';setTimeout(()=>exportProgress.textContent='',4000);}});
+
+// EXPORT AmbiX (B-format FOA)
+// Encodes all buffer sources into 4-channel AmbiX (ACN order, SN3D normalization)
+// Channels: 0=W (omni), 1=Y (left-right), 2=Z (up-down), 3=X (front-back)
+$('exportAmbix').addEventListener('click',async()=>{
+  const srcs=S.sources.filter(s=>S.buffers[s.id]);
+  if(!srcs.length){showToast('Brak źródeł z buforem (stream nie obsługiwany)');return;}
+  const dur=parseFloat($('exportDuration').value)||30;
+  const sr=parseInt($('exportSR').value)||44100;
+  const totalSamples=Math.round(sr*dur);
+  const btn=$('exportAmbix');
+  btn.disabled=true;btn.textContent='Enkodowanie…';
+  exportProgress.textContent='AmbiX FOA encoding…';
+
+  try{
+    // Create 4 output channels
+    const W=new Float32Array(totalSamples);
+    const Y=new Float32Array(totalSamples);
+    const Z=new Float32Array(totalSamples); // stays 0 (all sources on XZ plane, elevation=0)
+    const X=new Float32Array(totalSamples);
+
+    const listenerRad=S.listener.angle*Math.PI/180;
+
+    for(const src of srcs){
+      const buf=S.buffers[src.id];
+      // Resample source if needed: get mono mix from buffer
+      let monoData;
+      if(buf.sampleRate===sr){
+        // Mix all channels to mono
+        monoData=new Float32Array(buf.length);
+        for(let ch=0;ch<buf.numberOfChannels;ch++){
+          const chData=buf.getChannelData(ch);
+          for(let i=0;i<buf.length;i++) monoData[i]+=chData[i];
+        }
+        const norm=1/buf.numberOfChannels;
+        for(let i=0;i<monoData.length;i++) monoData[i]*=norm;
+      } else {
+        // Use OfflineAudioContext to resample to target SR
+        const resampleLen=Math.round(buf.duration*sr);
+        const offCtx=new OfflineAudioContext(1,resampleLen,sr);
+        const bSrc=offCtx.createBufferSource();
+        bSrc.buffer=buf;
+        bSrc.connect(offCtx.destination);
+        bSrc.start();
+        const resampled=await offCtx.startRendering();
+        monoData=resampled.getChannelData(0);
+      }
+
+      // Calculate azimuth of source relative to listener
+      // In app coords: listener at (lx,ly) facing angle, source at (sx,sy)
+      // Web Audio mapping: posX=x, posZ=y. forward=(sin(rad), 0, -cos(rad))
+      const dx=src.x-S.listener.x;  // world X
+      const dz=src.y-S.listener.y;  // world Z (mapped from app Y)
+      // World azimuth from listener's north (negative Z direction)
+      // atan2(posX, -posZ) gives angle from forward in Web Audio convention
+      const worldAzimuth=Math.atan2(dx,-dz);
+      // Subtract listener's facing direction to get relative azimuth
+      const azimuth=worldAzimuth-listenerRad;
+
+      // Distance attenuation (inverse model matching PannerNode)
+      const dist=Math.max(1,Math.hypot(dx,dz)); // clamp to refDistance=1
+      const attenuation=1/dist; // inverse model: refDistance/distance
+
+      // FOA encoding coefficients (AmbiX SN3D)
+      const vol=src.volume*attenuation;
+      const coeffW=vol*1.0;          // W = omnidirectional
+      const coeffY=vol*Math.sin(azimuth);  // Y = left-right
+      const coeffZ=0;                       // Z = up-down (0, no elevation)
+      const coeffX=vol*Math.cos(azimuth);  // X = front-back
+
+      // Loop source buffer into output duration
+      const srcLen=monoData.length;
+      for(let i=0;i<totalSamples;i++){
+        const sample=monoData[i%srcLen];
+        W[i]+=sample*coeffW;
+        Y[i]+=sample*coeffY;
+        // Z stays 0
+        X[i]+=sample*coeffX;
+      }
+
+      exportProgress.textContent='Enkodowanie: '+(srcs.indexOf(src)+1)+'/'+srcs.length+'…';
+      // Yield to UI
+      await new Promise(r=>setTimeout(r,0));
+    }
+
+    exportProgress.textContent='Kodowanie WAV 4ch…';
+    await new Promise(r=>setTimeout(r,0));
+
+    // Build 4-channel WAV
+    const numChannels=4;
+    const bitsPerSample=16;
+    const bytesPerSample=bitsPerSample/8;
+    const blockAlign=numChannels*bytesPerSample;
+    const byteRate=sr*blockAlign;
+    const dataSize=totalSamples*blockAlign;
+    const headerSize=44;
+
+    // Use extended WAV header with channel mask for AmbiX identification
+    // Standard PCM WAV with 4 channels
+    const ab=new ArrayBuffer(headerSize+dataSize);
+    const v=new DataView(ab);
+    const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));};
+
+    ws(0,'RIFF');
+    v.setUint32(4,36+dataSize,true);
+    ws(8,'WAVE');
+    ws(12,'fmt ');
+    v.setUint32(16,16,true);            // chunk size
+    v.setUint16(20,1,true);             // PCM format
+    v.setUint16(22,numChannels,true);   // 4 channels
+    v.setUint32(24,sr,true);            // sample rate
+    v.setUint32(28,byteRate,true);      // byte rate
+    v.setUint16(32,blockAlign,true);    // block align
+    v.setUint16(34,bitsPerSample,true); // bits per sample
+    ws(36,'data');
+    v.setUint32(40,dataSize,true);
+
+    // Interleave channels: W, Y, Z, X (AmbiX ACN order)
+    const channels=[W,Y,Z,X];
+    let offset=headerSize;
+    for(let i=0;i<totalSamples;i++){
+      for(let ch=0;ch<numChannels;ch++){
+        let s=Math.max(-1,Math.min(1,channels[ch][i]));
+        v.setInt16(offset,s<0?s*0x8000:s*0x7FFF,true);
+        offset+=2;
+      }
+    }
+
+    const blob=new Blob([ab],{type:'audio/wav'});
+    dlBlob(blob,'SAL_ambix_'+Date.now()+'.wav');
+    exportProgress.textContent='✓ AmbiX B-format (4ch) gotowy';
+    showToast('AmbiX B-format wyeksportowany');
+  }catch(e){
+    exportProgress.textContent='⚠ '+e.message;
+    console.error('AmbiX export error:',e);
+  }finally{
+    btn.disabled=false;btn.textContent='Eksport AmbiX (B-format)';
+    setTimeout(()=>exportProgress.textContent='',5000);
+  }
+});
+
 function bufToWav(buf){const nc=buf.numberOfChannels,sr=buf.sampleRate,len=buf.length,ba=nc*2,br=sr*ba,ds=len*ba,ab=new ArrayBuffer(44+ds),v=new DataView(ab);const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));};ws(0,'RIFF');v.setUint32(4,36+ds,true);ws(8,'WAVE');ws(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,nc,true);v.setUint32(24,sr,true);v.setUint32(28,br,true);v.setUint16(32,ba,true);v.setUint16(34,16,true);ws(36,'data');v.setUint32(40,ds,true);const chs=[];for(let c=0;c<nc;c++)chs.push(buf.getChannelData(c));let o=44;for(let i=0;i<len;i++)for(let c=0;c<nc;c++){let s=Math.max(-1,Math.min(1,chs[c][i]));v.setInt16(o,s<0?s*0x8000:s*0x7FFF,true);o+=2;}return new Blob([ab],{type:'audio/wav'});}
 
 // EXPORT WebM
 let mRec=null;
 $('exportWebm').addEventListener('click',()=>{const btn=$('exportWebm');if(mRec&&mRec.state==='recording'){mRec.stop();btn.classList.remove('recording');btn.textContent='Eksport WebM';return;}if(!S.sources.some(s=>s.playing)){showToast('Uruchom źródła');return;}const dur=parseFloat($('exportDuration').value)||30;
-try{const dest=audioCtx.createMediaStreamDestination();S.sources.forEach(s=>{if(s.playing)s.panner.connect(dest);});const chunks=[];mRec=new MediaRecorder(dest.stream,{mimeType:MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':'audio/webm'});mRec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};mRec.onstop=()=>{dlBlob(new Blob(chunks,{type:'audio/webm'}),'SAL_'+Date.now()+'.webm');$('exportProgress').textContent='✓ WebM gotowy';showToast('WebM wyeksportowany');S.sources.forEach(s=>{try{s.panner.disconnect(dest);}catch(e){}});setTimeout(()=>$('exportProgress').textContent='',4000);};mRec.start();btn.classList.add('recording');btn.textContent='● REC…';$('exportProgress').textContent='Nagrywanie '+dur+'s…';setTimeout(()=>{if(mRec&&mRec.state==='recording'){mRec.stop();btn.classList.remove('recording');btn.textContent='Eksport WebM';}},dur*1000);}catch(e){$('exportProgress').textContent='⚠ '+e.message;}});
+try{const dest=audioCtx.createMediaStreamDestination();S.sources.forEach(s=>{if(s.playing)s.panner.connect(dest);});const chunks=[];mRec=new MediaRecorder(dest.stream,{mimeType:MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':'audio/webm'});mRec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};mRec.onstop=()=>{dlBlob(new Blob(chunks,{type:'audio/webm'}),'SAL_'+Date.now()+'.webm');exportProgress.textContent='✓ WebM gotowy';showToast('WebM wyeksportowany');S.sources.forEach(s=>{try{s.panner.disconnect(dest);}catch(e){}});setTimeout(()=>exportProgress.textContent='',4000);};mRec.start();btn.classList.add('recording');btn.textContent='● REC…';exportProgress.textContent='Nagrywanie '+dur+'s…';setTimeout(()=>{if(mRec&&mRec.state==='recording'){mRec.stop();btn.classList.remove('recording');btn.textContent='Eksport WebM';}},dur*1000);}catch(e){exportProgress.textContent='⚠ '+e.message;}});
 function dlBlob(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();URL.revokeObjectURL(a.href);}
+
+// AMBIENT
+let ambientOn=false,ambientN=[];
+$('ambientToggle').addEventListener('click',()=>{if(ambientOn){ambientN.forEach(n=>{try{n.stop?n.stop():n.gain&&(n.gain.value=0);}catch(e){}});ambientN=[];ambientOn=false;$('ambientToggle').textContent='◎ Ambient';$('ambientToggle').classList.remove('active');}else{audioCtx.resume();const mg=audioCtx.createGain();mg.gain.value=0.12;const pn=audioCtx.createStereoPanner();mg.connect(pn);pn.connect(audioCtx.destination);[55,110,165,220].forEach(f=>{const o=audioCtx.createOscillator();o.type='sine';o.frequency.value=f;const g=audioCtx.createGain();g.gain.value=f===55?0.5:f===110?0.3:f===165?0.15:0.1;o.connect(g);g.connect(mg);o.start();ambientN.push(o);});const lfo=audioCtx.createOscillator();lfo.type='sine';lfo.frequency.value=0.083;const lg=audioCtx.createGain();lg.gain.value=0.6;lfo.connect(lg);lg.connect(pn.pan);lfo.start();ambientN.push(lfo,mg);ambientOn=true;$('ambientToggle').textContent='◉ Ambient';$('ambientToggle').classList.add('active');}});
 
 // HELP
 $('helpBtn').addEventListener('click',()=>$('helpOverlay').classList.add('open'));
@@ -486,36 +539,36 @@ function gcp(e){const r=mainCanvas.getBoundingClientRect();return{x:e.clientX-r.
 function s2w(sx,sy,r){const sz=Math.min(r.width,r.height),sc=sz/(S.worldSize*2),cx=r.width/2,cy=r.height/2;if(S.mode==='explore'){const rad=S.listener.angle*Math.PI/180,dx=(sx-cx)/sc,dy=(sy-cy)/sc;return{x:S.listener.x+dx*Math.cos(rad)-dy*Math.sin(rad),y:S.listener.y+dx*Math.sin(rad)+dy*Math.cos(rad)};}return{x:(sx-cx)/sc,y:(sy-cy)/sc};}
 function w2s(wx,wy){const r=mainCanvas.getBoundingClientRect(),sz=Math.min(r.width,r.height),sc=sz/(S.worldSize*2),cx=r.width/2,cy=r.height/2;if(S.mode==='explore'){const rad=S.listener.angle*Math.PI/180,dx=wx-S.listener.x,dy=wy-S.listener.y;return{x:cx+(dx*Math.cos(rad)+dy*Math.sin(rad))*sc,y:cy+(-dx*Math.sin(rad)+dy*Math.cos(rad))*sc};}return{x:cx+wx*sc,y:cy+wy*sc};}
 function findAt(wx,wy,th=1.5){for(const s of S.sources)if(Math.hypot(s.x-wx,s.y-wy)<th)return s;return null;}
+
 let dragSrc=null,pDown=false,pMoved=false,pStart={x:0,y:0};
-mainCanvas.addEventListener('mousedown',e=>pD(e.clientX,e.clientY));mainCanvas.addEventListener('mousemove',e=>pM(e.clientX,e.clientY));mainCanvas.addEventListener('mouseup',e=>pU(e.clientX,e.clientY));mainCanvas.addEventListener('mouseleave',()=>{pDown=false;dragSrc=null;});
-mainCanvas.addEventListener('touchstart',e=>{e.preventDefault();pD(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});mainCanvas.addEventListener('touchmove',e=>{e.preventDefault();pM(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});mainCanvas.addEventListener('touchend',()=>{pU(pStart.x,pStart.y);},{passive:false});
-function pD(cx,cy){pDown=true;pMoved=false;pStart={x:cx,y:cy};const{x,y,rect}=gcp({clientX:cx,clientY:cy});const w=s2w(x,y,rect);if(S.mode==='edit'){const s=findAt(w.x,w.y);if(s){dragSrc=s;selectSource(s);}}else S.dragStartAngle=S.listener.angle;}
-function pM(cx,cy){if(!pDown)return;const dx=cx-pStart.x,dy=cy-pStart.y;if(Math.abs(dx)>5||Math.abs(dy)>5)pMoved=true;if(S.mode==='edit'&&dragSrc){const{x,y,rect}=gcp({clientX:cx,clientY:cy});const w=s2w(x,y,rect);const m=S.worldSize-1;dragSrc.x=Math.max(-m,Math.min(m,w.x));dragSrc.y=Math.max(-m,Math.min(m,w.y));updP(dragSrc);renderSources();}else if(S.mode==='explore'&&pMoved){S.listener.angle=S.dragStartAngle+dx*0.5;S.listener.angle=((S.listener.angle%360)+360)%360;updateListener();}}
-function pU(cx,cy){if(S.mode==='explore'&&!pMoved&&pDown){const{x,y,rect}=gcp({clientX:cx,clientY:cy});S.target=s2w(x,y,rect);}pDown=false;dragSrc=null;}
+mainCanvas.addEventListener('mousedown',e=>ptrDown(e.clientX,e.clientY));mainCanvas.addEventListener('mousemove',e=>ptrMove(e.clientX,e.clientY));mainCanvas.addEventListener('mouseup',e=>ptrUp(e.clientX,e.clientY));mainCanvas.addEventListener('mouseleave',()=>{pDown=false;dragSrc=null;});
+mainCanvas.addEventListener('touchstart',e=>{e.preventDefault();ptrDown(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});mainCanvas.addEventListener('touchmove',e=>{e.preventDefault();ptrMove(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});mainCanvas.addEventListener('touchend',e=>{ptrUp(pStart.x,pStart.y);},{passive:false});
+
+function ptrDown(cx,cy){pDown=true;pMoved=false;pStart={x:cx,y:cy};const{x,y,rect}=gcp({clientX:cx,clientY:cy});const w=s2w(x,y,rect);if(S.mode==='edit'){const s=findAt(w.x,w.y);if(s){dragSrc=s;selectSource(s);}}else S.dragStartAngle=S.listener.angle;}
+function ptrMove(cx,cy){if(!pDown)return;const dx=cx-pStart.x,dy=cy-pStart.y;if(Math.abs(dx)>5||Math.abs(dy)>5)pMoved=true;if(S.mode==='edit'&&dragSrc){const{x,y,rect}=gcp({clientX:cx,clientY:cy});const w=s2w(x,y,rect);const m=S.worldSize-1;dragSrc.x=Math.max(-m,Math.min(m,w.x));dragSrc.y=Math.max(-m,Math.min(m,w.y));updPanner(dragSrc);renderSources();}else if(S.mode==='explore'&&pMoved){S.listener.angle=S.dragStartAngle+dx*0.5;S.listener.angle=((S.listener.angle%360)+360)%360;updateListener();}}
+function ptrUp(cx,cy){if(S.mode==='explore'&&!pMoved&&pDown){const{x,y,rect}=gcp({clientX:cx,clientY:cy});S.target=s2w(x,y,rect);}pDown=false;dragSrc=null;}
 
 // GAME LOOP
 let lastT=performance.now();
 function loop(ts){const dt=Math.min((ts-lastT)/1000,0.1);lastT=ts;
 if(S.mode==='explore'){let rot=0;if(S.keys.KeyQ||S.keys.ArrowLeft)rot-=S.rotSpeed*dt;if(S.keys.KeyE||S.keys.ArrowRight)rot+=S.rotSpeed*dt;S.listener.angle+=rot;const rad=S.listener.angle*Math.PI/180;let mx=0,my=0;if(S.keys.KeyW||S.keys.ArrowUp){mx+=Math.sin(rad);my-=Math.cos(rad);}if(S.keys.KeyS||S.keys.ArrowDown){mx-=Math.sin(rad);my+=Math.cos(rad);}if(S.keys.KeyA){mx-=Math.cos(rad);my-=Math.sin(rad);}if(S.keys.KeyD){mx+=Math.cos(rad);my+=Math.sin(rad);}if(mx||my){S.target=null;const l=Math.hypot(mx,my);S.listener.x+=(mx/l)*S.moveSpeed*dt;S.listener.y+=(my/l)*S.moveSpeed*dt;}if(S.target){const dx=S.target.x-S.listener.x,dy=S.target.y-S.listener.y,d=Math.hypot(dx,dy);if(d<0.3)S.target=null;else{const st=Math.min(S.moveSpeed*dt,d);S.listener.x+=(dx/d)*st;S.listener.y+=(dy/d)*st;}}const m=S.worldSize-1;S.listener.x=Math.max(-m,Math.min(m,S.listener.x));S.listener.y=Math.max(-m,Math.min(m,S.listener.y));S.listener.angle=((S.listener.angle%360)+360)%360;updateListener();}
 if(S.target&&S.mode==='explore'){const p=w2s(S.target.x,S.target.y);targetIndicator.style.left=(p.x-10)+'px';targetIndicator.style.top=(p.y-10)+'px';targetIndicator.classList.add('visible');}else targetIndicator.classList.remove('visible');
-draw();drawMini(minimapCtx,minimapCanvas);drawMini(legendMiniCtx,legendMiniCanvas);requestAnimationFrame(loop);}
+draw();drawMinimap();requestAnimationFrame(loop);}
 
 // DRAW
 function draw(){const w=mainCanvas.width/(devicePixelRatio||1),h=mainCanvas.height/(devicePixelRatio||1);ctx.fillStyle='#060608';ctx.fillRect(0,0,w,h);const sz=Math.min(w,h),sc=sz/(S.worldSize*2),cx=w/2,cy=h/2;ctx.save();ctx.translate(cx,cy);if(S.mode==='explore'){const rad=S.listener.angle*Math.PI/180;ctx.rotate(-rad);ctx.translate(-S.listener.x*sc,-S.listener.y*sc);}
 ctx.strokeStyle='rgba(0,229,204,0.04)';ctx.lineWidth=1;for(let i=-S.worldSize;i<=S.worldSize;i+=5){ctx.beginPath();ctx.moveTo(i*sc,-S.worldSize*sc);ctx.lineTo(i*sc,S.worldSize*sc);ctx.stroke();ctx.beginPath();ctx.moveTo(-S.worldSize*sc,i*sc);ctx.lineTo(S.worldSize*sc,i*sc);ctx.stroke();}
 ctx.strokeStyle='rgba(0,229,204,0.12)';ctx.strokeRect(-S.worldSize*sc,-S.worldSize*sc,S.worldSize*2*sc,S.worldSize*2*sc);
 if(S.target&&S.mode==='explore'){ctx.strokeStyle='rgba(0,229,204,0.2)';ctx.lineWidth=1;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(S.listener.x*sc,S.listener.y*sc);ctx.lineTo(S.target.x*sc,S.target.y*sc);ctx.stroke();ctx.setLineDash([]);ctx.strokeStyle='rgba(0,229,204,0.4)';ctx.beginPath();ctx.arc(S.target.x*sc,S.target.y*sc,8,0,Math.PI*2);ctx.stroke();}
-S.sources.forEach((s,i)=>{const sx=s.x*sc,sy=s.y*sc;if(s.playing){const t=performance.now()/1000,r=40+Math.sin(t*2+i)*15;const g=ctx.createRadialGradient(sx,sy,0,sx,sy,r);g.addColorStop(0,'rgba(0,229,204,0.2)');g.addColorStop(1,'rgba(0,229,204,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(sx,sy,r,0,Math.PI*2);ctx.fill();}const sel=S.selectedSource===s,R=sel?14:12;ctx.strokeStyle=s.playing?'rgba(0,229,204,0.6)':'rgba(58,58,66,0.8)';ctx.lineWidth=sel?2:1;ctx.beginPath();ctx.arc(sx,sy,R,0,Math.PI*2);ctx.stroke();ctx.fillStyle=sel?'rgba(0,229,204,0.15)':(s.playing?'rgba(0,229,204,0.08)':'rgba(58,58,66,0.3)');ctx.beginPath();ctx.arc(sx,sy,R,0,Math.PI*2);ctx.fill();ctx.fillStyle=sel||s.playing?'#00e5cc':'#9a9aa6';ctx.font="300 14px 'Cormorant Garamond',serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1).padStart(2,'0'),sx,sy);if(S.mode==='edit'){ctx.fillStyle='rgba(154,154,166,0.8)';ctx.font="10px 'Space Mono',monospace";ctx.fillText(s.name.length>18?s.name.slice(0,15)+'…':s.name,sx,sy+R+14);}});
+S.sources.forEach((s,i)=>{const sx=s.x*sc,sy=s.y*sc;if(s.playing){const t=performance.now()/1000,r=40+Math.sin(t*2+i)*15;const g=ctx.createRadialGradient(sx,sy,0,sx,sy,r);g.addColorStop(0,'rgba(0,229,204,0.2)');g.addColorStop(1,'rgba(0,229,204,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(sx,sy,r,0,Math.PI*2);ctx.fill();}const sel=S.selectedSource===s,R=sel?14:12;ctx.strokeStyle=s.playing?'rgba(0,229,204,0.6)':'rgba(42,42,48,0.8)';ctx.lineWidth=sel?2:1;ctx.beginPath();ctx.arc(sx,sy,R,0,Math.PI*2);ctx.stroke();ctx.fillStyle=sel?'rgba(0,229,204,0.15)':(s.playing?'rgba(0,229,204,0.08)':'rgba(42,42,48,0.3)');ctx.beginPath();ctx.arc(sx,sy,R,0,Math.PI*2);ctx.fill();ctx.fillStyle=sel||s.playing?'#00e5cc':'#8a8a96';ctx.font="300 14px 'Cormorant Garamond',serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1).padStart(2,'0'),sx,sy);if(S.mode==='edit'){ctx.fillStyle='rgba(138,138,150,0.7)';ctx.font="10px 'Space Mono',monospace";ctx.fillText(s.name.length>18?s.name.slice(0,15)+'…':s.name,sx,sy+R+14);}});
 const lx=S.listener.x*sc,ly=S.listener.y*sc;if(S.mode==='edit'){const lr=S.listener.angle*Math.PI/180;ctx.fillStyle='rgba(212,165,116,0.06)';ctx.beginPath();ctx.moveTo(lx,ly);ctx.arc(lx,ly,80,lr-Math.PI/2-Math.PI/5,lr-Math.PI/2+Math.PI/5);ctx.closePath();ctx.fill();ctx.strokeStyle='rgba(212,165,116,0.4)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(lx+Math.sin(lr)*30,ly-Math.cos(lr)*30);ctx.stroke();ctx.strokeStyle='#d4a574';ctx.lineWidth=2;ctx.beginPath();ctx.arc(lx,ly,10,0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(212,165,116,0.2)';ctx.beginPath();ctx.arc(lx,ly,10,0,Math.PI*2);ctx.fill();ctx.fillStyle='#d4a574';ctx.beginPath();ctx.arc(lx,ly,3,0,Math.PI*2);ctx.fill();}ctx.restore();
-if(S.mode==='explore'){ctx.strokeStyle='rgba(212,165,116,0.25)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx-12,cy);ctx.lineTo(cx-4,cy);ctx.moveTo(cx+4,cy);ctx.lineTo(cx+12,cy);ctx.stroke();ctx.beginPath();ctx.moveTo(cx,cy-12);ctx.lineTo(cx,cy-4);ctx.moveTo(cx,cy+4);ctx.lineTo(cx,cy+12);ctx.stroke();}}
+if(S.mode==='explore'){ctx.strokeStyle='rgba(212,165,116,0.2)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx-12,cy);ctx.lineTo(cx-4,cy);ctx.moveTo(cx+4,cy);ctx.lineTo(cx+12,cy);ctx.stroke();ctx.beginPath();ctx.moveTo(cx,cy-12);ctx.lineTo(cx,cy-4);ctx.moveTo(cx,cy+4);ctx.lineTo(cx,cy+12);ctx.stroke();ctx.fillStyle='rgba(0,229,204,0.02)';ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,sz*0.4,-Math.PI/2-Math.PI/5,-Math.PI/2+Math.PI/5);ctx.closePath();ctx.fill();}}
 
-function drawMini(mctx,mc){const cw=mc.width/(devicePixelRatio||1),ch=mc.height/(devicePixelRatio||1),s=Math.min(cw,ch),sc=s/(S.worldSize*2);mctx.fillStyle='#060608';mctx.fillRect(0,0,cw,ch);mctx.save();mctx.translate(cw/2,ch/2);
-mctx.strokeStyle='rgba(0,229,204,0.06)';mctx.lineWidth=0.5;for(let i=-S.worldSize;i<=S.worldSize;i+=10){mctx.beginPath();mctx.moveTo(i*sc,-S.worldSize*sc);mctx.lineTo(i*sc,S.worldSize*sc);mctx.stroke();mctx.beginPath();mctx.moveTo(-S.worldSize*sc,i*sc);mctx.lineTo(S.worldSize*sc,i*sc);mctx.stroke();}
-mctx.strokeStyle='rgba(0,229,204,0.15)';mctx.strokeRect(-S.worldSize*sc,-S.worldSize*sc,S.worldSize*2*sc,S.worldSize*2*sc);
-S.sources.forEach(src=>{mctx.fillStyle=src.playing?'#00e5cc':'#3a3a42';mctx.beginPath();mctx.arc(src.x*sc,src.y*sc,3,0,Math.PI*2);mctx.fill();});
-const lx=S.listener.x*sc,ly=S.listener.y*sc,lr=S.listener.angle*Math.PI/180;mctx.fillStyle='rgba(212,165,116,0.15)';mctx.beginPath();mctx.moveTo(lx,ly);mctx.arc(lx,ly,16,lr-Math.PI/2-Math.PI/5,lr-Math.PI/2+Math.PI/5);mctx.closePath();mctx.fill();mctx.fillStyle='#d4a574';mctx.beginPath();mctx.arc(lx,ly,3,0,Math.PI*2);mctx.fill();mctx.strokeStyle='#d4a574';mctx.lineWidth=1;mctx.beginPath();mctx.moveTo(lx,ly);mctx.lineTo(lx+Math.sin(lr)*10,ly-Math.cos(lr)*10);mctx.stroke();mctx.restore();}
+function drawMinimap(){const s=120,sc=s/(S.worldSize*2);minimapCtx.fillStyle='#060608';minimapCtx.fillRect(0,0,s,s);minimapCtx.save();minimapCtx.translate(s/2,s/2);minimapCtx.strokeStyle='rgba(0,229,204,0.06)';minimapCtx.lineWidth=0.5;for(let i=-S.worldSize;i<=S.worldSize;i+=10){minimapCtx.beginPath();minimapCtx.moveTo(i*sc,-S.worldSize*sc);minimapCtx.lineTo(i*sc,S.worldSize*sc);minimapCtx.stroke();minimapCtx.beginPath();minimapCtx.moveTo(-S.worldSize*sc,i*sc);minimapCtx.lineTo(S.worldSize*sc,i*sc);minimapCtx.stroke();}minimapCtx.strokeStyle='rgba(0,229,204,0.15)';minimapCtx.strokeRect(-S.worldSize*sc,-S.worldSize*sc,S.worldSize*2*sc,S.worldSize*2*sc);
+S.sources.forEach(src=>{minimapCtx.fillStyle=src.playing?'#00e5cc':'#2a2a30';minimapCtx.beginPath();minimapCtx.arc(src.x*sc,src.y*sc,3,0,Math.PI*2);minimapCtx.fill();});
+const lx=S.listener.x*sc,ly=S.listener.y*sc,lr=S.listener.angle*Math.PI/180;minimapCtx.fillStyle='rgba(212,165,116,0.15)';minimapCtx.beginPath();minimapCtx.moveTo(lx,ly);minimapCtx.arc(lx,ly,16,lr-Math.PI/2-Math.PI/5,lr-Math.PI/2+Math.PI/5);minimapCtx.closePath();minimapCtx.fill();minimapCtx.fillStyle='#d4a574';minimapCtx.beginPath();minimapCtx.arc(lx,ly,3,0,Math.PI*2);minimapCtx.fill();minimapCtx.strokeStyle='#d4a574';minimapCtx.lineWidth=1;minimapCtx.beginPath();minimapCtx.moveTo(lx,ly);minimapCtx.lineTo(lx+Math.sin(lr)*10,ly-Math.cos(lr)*10);minimapCtx.stroke();minimapCtx.restore();}
 
-updateListener();requestAnimationFrame(loop);
+updateListener();loadLibrary();requestAnimationFrame(loop);
 </script>
 </body>
 </html>
