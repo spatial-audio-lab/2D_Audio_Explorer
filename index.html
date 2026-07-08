@@ -173,6 +173,9 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .routing-btn:hover { color: var(--white); }
 .routing-btn.active { color: var(--cyan); border-color: var(--cyan); background: rgba(0,240,216,0.06); }
 .routing-btn.active-direct { color: var(--amber); border-color: var(--amber); background: rgba(232,186,130,0.06); }
+.btn-toggle { flex: 1; font-family: 'Space Mono', monospace; font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; padding: 8px var(--sm); border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.25s; text-align: center; }
+.btn-toggle:hover { color: var(--white); }
+.btn-toggle.active { color: var(--cyan); border-color: var(--cyan); background: rgba(0,240,216,0.07); }
 .param-section.disabled { opacity: 0.25; pointer-events: none; }
 .motion-mode-row { display: flex; gap: 0; margin-bottom: 6px; }
 .motion-mode-btn { flex: 1; font-family: 'Space Mono', monospace; font-size: var(--fs-2xs); letter-spacing: 0.05em; text-transform: uppercase; padding: 8px 2px; border: 1px solid var(--dim); border-right: none; background: none; color: var(--mid); cursor: pointer; transition: all 0.25s; text-align: center; white-space: nowrap; }
@@ -273,11 +276,11 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
       <div class="sel-name empty" id="selName">— brak wyboru —</div>
       <div class="routing-toggle" id="routingToggle"><button class="routing-btn active" data-route="spatial">◎ Spatial</button><button class="routing-btn" data-route="direct">♫ Direct Stereo</button></div>
       <div class="param-row"><label>Vol</label><input type="range" id="volSlider" min="0" max="100" value="70"><span class="param-val" id="volVal">70%</span></div>
-      <div class="param-row"><label>Wys</label><input type="range" id="heightSlider" min="0" max="100" value="0"><span class="param-val" id="heightVal">0.0m</span></div>
+      <div class="param-row"><label>Wys</label><input type="range" id="heightSlider" min="-100" max="100" value="0"><span class="param-val" id="heightVal">0.0m</span></div>
       <div id="spatialSection" class="param-section">
         <div class="param-section-title">Szerokość stereo<span class="stereo-indicator" id="stereoInd">Punkt</span></div>
         <div class="param-row"><label>Szer.</label><input type="range" id="widthSlider" min="0" max="200" value="0" step="1"><span class="param-val" id="widthVal">0.0m</span></div>
-        <div class="param-row"><label>Kąt</label><input type="range" id="angleSlider" min="0" max="359" value="0" step="1"><span class="param-val" id="angleVal">0°</span></div>
+        <div class="param-row"><label>Kąt</label><input type="range" id="angleSlider" min="-180" max="180" value="0" step="1"><span class="param-val" id="angleVal">0°</span></div>
         <div style="display:flex;gap:var(--md);margin-top:6px">
           <div style="flex:1"><div style="font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)">Dystans</div><div style="font-size:11px;color:var(--cyan);font-weight:700" id="selDist">—</div></div>
           <div style="flex:1"><div style="font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)">Absorpcja</div><div style="font-size:11px;color:var(--amber);font-weight:700" id="selAbsorb">—</div></div>
@@ -296,7 +299,7 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
     <div class="acc-panel"><div class="acc-head" data-acc="room" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">04</span><span class="acc-title">Przestrzeń</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
       <div class="param-row"><label>Master</label><input type="range" id="masterVolSlider" min="0" max="100" value="100"><span class="param-val" id="masterVolVal">100%</span></div>
       <div class="param-section"><div class="param-section-title">Reverb</div>
-        <div class="param-row"><label>Włącz</label><input type="range" id="reverbEnable" min="0" max="1" value="1" step="1"><span class="param-val" id="reverbEnableVal">Tak</span></div>
+        <div class="param-row"><label>Stan</label><button class="btn-toggle active" id="reverbEnableBtn" aria-pressed="true">Włączony</button></div>
         <div class="param-row"><label>Wet</label><input type="range" id="reverbWet" min="0" max="100" value="35"><span class="param-val" id="reverbWetVal">35%</span></div>
         <div class="param-row"><label>Rozmiar</label><input type="range" id="reverbSize" min="0" max="100" value="60"><span class="param-val" id="reverbSizeVal">0.60</span></div>
         <div class="param-row"><label>Tłum.</label><input type="range" id="reverbDamp" min="0" max="100" value="50"><span class="param-val" id="reverbDampVal">0.50</span></div>
@@ -745,7 +748,8 @@ function renderSources(){
     const wTag=s.width>0.05&&s.routing==='spatial'?' · ↔'+s.width.toFixed(1)+'m':'';
     const rTag=s.routing==='direct'?' · direct':'';
     const mTag=s.motion.mode!=='static'?' · '+s.motion.mode:'';
-    const hTag=(s.height||0)>0.2?' · ↑'+s.height.toFixed(1)+'m':'';
+    const hAbs=Math.abs(s.height||0);
+    const hTag=hAbs>0.2?' · '+(s.height>0?'↑':'↓')+hAbs.toFixed(1)+'m':'';
     return `<div class="source-item ${S.selectedSource===s?'selected':''} ${s.playing?'playing':''}" data-id="${s.id}" role="button" tabindex="0" aria-label="Zaznacz źródło ${s.name}"><div class="src-num">${String(i+1).padStart(2,'0')}</div><div class="src-info"><div class="src-name">${s.name}</div><div class="src-meta">${d}m · ${Math.round(s.volume*100)}%${hTag}${wTag}${rTag}${mTag}${s.isStream?' · stream':''}</div></div><button class="src-btn ${s.playing?'active':''}" data-a="t" aria-label="${s.playing?'Zatrzymaj':'Odtwórz'} ${s.name}">${s.playing?'‖':'▶'}</button><button class="src-btn del" data-a="d" aria-label="Usuń ${s.name}">✕</button></div>`;
   }).join('');
   sourcesList.querySelectorAll('.source-item').forEach(el=>{
@@ -787,7 +791,13 @@ $('clearPathBtn').addEventListener('click', e=>{ e.stopPropagation(); if(!S.sele
 
 // MASTER + REVERB CONTROLS
 $('masterVolSlider').addEventListener('input', ()=>{ const v=$('masterVolSlider').value/100; $('masterVolVal').textContent=$('masterVolSlider').value+'%'; reverbState.masterVol=v; masterGain.gain.setTargetAtTime(v,audioCtx.currentTime,0.02); });
-$('reverbEnable').addEventListener('input', ()=>{ const on=$('reverbEnable').value==='1'; $('reverbEnableVal').textContent=on?'Tak':'Nie'; reverbState.enabled=on; reverbOutput.gain.setTargetAtTime(on?reverbState.wet:0,audioCtx.currentTime,0.05); for(const s of S.sources) updateReverbSend(s); });
+function setReverbEnabled(on){
+  reverbState.enabled=on;
+  const btn=$('reverbEnableBtn'); btn.textContent=on?'Włączony':'Wyłączony'; btn.classList.toggle('active',on); btn.setAttribute('aria-pressed',on?'true':'false');
+  reverbOutput.gain.setTargetAtTime(on?reverbState.wet:0,audioCtx.currentTime,0.05);
+  for(const s of S.sources) updateReverbSend(s);
+}
+$('reverbEnableBtn').addEventListener('click', ()=>setReverbEnabled(!reverbState.enabled));
 $('reverbWet').addEventListener('input', ()=>{ const v=$('reverbWet').value/100; $('reverbWetVal').textContent=$('reverbWet').value+'%'; reverbState.wet=v; if(reverbState.enabled) reverbOutput.gain.setTargetAtTime(v,audioCtx.currentTime,0.05); });
 let reverbUpdateTimer=null;
 function scheduleReverbUpdate(){ if(reverbUpdateTimer) clearTimeout(reverbUpdateTimer); reverbUpdateTimer=setTimeout(()=>{ updateReverb(); showToast('Reverb zaktualizowany'); },300); }
@@ -914,11 +924,11 @@ function draw(){
     const dxW=halfW*Math.cos(srad)*sc, dyW=halfW*Math.sin(srad)*sc;
     const hasWidth=s.width>0.05&&!isDirect;
     const cMain=isDirect?'232,186,130':'0,240,216', cHex=isDirect?'#e8ba82':'#00f0d8';
-    const mo=s.motion, hOff=(s.height||0)>0.2?(s.height*sc*0.3):0;
+    const mo=s.motion, hOff=Math.abs(s.height||0)>0.2?(s.height*sc*0.3):0;
     const drawY=sy-hOff;
 
     // Elevation stem
-    if(hOff>0&&!isDirect){ ctx.globalAlpha=0.15;ctx.strokeStyle='#00f0d8';ctx.lineWidth=1;ctx.setLineDash([3,3]); ctx.beginPath();ctx.ellipse(sx,sy,10,5,0,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]); ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx,drawY);ctx.stroke();ctx.globalAlpha=1; }
+    if(hOff!==0&&!isDirect){ ctx.globalAlpha=0.15;ctx.strokeStyle='#00f0d8';ctx.lineWidth=1;ctx.setLineDash([3,3]); ctx.beginPath();ctx.ellipse(sx,sy,10,5,0,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]); ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx,drawY);ctx.stroke();ctx.globalAlpha=1; }
 
     // Motion viz
     if(mo.mode==='orbit'&&sel){ ctx.strokeStyle=`rgba(${cMain},0.12)`;ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.arc(mo.originX*sc,mo.originY*sc,mo.orbitRadius*sc,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]); ctx.fillStyle=`rgba(${cMain},0.3)`;ctx.beginPath();ctx.arc(mo.originX*sc,mo.originY*sc,3,0,Math.PI*2);ctx.fill(); }
@@ -945,7 +955,7 @@ function draw(){
 
     if(S.mode==='edit'){ ctx.fillStyle='rgba(176,176,200,0.85)';ctx.font="13px 'Space Mono',monospace";ctx.textAlign='center'; ctx.fillText(s.name.length>18?s.name.slice(0,15)+'…':s.name,sx,drawY+R+16);
       if(isDirect){ctx.fillStyle='rgba(232,186,130,0.5)';ctx.font="bold 10px 'Space Mono',monospace";ctx.fillText('DIRECT',sx,drawY+R+30);}
-      if((s.height||0)>0.2){ctx.fillStyle='rgba(232,186,130,0.7)';ctx.font="12px 'Space Mono',monospace";ctx.fillText('↑'+s.height.toFixed(1)+'m',sx,drawY-R-8);} }
+      if(Math.abs(s.height||0)>0.2){ctx.fillStyle='rgba(232,186,130,0.7)';ctx.font="12px 'Space Mono',monospace";ctx.fillText((s.height>0?'↑':'↓')+Math.abs(s.height).toFixed(1)+'m',sx,drawY-R-8);} }
   });
 
   const lx=S.listener.x*sc, ly=S.listener.y*sc, lr=S.listener.angle*Math.PI/180;
@@ -1135,7 +1145,7 @@ async function exportScene(){
         sc2.fillStyle='#787890';sc2.font="8px 'Courier New',monospace";
         let meta=`${dist.toFixed(1)}m · ${Math.round(src.volume*100)}%`;
         if(isDirect) meta+=' · DIRECT';
-        if((src.height||0)>0.2) meta+=' · ↑'+src.height.toFixed(1)+'m';
+        if(Math.abs(src.height||0)>0.2) meta+=' · '+(src.height>0?'↑':'↓')+Math.abs(src.height).toFixed(1)+'m';
         sc2.fillText(meta,sxM,syM+25);
       });
       const lxM=S.listener.x*sc,lyM=S.listener.y*sc,lrM=S.listener.angle*Math.PI/180;
