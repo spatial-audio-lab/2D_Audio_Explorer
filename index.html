@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scenografia Dźwiękowa 2D — Spatial Audio Lab</title>
+<title>Scena — Spatial Audio Lab</title>
 <meta name="description" content="Buduj sceny dźwięku przestrzennego w przeglądarce: rozstaw źródła na płaszczyźnie, chodź po scenie na słuchawkach, eksportuj binauralny WAV i AmbiX.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -177,7 +177,12 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .btn-sm { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; padding: 4px 10px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.2s; flex: 1; text-align: center; }
 .btn-sm:hover { border-color: var(--cyan); color: var(--cyan); }
 
-.sel-name { font-family: var(--font-ui); font-size: var(--fs-lg); font-weight: 300; margin-bottom: var(--sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--amber); }
+.sel-name-label { display: block; font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); margin-bottom: var(--xs); }
+.sel-name { display: block; width: 100%; font-family: var(--font-ui); font-size: var(--fs-lg); font-weight: 300; margin-bottom: var(--sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--amber); background: none; border: 1px solid transparent; border-bottom-color: var(--dim); padding: 4px 2px; transition: border-color 0.2s, background 0.2s; }
+.sel-name:hover:not(:disabled) { border-bottom-color: var(--amber); }
+.sel-name:focus { outline: none; border-color: var(--amber); background: rgba(255,171,0,0.06); }
+.sel-name:disabled { color: var(--mid); border-bottom-color: var(--border-soft); cursor: default; }
+.sel-name::placeholder { color: var(--mid); opacity: 0.7; }
 .sel-name.empty { color: var(--muted); font-style: italic; }
 .param-row { display: flex; align-items: center; gap: var(--sm); margin-bottom: 6px; }
 .param-row:last-child { margin-bottom: 0; }
@@ -242,6 +247,21 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .toast { position: fixed; bottom: calc(var(--transport-h) + var(--md)); left: 50%; transform: translateX(-50%) translateY(60px); border: 1px solid rgba(0,229,204,0.3); background: var(--surface); padding: var(--sm) var(--lg); font-size: var(--fs-sm); color: var(--white); z-index: 200; opacity: 0; transition: all 0.4s ease; pointer-events: none; }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
+/* --- Okno potwierdzenia dla dzialan nieodwracalnych (kasowanie zrodla, ryzykowny eksport) --- */
+.confirm-overlay { position: fixed; inset: 0; z-index: 400; display: none; align-items: center; justify-content: center; background: rgba(10,12,8,0.88); }
+.confirm-overlay.show { display: flex; }
+.confirm-box { width: min(460px, calc(100vw - 32px)); border: 1px solid var(--danger); background: var(--surface); box-shadow: 0 0 0 1px rgba(255,51,85,0.25), 0 24px 60px rgba(0,0,0,0.6); }
+.confirm-bar { height: 3px; background: var(--danger); }
+.confirm-body { padding: var(--lg); }
+.confirm-title { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.16em; text-transform: uppercase; color: var(--danger); margin-bottom: var(--sm); }
+.confirm-text { font-family: var(--font-ui); font-size: var(--fs-md); font-weight: 300; color: var(--white); line-height: 1.5; }
+.confirm-sub { font-family: var(--font-mono); font-size: var(--fs-2xs); color: var(--mid); margin-top: var(--sm); line-height: 1.6; word-break: break-word; }
+.confirm-actions { display: flex; gap: var(--sm); padding: 0 var(--lg) var(--lg); }
+.confirm-btn { flex: 1; padding: 12px 16px; border: 1px solid var(--dim); background: none; color: var(--white); font-family: var(--font-mono); font-size: var(--fs-sm); letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.18s; }
+.confirm-btn:hover, .confirm-btn:focus-visible { border-color: var(--white); outline: none; }
+.confirm-btn.danger { border-color: var(--danger); color: var(--danger); }
+.confirm-btn.danger:hover, .confirm-btn.danger:focus-visible { background: var(--danger); color: var(--black); }
+
 .help-overlay { position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center; background: rgba(10,12,8,0.92); }
 .help-overlay.open { display: flex; }
 .help-box { width: 500px; max-width: 90vw; max-height: 80vh; border: 1px solid var(--dim); background: var(--black); overflow-y: auto; padding: var(--xl); }
@@ -276,6 +296,7 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
   border: 1px solid var(--dim); padding: 8px 14px; text-decoration: none; display: inline-flex;
   align-items: center; min-height: 36px; transition: color 0.2s, border-color 0.2s; }
 .hub-back:hover { color: var(--cyan); border-color: var(--cyan); }
+.tool-sub { font-family: var(--font-mono); font-weight: 400; font-size: 0.68em; letter-spacing: 0.1em; text-transform: lowercase; color: var(--mid); }
 .tool-name { font-family: var(--font-ui); font-weight: 500; font-size: 0.85rem; color: var(--white);
   padding-left: 16px; margin-left: 16px; border-left: 1px solid var(--dim); }
 .ctx-status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono);
@@ -378,7 +399,7 @@ input[type="checkbox"] { accent-color: var(--cyan); }
 <body>
 <div class="app-layout edit-mode" id="app">
   <nav class="nav">
-    <div class="nav-brand"><a class="hub-back" href="/">&larr; Hub</a><span class="tool-name">Scenografia dźwiękowa 2D</span></div>
+    <div class="nav-brand"><a class="hub-back" href="/">&larr; Hub</a><span class="tool-name">Scena <span class="tool-sub">&middot; scenografia dźwiękowa</span></span></div>
     <div class="nav-actions"><button class="nav-link" id="helpBtn">Pomoc</button><button class="nav-link" id="libToggle">Biblioteka</button><span class="ctx-status" id="ctxStatus"><span class="ctx-dot"></span><span id="ctxStatusText">Audio Context: Idle</span></span></div>
   </nav>
 
@@ -405,7 +426,11 @@ input[type="checkbox"] { accent-color: var(--cyan); }
     <div class="acc-panel"><div class="acc-head" data-acc="sources" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">02</span><span class="acc-title">Źródła</span></div><span class="acc-count" id="accSrcCount">0</span><span class="acc-arrow">▾</span></div><div class="acc-body" id="accSources"><div class="src-actions-row"><button class="btn-sm" id="playAllBtn">▶ Wszystkie</button><button class="btn-sm" id="stopAllBtn">◼ Stop</button></div><div id="sourcesList"><div class="sources-empty">Brak źródeł dźwięku</div></div></div></div>
 
     <div class="acc-panel"><div class="acc-head" data-acc="selected" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">03</span><span class="acc-title">Wybrany</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
-      <div class="sel-name empty" id="selName">— brak wyboru —</div>
+      <!-- Nazwa jest edytowalna: trafia na listę, na mapę JPG, do pliku META i na kulę
+           w Sferze, więc musi być krótka i Twoja, a nie nazwą pliku z dysku. -->
+      <label class="sel-name-label" for="selName">Nazwa dźwięku</label>
+      <input class="sel-name empty" id="selName" type="text" maxlength="40" disabled
+             placeholder="— brak wyboru —" aria-label="Nazwa wybranego dźwięku" />
       <div class="routing-toggle" id="routingToggle"><button class="routing-btn active" data-route="spatial">◎ Spatial</button><button class="routing-btn" data-route="direct">♫ Direct Stereo</button></div>
       <div class="param-row"><label>Vol</label><input type="range" id="volSlider" min="0" max="100" value="70"><span class="param-val" id="volVal">70%</span></div>
       <div class="param-row"><label>Wys</label><input type="range" id="heightSlider" min="-100" max="100" value="0"><span class="param-val" id="heightVal">0.0m</span></div>
@@ -457,6 +482,24 @@ input[type="checkbox"] { accent-color: var(--cyan); }
 
 <div class="toast" id="toast"></div>
 
+<!-- Potwierdzenie dzialan nieodwracalnych. Jedno okno obsluguje kasowanie zrodla
+     i ostrzezenie przed eksportem, ktory po cichu pominalby czesc sceny. -->
+<div class="confirm-overlay" id="confirmOverlay" role="dialog" aria-modal="true"
+     aria-labelledby="confirmTitle" aria-describedby="confirmText">
+  <div class="confirm-box">
+    <div class="confirm-bar"></div>
+    <div class="confirm-body">
+      <div class="confirm-title" id="confirmTitle">Uwaga</div>
+      <div class="confirm-text" id="confirmText">—</div>
+      <div class="confirm-sub" id="confirmSub"></div>
+    </div>
+    <div class="confirm-actions">
+      <button class="confirm-btn" id="confirmNo">Nie, zostaw</button>
+      <button class="confirm-btn danger" id="confirmYes">Tak, skasuj</button>
+    </div>
+  </div>
+</div>
+
 <div class="help-overlay" id="helpOverlay"><div class="help-box">
   <h2>Spatial Audio <em>Lab</em></h2>
   <div class="help-tabs" role="tablist">
@@ -491,7 +534,7 @@ input[type="checkbox"] { accent-color: var(--cyan); }
     <p>— <strong>plik „AMBIX"</strong> — wersja tej samej sceny w formacie do dalszej, profesjonalnej obróbki w innych programach do dźwięku przestrzennego albo w aplikacjach VR/360°. Zwykły odtwarzacz nie odtworzy go poprawnie — pomiń ten plik, jeśli go nie potrzebujesz.</p>
     <p>— <strong>plik „MAPA"</strong> — obrazek z widokiem sceny z góry (rozmieszczenie dźwięków i słuchacza), przydatny do dokumentacji albo sprawozdania.</p>
     <p>— <strong>plik „META"</strong> — plik tekstowy ze wszystkimi ustawieniami sceny (pozycje, głośności, autorzy dźwięków) — też do dokumentacji, żeby nie trzeba było niczego odtwarzać ze słuchu.</p>
-    <p>— <strong>plik „SCENA"</strong> — ten sam opis sceny, ale w formacie do odczytu maszynowego (JSON). Jeśli wrzucisz go razem z plikiem „AMBIX" do <strong>Ambisonic Web Playera</strong>, na kuli zapalą się nazwane punkty w miejscach Twoich dźwięków — pulsujące w rytm głośności każdego z nich, z podpisem, gdy dany dźwięk jest przed Tobą. Do niczego innego nie jest potrzebny.</p>
+    <p>— <strong>plik „SCENA"</strong> — ten sam opis sceny, ale w formacie do odczytu maszynowego (JSON). Jeśli wrzucisz go razem z plikiem „AMBIX" do <strong>Sfery</strong>, na kuli zapalą się nazwane punkty w miejscach Twoich dźwięków — pulsujące w rytm głośności każdego z nich, z podpisem, gdy dany dźwięk jest przed Tobą. Do niczego innego nie jest potrzebny.</p>
     <h3>Sterowanie klawiaturą</h3>
     <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> (albo strzałki) — chodzenie po scenie w trybie Eksploracja · <kbd>Q</kbd><kbd>E</kbd> — obracanie się · <kbd>Space</kbd> — odtwórz/zatrzymaj zaznaczony dźwięk · <kbd>Shift</kbd>+klik — dodaj punkt trasy, gdy dźwięk ma tryb ruchu „Ścieżka"</p>
   </div>
@@ -598,6 +641,39 @@ const orbitParams=$('orbitParams'), randomParams=$('randomParams'), pathParams=$
 const libPanel=$('libraryPanel'), libTree=$('libTree'), libSearch=$('libSearch'), libCountBadge=$('libCountBadge');
 
 function showToast(m, d=2500){ toastEl.textContent=m; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'),d); }
+
+// --- POTWIERDZENIE DZIALANIA NIEODWRACALNEGO -------------------------------------------
+// Zwraca Promise<boolean>. Escape i klikniecie w tlo = "nie" — domyslna odpowiedz zawsze
+// jest ta bezpieczna. Fokus laduje na przycisku odmowy, wiec sam Enter niczego nie skasuje.
+function askConfirm({ title='Uwaga', text='Na pewno?', sub='', yes='Tak', no='Nie' }){
+  return new Promise(resolve=>{
+    const ov=$('confirmOverlay'), btnYes=$('confirmYes'), btnNo=$('confirmNo');
+    $('confirmTitle').textContent=title;
+    $('confirmText').textContent=text;
+    const subEl=$('confirmSub'); subEl.textContent=sub; subEl.style.display=sub?'':'none';
+    btnYes.textContent=yes; btnNo.textContent=no;
+    const prevFocus=document.activeElement;
+    function close(v){
+      ov.classList.remove('show');
+      btnYes.removeEventListener('click',onYes); btnNo.removeEventListener('click',onNo);
+      ov.removeEventListener('mousedown',onBack); document.removeEventListener('keydown',onKey,true);
+      if(prevFocus && prevFocus.focus) { try{ prevFocus.focus(); }catch(e){} }
+      resolve(v);
+    }
+    function onYes(){ close(true); }
+    function onNo(){ close(false); }
+    function onBack(e){ if(e.target===ov) close(false); }
+    function onKey(e){
+      if(e.key==='Escape'){ e.preventDefault(); close(false); }
+      // Fokus nie ma jak uciec poza okno — Tab krazy miedzy dwoma przyciskami.
+      if(e.key==='Tab'){ e.preventDefault(); (document.activeElement===btnNo?btnYes:btnNo).focus(); }
+    }
+    btnYes.addEventListener('click',onYes); btnNo.addEventListener('click',onNo);
+    ov.addEventListener('mousedown',onBack); document.addEventListener('keydown',onKey,true);
+    ov.classList.add('show');
+    btnNo.focus();
+  });
+}
 
 // ACCORDION
 function toggleAccHead(h){ const collapsed=h.classList.toggle('collapsed'); h.setAttribute('aria-expanded', collapsed?'false':'true'); }
@@ -793,6 +869,16 @@ function recenterListener(){ S.listener.x=0; S.listener.y=0; S.listener.angle=0;
 $('compassBtn').addEventListener('click', recenterListener);
 $('compassBtn').addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); recenterListener(); } });
 
+// Nazwa pliku z dysku bywa dluga i techniczna ("freesound_512345__autor__pociag-nocny.wav").
+// Do sceny wchodzi wersja bez rozszerzenia, bez podkreslen i bez numerycznego prefiksu —
+// zawsze mozna ja poprawic recznie w panelu Wybrany.
+function cleanFileName(name){
+  let n=String(name).replace(/\.[^.\s]+$/,'');
+  n=n.replace(/^\d+[\s_-]+/,'').replace(/[_]+/g,' ').replace(/\s+/g,' ').trim();
+  if(n.length>40) n=n.slice(0,39).trim()+'…';
+  return n||'Dźwięk';
+}
+
 function createFromBuffer(decoded, name, x, y, libId=null, vol=0.7){
   const id='s'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
   S.buffers[id]=decoded;
@@ -816,7 +902,7 @@ fileDrop.addEventListener('drop', e=>{ e.preventDefault(); fileDrop.classList.re
 fileInput.addEventListener('change', ()=>{ handleFiles(fileInput.files); fileInput.value=''; });
 async function handleFiles(files){
   let n=0;
-  for(const f of files){ try { if(!S.sceneCreatedAt) S.sceneCreatedAt=new Date(f.lastModified||Date.now()); const b=await f.arrayBuffer(); const d=await audioCtx.decodeAudioData(b); const a=Math.random()*Math.PI*2, r=4+Math.random()*10; createFromBuffer(d, f.name, Math.cos(a)*r, Math.sin(a)*r); n++; } catch(e){ showToast('⚠ '+f.name); } }
+  for(const f of files){ try { if(!S.sceneCreatedAt) S.sceneCreatedAt=new Date(f.lastModified||Date.now()); const b=await f.arrayBuffer(); const d=await audioCtx.decodeAudioData(b); const a=Math.random()*Math.PI*2, r=4+Math.random()*10; createFromBuffer(d, cleanFileName(f.name), Math.cos(a)*r, Math.sin(a)*r); n++; } catch(e){ showToast('⚠ '+f.name); } }
   if(n) showToast('Dodano '+n+' plik(ów)');
 }
 
@@ -847,7 +933,7 @@ function selectSource(s){ S.selectedSource=s; updateSel(); renderSources(); }
 function updateSel(){
   const s=S.selectedSource;
   if(s){
-    selName.textContent=s.name; selName.classList.remove('empty');
+    selName.value=s.name; selName.disabled=false; selName.classList.remove('empty');
     volSlider.value=Math.round(s.volume*100); volVal.textContent=volSlider.value+'%';
     heightSlider.value=Math.round((s.height||0)*10); heightVal.textContent=(s.height||0).toFixed(1)+'m';
     widthSlider.value=Math.round(s.width*10); widthVal.textContent=s.width.toFixed(1)+'m';
@@ -863,7 +949,7 @@ function updateSel(){
     pathLoopEl.value=mo.pathLoop?1:0; pathLoopVal.textContent=mo.pathLoop?'Tak':'Nie';
     orbitParams.classList.toggle('open',mo.mode==='orbit'); randomParams.classList.toggle('open',mo.mode==='random'); pathParams.classList.toggle('open',mo.mode==='path');
   } else {
-    selName.textContent='— brak wyboru —'; selName.classList.add('empty'); selDist.textContent='—'; selAbsorb.textContent='—';
+    selName.value=''; selName.disabled=true; selName.classList.add('empty'); selDist.textContent='—'; selAbsorb.textContent='—';
     widthSlider.value=0; widthVal.textContent='0.0m'; angleSlider.value=0; angleVal.textContent='0°';
     stereoInd.textContent='Punkt'; stereoInd.classList.remove('wide');
     routingToggle.querySelectorAll('.routing-btn').forEach(b=>b.classList.remove('active','active-direct'));
@@ -893,7 +979,16 @@ function renderSources(){
     el.addEventListener('click', e=>{ if(!e.target.closest('.src-btn')) selectSource(s); });
     el.addEventListener('keydown', e=>{ if((e.key==='Enter'||e.key===' ')&&!e.target.closest('.src-btn')){ e.preventDefault(); selectSource(s); } });
     el.querySelector('[data-a="t"]').addEventListener('click', e=>{ e.stopPropagation(); s.playing?stopSource(s):playSource(s); });
-    el.querySelector('[data-a="d"]').addEventListener('click', e=>{ e.stopPropagation(); removeSource(s.id); });
+    el.querySelector('[data-a="d"]').addEventListener('click', async e=>{
+      e.stopPropagation();
+      const ok=await askConfirm({
+        title:'Kasowanie dźwięku',
+        text:'Próbujesz skasować dźwięk ze sceny. Czy tego chcesz?',
+        sub:s.name+' — tej operacji nie da się cofnąć.',
+        yes:'Tak, skasuj', no:'Nie, zostaw'
+      });
+      if(ok){ removeSource(s.id); showToast('✕ Skasowano: '+s.name); }
+    });
   });
   updateCounters();
 }
@@ -909,6 +1004,19 @@ $('playAllBtn').addEventListener('click', ()=>S.sources.forEach(s=>playSource(s)
 $('stopAllBtn').addEventListener('click', ()=>S.sources.forEach(s=>stopSource(s)));
 $('tPlayAll').addEventListener('click', ()=>{ S.sources.some(s=>s.playing)?S.sources.forEach(s=>stopSource(s)):S.sources.forEach(s=>playSource(s)); });
 $('tStopAll').addEventListener('click', ()=>S.sources.forEach(s=>stopSource(s)));
+// Nazwa dzwieku — zmieniana w locie, bez przycisku "zapisz". Pusta wraca do poprzedniej,
+// zeby zaden obiekt nie wyladowal na kuli w Sferze bez podpisu.
+selName.addEventListener('input', ()=>{
+  const s=S.selectedSource; if(!s) return;
+  const v=selName.value.trim();
+  if(v){ s.name=v; renderSources(); }
+});
+selName.addEventListener('blur', ()=>{
+  const s=S.selectedSource; if(!s) return;
+  if(!selName.value.trim()){ selName.value=s.name; }
+});
+selName.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); selName.blur(); } });
+
 volSlider.addEventListener('input', ()=>{ volVal.textContent=volSlider.value+'%'; if(S.selectedSource){ S.selectedSource.volume=volSlider.value/100; S.selectedSource.gain.gain.setValueAtTime(S.selectedSource.volume,audioCtx.currentTime); renderSources(); } });
 heightSlider.addEventListener('input', ()=>{ const h=heightSlider.value/10; heightVal.textContent=h.toFixed(1)+'m'; if(S.selectedSource){ S.selectedSource.height=h; updPanners(S.selectedSource); } });
 routingToggle.querySelectorAll('.routing-btn').forEach(btn=>{ btn.addEventListener('click', e=>{ e.stopPropagation(); if(!S.selectedSource) return; setRouting(S.selectedSource,btn.dataset.route); updateSel(); renderSources(); showToast(btn.dataset.route==='direct'?'♫ Direct Stereo':'◎ Spatial HRTF'); }); });
@@ -1211,13 +1319,39 @@ async function exportScene(){
   const nr=($('sceneNumber').value||'001').trim();
   const nm=($('sceneName').value||'Scena').trim().replace(/\s+/g,'_');
   const dur=parseFloat($('kpoDuration').value)||30;
-  const sr=44100, prefix=`SAL_SCENA_${nr}_${nm}`;
+  // Czestotliwosc probkowania DZIEDZICZONA z zywego kontekstu, nie zaszyta na 44100.
+  // Powod: `generateIR()` buduje odpowiedz impulsowa pogloso w `audioCtx.sampleRate`, wiec na
+  // karcie 48 kHz `ConvolverNode` odmawial jej przyjecia ("buffer sample rate 48000 does not
+  // match the context rate 44100") i PRZERYWAL caly eksport. Przy okazji: bufory zrodel tez
+  // sa dekodowane w tej czestotliwosci, wiec teraz nic nie jest po drodze przepróbkowywane.
+  const sr=audioCtx.sampleRate, prefix=`SAL_SCENA_${nr}_${nm}`;
   const includeReverb=$('exportReverb').checked;
   const stepsEl=$('kpoSteps');
   btn.disabled=true; btn.textContent='⏳ Generowanie…'; stepsEl.innerHTML='';
 
   const srcs=S.sources.filter(s=>S.buffers[s.id]);
   if(!srcs.length){ exportStep('⚠ Brak źródeł z buforem audio','error'); btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (5 plików)'; return; }
+
+  // Zrodla w trybie strumienia (biblioteka wpada w niego, gdy CORS zablokuje pobranie —
+  // na liscie maja plakietke "stream") nie maja bufora w pamieci, wiec renderer offline
+  // nie ma czego zagrac. Do sierpnia 2026 znikaly z eksportu BEZ SLOWA i scena na pliku
+  // rozjezdzala sie z tym, co bylo slychac w aplikacji. Teraz trzeba to swiadomie potwierdzic.
+  const pominiete=S.sources.filter(s=>!S.buffers[s.id]);
+  if(pominiete.length){
+    btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (5 plików)';
+    const ok=await askConfirm({
+      title:'Część sceny nie trafi do plików',
+      text:pominiete.length===1
+        ? 'Jeden dźwięk gra ze strumienia i nie da się go zapisać. Nagranie będzie brzmiało inaczej niż scena, której słuchasz.'
+        : pominiete.length+' dźwięków gra ze strumienia i nie da się ich zapisać. Nagranie będzie brzmiało inaczej niż scena, której słuchasz.',
+      sub:'Pominięte: '+pominiete.map(s=>s.name).join(', ')+
+          '. Żeby je zapisać, wczytaj te dźwięki z dysku zamiast z biblioteki.',
+      yes:'Eksportuj mimo to', no:'Anuluj'
+    });
+    if(!ok){ showToast('Eksport anulowany'); return; }
+    btn.disabled=true; btn.textContent='⏳ Generowanie…'; stepsEl.innerHTML='';
+    exportStep('⚠ Pominięto '+pominiete.length+' źródeł w trybie stream: '+pominiete.map(s=>s.name).join(', '),'error');
+  }
 
   try {
     // 1. BINAURAL WAV
@@ -1330,7 +1464,25 @@ async function exportScene(){
         const pre=off.createBiquadFilter(); pre.type='highpass'; pre.frequency.value=250; pre.Q.value=0.7;
         const conv=off.createConvolver(); conv.normalize=true; conv.buffer=generateIR(reverbState.roomSize,reverbState.damping);
         const wet=off.createGain(); wet.gain.value=reverbState.wet;
-        revIn.connect(pre); pre.connect(conv); conv.connect(wet); doW(wet);
+        revIn.connect(pre); pre.connect(conv); conv.connect(wet);
+        // Poglos jest STEREO i jego dwa kanaly sa zdekorelowane — to wlasnie one daja
+        // wrazenie wspolnej przestrzeni. Do sierpnia 2026 szly przez doW(), czyli byly
+        // sciagane do mono i wrzucane w bezkierunkowe W: w pliku AmbiX poglos tracil cala
+        // szerokosc i scena rozpadala sie na osobno grajace dzwieki.
+        // Teraz lewy kanal jedzie jako fala plaska z LEWA (az +90), prawy z PRAWA (az -90).
+        // Wzmocnienie 0.5 na kanal jest dobrane tak, zeby W dostal doklad nie tyle samo co
+        // wczesniej (down-mix stereo->mono to 0.5·(L+R)), a roznica L-R wyladowala w Y.
+        // Poziom sie wiec nie zmienia — dochodzi wylacznie szerokosc.
+        const wetSplit=off.createChannelSplitter(2);
+        wet.channelCount=2; wet.channelCountMode='explicit'; wet.channelInterpretation='speakers';
+        wet.connect(wetSplit);
+        [[0, Math.PI/2],[1, -Math.PI/2]].forEach(([chIdx,azRad])=>{
+          const g=sn3dFOA(azRad,0);
+          for(let c=0;c<4;c++){
+            const gn=off.createGain(); gn.gain.value=g[c]*0.5;
+            wetSplit.connect(gn,chIdx); gn.connect(merger,0,c);
+          }
+        });
         foaRevIn=revIn;
       }
 
@@ -1446,12 +1598,12 @@ async function exportScene(){
         if(src.motion.mode!=='static') txt+=`    Ruch: ${src.motion.mode} (prędkość: ${src.motion.speed.toFixed(1)} m/s)\n`;
         if(src.attrAuthor) txt+=`    Autor: ${src.attrAuthor} (Freesound)\n`;
       });
-      txt+=`\n${'═'.repeat(40)}\nPliki:\n  ${prefix}_BINAURAL.wav — stereo HRTF (2ch, 16-bit, ${sr} Hz)\n  ${prefix}_AMBIX.wav — First Order Ambisonics (4ch, 32-bit float, ${sr} Hz)\n      Kolejność ACN: W, Y, Z, X · normalizacja SN3D · azymut dodatni w lewo, elewacja dodatnia w górę\n      Pogłos zakodowany bezkierunkowo (kanał W). Źródła w trybie Bezpośrednio również w kanale W.\n      ${ambixOpis}\n  ${prefix}_MAPA.jpg — wizualizacja sceny\n  ${prefix}_META.txt — ten plik\n  ${prefix}_SCENA.json — ten sam opis maszynowo, dla Ambisonic Web Playera\n      (nazwy obiektow, azymut/elewacja w stopniach, obwiednia glosnosci 50 Hz)\n\nUWAGA: pozycje źródeł i słuchacza są w obu plikach zamrożone na moment eksportu —\nruch (orbita, ścieżka, ruch losowy) oraz chodzenie po scenie nie są jeszcze utrwalane.\n`;
+      txt+=`\n${'═'.repeat(40)}\nPliki:\n  ${prefix}_BINAURAL.wav — stereo HRTF (2ch, 16-bit, ${sr} Hz)\n  ${prefix}_AMBIX.wav — First Order Ambisonics (4ch, 32-bit float, ${sr} Hz)\n      Kolejność ACN: W, Y, Z, X · normalizacja SN3D · azymut dodatni w lewo, elewacja dodatnia w górę\n      Pogłos zakodowany bezkierunkowo (kanał W). Źródła w trybie Bezpośrednio również w kanale W.\n      ${ambixOpis}\n  ${prefix}_MAPA.jpg — wizualizacja sceny\n  ${prefix}_META.txt — ten plik\n  ${prefix}_SCENA.json — ten sam opis maszynowo, dla Sfery\n      (nazwy obiektow, azymut/elewacja w stopniach, obwiednia glosnosci 50 Hz)\n\nUWAGA: pozycje źródeł i słuchacza są w obu plikach zamrożone na moment eksportu —\nruch (orbita, ścieżka, ruch losowy) oraz chodzenie po scenie nie są jeszcze utrwalane.\n`;
       metaBlob=new Blob([txt],{type:'text/plain;charset=utf-8'});
       s4.textContent='✓ 4/5 Metadane TXT — OK'; s4.className='kpo-step done';
     } catch(e){ s4.textContent='✗ 4/5 Metadane — błąd: '+e.message; s4.className='kpo-step error'; throw e; }
 
-    // 5. SCENA JSON — opis sceny do odczytu maszynowego (Ambisonic Web Player)
+    // 5. SCENA JSON — opis sceny do odczytu maszynowego (Sfera)
     // -------------------------------------------------------------------------------------
     // Osobny plik, nie blok w _META.txt: TXT zostaje czysto ludzki, a parser po stronie
     // odtwarzacza jest zwyklym JSON.parse zamiast wlasnego formatu.
