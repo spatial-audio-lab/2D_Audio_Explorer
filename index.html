@@ -444,7 +444,7 @@ input[type="checkbox"] { accent-color: var(--cyan); }
       <div class="kpo-field"><div class="export-label">Czas trwania (s)</div><input class="export-input" id="kpoDuration" type="number" value="30" min="1" max="600"></div>
       <div class="kpo-field"><div class="export-label" style="display:flex;justify-content:space-between;align-items:center"><span>Data utworzenia</span><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;letter-spacing:0.1em;color:var(--mid)"><input type="checkbox" id="kpoDateManual" style="accent-color:var(--cyan);width:16px;height:16px"> ręcznie</label></div><input class="export-input" id="kpoDate" type="date" style="color-scheme:dark" disabled><div id="kpoDateAuto" style="font-size:12px;color:var(--muted);margin-top:3px;padding:0 2px">auto</div></div>
       <div class="kpo-field"><div class="export-label" style="display:flex;justify-content:space-between;align-items:center"><span>Reverb w eksporcie</span><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;letter-spacing:0.1em;color:var(--mid)"><input type="checkbox" id="exportReverb" checked style="accent-color:var(--cyan);width:16px;height:16px"> włącz</label></div></div>
-      <button class="btn-kpo" id="generateExport">⬇ Eksportuj scenę (4 pliki)</button>
+      <button class="btn-kpo" id="generateExport">⬇ Eksportuj scenę (5 plików)</button>
       <div id="kpoSteps" style="margin-top:10px"></div>
     </div></div>
   </aside>
@@ -486,11 +486,12 @@ input[type="checkbox"] { accent-color: var(--cyan); }
     <p><strong>Master.</strong> Ogólna głośność wszystkiego naraz — przydatna, gdy chcesz np. na chwilę wszystko przyciszyć bez zmieniania głośności każdego dźwięku z osobna.</p>
     <p><strong>Pogłos (reverb).</strong> Dodaje wrażenie, że wszystkie dźwięki dzieją się w jakimś konkretnym, fizycznym miejscu, a nie w pustce — tak jak głos brzmi inaczej w małej łazience, a inaczej w wielkiej hali. „Włącz" włącza lub wyłącza ten efekt dla całej sceny. „Wet" to ile tego pogłosu słychać (więcej = bardziej „jaskiniowo"). „Rozmiar" symuluje wielkość pomieszczenia — im większa wartość, tym dłużej dźwięk „donosi się echem", jakby scena działa się w większej przestrzeni. „Tłumienie" ustawia, jak szybko to echo gaśnie — twarde powierzchnie (beton, kamień) dają długie, wyraźne echo, miękkie (trawa, tkaniny) szybko je wygaszają.</p>
     <h3>Panel „Eksport" — zapisywanie gotowej sceny na dysk</h3>
-    <p>Po wypełnieniu numeru i nazwy sceny (przydatne, jeśli robisz ich więcej i chcesz je łatwo rozróżnić w plikach), czasu trwania nagrania oraz daty, przycisk „Eksportuj scenę" pobiera na dysk komplet 4 plików o tej samej nazwie:</p>
+    <p>Po wypełnieniu numeru i nazwy sceny (przydatne, jeśli robisz ich więcej i chcesz je łatwo rozróżnić w plikach), czasu trwania nagrania oraz daty, przycisk „Eksportuj scenę" pobiera na dysk komplet 5 plików o tej samej nazwie:</p>
     <p>— <strong>plik „BINAURAL"</strong> — gotowe nagranie do odsłuchu na zwykłych słuchawkach, dokładnie tak, jak scena brzmi w aplikacji. To jest plik, którego prawdopodobnie potrzebujesz najczęściej.</p>
     <p>— <strong>plik „AMBIX"</strong> — wersja tej samej sceny w formacie do dalszej, profesjonalnej obróbki w innych programach do dźwięku przestrzennego albo w aplikacjach VR/360°. Zwykły odtwarzacz nie odtworzy go poprawnie — pomiń ten plik, jeśli go nie potrzebujesz.</p>
     <p>— <strong>plik „MAPA"</strong> — obrazek z widokiem sceny z góry (rozmieszczenie dźwięków i słuchacza), przydatny do dokumentacji albo sprawozdania.</p>
     <p>— <strong>plik „META"</strong> — plik tekstowy ze wszystkimi ustawieniami sceny (pozycje, głośności, autorzy dźwięków) — też do dokumentacji, żeby nie trzeba było niczego odtwarzać ze słuchu.</p>
+    <p>— <strong>plik „SCENA"</strong> — ten sam opis sceny, ale w formacie do odczytu maszynowego (JSON). Jeśli wrzucisz go razem z plikiem „AMBIX" do <strong>Ambisonic Web Playera</strong>, na kuli zapalą się nazwane punkty w miejscach Twoich dźwięków — pulsujące w rytm głośności każdego z nich, z podpisem, gdy dany dźwięk jest przed Tobą. Do niczego innego nie jest potrzebny.</p>
     <h3>Sterowanie klawiaturą</h3>
     <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> (albo strzałki) — chodzenie po scenie w trybie Eksploracja · <kbd>Q</kbd><kbd>E</kbd> — obracanie się · <kbd>Space</kbd> — odtwórz/zatrzymaj zaznaczony dźwięk · <kbd>Shift</kbd>+klik — dodaj punkt trasy, gdy dźwięk ma tryb ruchu „Ścieżka"</p>
   </div>
@@ -1163,7 +1164,42 @@ function floatArraysToWav32(arrays, sr){
   return new Blob([buf],{type:'audio/wav'});
 }
 
-// EXPORT 4 FILES
+// --- OBWIEDNIA GLOSNOSCI ZRODLA (do pliku _SCENA.json) ---------------------------------
+// Po co: odtwarzacz ambi ma pulsowac punktem obiektu w rytm TEGO nagrania, a nie wspolnego
+// miksu. Liczone wprost z bufora zrodla (getChannelData), przed zmiksowaniem — wiec nie
+// wymaga eksportu osobnych stemow. Jeden przebieg po juz wczytanym buforze.
+//
+// Os czasu jest osia EKSPORTU, nie osia oryginalu: zrodla graja w petli (n.loop=true), wiec
+// petla jest tu juz zawinieta. Odtwarzacz indeksuje tablice wprost czasem odtwarzania i nie
+// musi wiedziec, jak dlugi byl plik zrodlowy.
+//
+// Skala: RMS okna -> dBFS -> 0..255 liniowo w decybelach od LEVEL_FLOOR_DB do 0 dBFS.
+// Kwantyzacja liniowa w amplitudzie zgubilaby wszystko ponizej -40 dB w kilku krokach.
+const LEVEL_HZ = 50;              // 50 Hz = okno 20 ms
+const LEVEL_FLOOR_DB = -60;
+function levelEnvelope(buffer, durationSec){
+  const sr=buffer.sampleRate, nCh=buffer.numberOfChannels, len=buffer.length;
+  const chans=[]; for(let c=0;c<nCh;c++) chans.push(buffer.getChannelData(c));
+  const win=Math.max(1,Math.round(sr/LEVEL_HZ));
+  const frames=Math.max(1,Math.ceil(durationSec*LEVEL_HZ));
+  const out=new Array(frames);
+  for(let f=0;f<frames;f++){
+    const start=Math.round(f*sr/LEVEL_HZ);
+    let sum=0;
+    for(let i=0;i<win;i++){
+      const idx=(start+i)%len;                       // petla zrodla
+      let m=0; for(let c=0;c<nCh;c++) m+=chans[c][idx];
+      m/=nCh; sum+=m*m;
+    }
+    const rms=Math.sqrt(sum/win);
+    const db=rms>1e-7 ? 20*Math.log10(rms) : LEVEL_FLOOR_DB;
+    const t=(db-LEVEL_FLOOR_DB)/(0-LEVEL_FLOOR_DB);
+    out[f]=Math.max(0,Math.min(255,Math.round(t*255)));
+  }
+  return out;
+}
+
+// EXPORT 5 FILES
 $('generateExport').addEventListener('click', exportScene);
 
 function exportStep(msg, status='active'){
@@ -1181,11 +1217,11 @@ async function exportScene(){
   btn.disabled=true; btn.textContent='⏳ Generowanie…'; stepsEl.innerHTML='';
 
   const srcs=S.sources.filter(s=>S.buffers[s.id]);
-  if(!srcs.length){ exportStep('⚠ Brak źródeł z buforem audio','error'); btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (4 pliki)'; return; }
+  if(!srcs.length){ exportStep('⚠ Brak źródeł z buforem audio','error'); btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (5 plików)'; return; }
 
   try {
     // 1. BINAURAL WAV
-    const s1=exportStep('1/4 Binaural WAV — renderowanie HRTF…');
+    const s1=exportStep('1/5 Binaural WAV — renderowanie HRTF…');
     let binauralBlob;
     try {
       const len=sr*dur;
@@ -1231,8 +1267,8 @@ async function exportScene(){
       }
       const rendered=await off.startRendering();
       binauralBlob=bufToWav(rendered,2);
-      s1.textContent='✓ 1/4 Binaural WAV — OK'; s1.className='kpo-step done';
-    } catch(e){ s1.textContent='✗ 1/4 Binaural WAV — błąd: '+e.message; s1.className='kpo-step error'; throw e; }
+      s1.textContent='✓ 1/5 Binaural WAV — OK'; s1.className='kpo-step done';
+    } catch(e){ s1.textContent='✗ 1/5 Binaural WAV — błąd: '+e.message; s1.className='kpo-step error'; throw e; }
 
     // 2. AMBIX 4-CH WAV — ACN/SN3D, renderowany na TYM SAMYM grafie co binaural
     // -------------------------------------------------------------------------------------
@@ -1243,8 +1279,13 @@ async function exportScene(){
     // poglos, suwak Master, filtr powietrza i szerokosc zrodla w ogole nie trafialy do pliku.
     // Teraz oba pliki powstaja z tego samego grafu wezlow WebAudio, wiec te wielkosci nie
     // moga sie juz rozjechac — nie ma dwoch implementacji, ktore trzeba porownywac.
-    const s2=exportStep('2/4 AmbiX WAV (4ch ACN/SN3D) — renderowanie FOA…');
+    const s2=exportStep('2/5 AmbiX WAV (4ch ACN/SN3D) — renderowanie FOA…');
     let ambixBlob, ambixOpis='';
+    // Opis obiektow dla pliku _SCENA.json. Wypelniany W TEJ SAMEJ petli, ktora koduje AmbiX,
+    // i z tej samej funkcji kierunkowej — inaczej punkt na kuli w odtwarzaczu moglby pokazac
+    // co innego niz slychac (dokladnie ten blad zdarzyl sie juz w ambi, patrz v9).
+    const sceneObjects=[];
+    let peakOut=0, normOut=1;
     try {
       const len=sr*dur;
       const off=new OfflineAudioContext(4,len,sr);
@@ -1296,6 +1337,10 @@ async function exportScene(){
       let nPrzestrzenne=0, nBezkierunkowe=0;
       for(const s of srcs){
         const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=true;
+        const objMeta={ name:s.name, routing:s.routing, volume:+(s.volume.toFixed(3)),
+                        level:{ hz:LEVEL_HZ, encoding:'uint8-db', dbFloor:LEVEL_FLOOR_DB,
+                                values:levelEnvelope(S.buffers[s.id],dur) } };
+        sceneObjects.push(objMeta);
         if(s.routing==='direct'){
           // Zrodla "Bezposrednio" nie maja pozycji na scenie. W FOA sa polem bezkierunkowym
           // (sam kanal W) — slychac je wszedzie tak samo, dokladnie jak w aplikacji.
@@ -1313,6 +1358,11 @@ async function exportScene(){
           // Szerokosc zrodla: te same dwa punkty, co pannerL/pannerR w torze binauralnym.
           const halfW=s.width/2, srad=(s.spreadAngle||0)*Math.PI/180;
           const ddx=halfW*Math.cos(srad), ddy=halfW*Math.sin(srad), h=s.height||0;
+          // Kierunek SRODKA zrodla (nie punktow L/R szerokosci) — to on trafia na kule.
+          const kMid=kierunekFOA(s.x,s.y,h);
+          objMeta.az=+(kMid.az*180/Math.PI).toFixed(2);
+          objMeta.el=+(kMid.el*180/Math.PI).toFixed(2);
+          objMeta.dist=+kMid.dist3d.toFixed(2);
           const encL=off.createGain(), encR=off.createGain();
           splitter.connect(encL,0); splitter.connect(encR,1);
           encodeFOA(encL, s.x-ddx, s.y-ddy, h);
@@ -1331,14 +1381,15 @@ async function exportScene(){
       // by zakodowany kierunek — to wlasnie robil poprzedni zapis 16-bitowy.
       let norm=1;
       if(peak>1){ norm=0.999/peak; for(const d of chans) for(let i=0;i<d.length;i++) d[i]*=norm; }
+      peakOut=peak; normOut=norm;
       ambixBlob=floatArraysToWav32(chans,sr);
       ambixOpis=`szczyt ${(20*Math.log10(Math.max(peak,1e-9))).toFixed(1)} dBFS`+(norm<1?`, wyrownanie -${(-20*Math.log10(norm)).toFixed(1)} dB wspolne dla 4 kanalow`:'');
-      s2.textContent=`✓ 2/4 AmbiX WAV (4ch ACN/SN3D, 32-bit float) — OK · ${nPrzestrzenne} przestrzennych, ${nBezkierunkowe} bezkierunkowych · ${ambixOpis}`;
+      s2.textContent=`✓ 2/5 AmbiX WAV (4ch ACN/SN3D, 32-bit float) — OK · ${nPrzestrzenne} przestrzennych, ${nBezkierunkowe} bezkierunkowych · ${ambixOpis}`;
       s2.className='kpo-step done';
-    } catch(e){ s2.textContent='✗ 2/4 AmbiX WAV — błąd: '+e.message; s2.className='kpo-step error'; throw e; }
+    } catch(e){ s2.textContent='✗ 2/5 AmbiX WAV — błąd: '+e.message; s2.className='kpo-step error'; throw e; }
 
     // 3. MAP JPG
-    const s3=exportStep('3/4 Mapa JPG — zrzut płótna…');
+    const s3=exportStep('3/5 Mapa JPG — zrzut płótna…');
     let mapBlob;
     try {
       const snap=document.createElement('canvas'); snap.width=1200; snap.height=900;
@@ -1376,11 +1427,11 @@ async function exportScene(){
       sc2.strokeStyle='#FFAB00';sc2.lineWidth=2;sc2.beginPath();sc2.moveTo(lxM,lyM);sc2.lineTo(lxM+Math.sin(lrM)*25,lyM-Math.cos(lrM)*25);sc2.stroke();
       sc2.restore();
       mapBlob=await new Promise(r=>snap.toBlob(r,'image/jpeg',0.92));
-      s3.textContent='✓ 3/4 Mapa JPG — OK'; s3.className='kpo-step done';
-    } catch(e){ s3.textContent='✗ 3/4 Mapa JPG — błąd: '+e.message; s3.className='kpo-step error'; throw e; }
+      s3.textContent='✓ 3/5 Mapa JPG — OK'; s3.className='kpo-step done';
+    } catch(e){ s3.textContent='✗ 3/5 Mapa JPG — błąd: '+e.message; s3.className='kpo-step error'; throw e; }
 
     // 4. METADATA TXT
-    const s4=exportStep('4/4 Metadane TXT…');
+    const s4=exportStep('4/5 Metadane TXT…');
     let metaBlob;
     try {
       let txt=`SAL — Spatial Audio Lab\n${'═'.repeat(40)}\nScena: ${nr} — ${nm.replace(/_/g,' ')}\nData: ${window._getDateFull()}\nCzas trwania: ${dur}s\nSample rate: ${sr} Hz\nReverb: ${includeReverb&&reverbState.enabled?'Tak (rozmiar:'+reverbState.roomSize.toFixed(2)+', tłumienie:'+reverbState.damping.toFixed(2)+', wet:'+Math.round(reverbState.wet*100)+'%)':'Nie'}\n\nListener: x=${S.listener.x.toFixed(2)}, y=${S.listener.y.toFixed(2)}, angle=${Math.round(S.listener.angle)}°\n\nŹródła (${srcs.length}):\n${'─'.repeat(40)}\n`;
@@ -1395,18 +1446,47 @@ async function exportScene(){
         if(src.motion.mode!=='static') txt+=`    Ruch: ${src.motion.mode} (prędkość: ${src.motion.speed.toFixed(1)} m/s)\n`;
         if(src.attrAuthor) txt+=`    Autor: ${src.attrAuthor} (Freesound)\n`;
       });
-      txt+=`\n${'═'.repeat(40)}\nPliki:\n  ${prefix}_BINAURAL.wav — stereo HRTF (2ch, 16-bit, ${sr} Hz)\n  ${prefix}_AMBIX.wav — First Order Ambisonics (4ch, 32-bit float, ${sr} Hz)\n      Kolejność ACN: W, Y, Z, X · normalizacja SN3D · azymut dodatni w lewo, elewacja dodatnia w górę\n      Pogłos zakodowany bezkierunkowo (kanał W). Źródła w trybie Bezpośrednio również w kanale W.\n      ${ambixOpis}\n  ${prefix}_MAPA.jpg — wizualizacja sceny\n  ${prefix}_META.txt — ten plik\n\nUWAGA: pozycje źródeł i słuchacza są w obu plikach zamrożone na moment eksportu —\nruch (orbita, ścieżka, ruch losowy) oraz chodzenie po scenie nie są jeszcze utrwalane.\n`;
+      txt+=`\n${'═'.repeat(40)}\nPliki:\n  ${prefix}_BINAURAL.wav — stereo HRTF (2ch, 16-bit, ${sr} Hz)\n  ${prefix}_AMBIX.wav — First Order Ambisonics (4ch, 32-bit float, ${sr} Hz)\n      Kolejność ACN: W, Y, Z, X · normalizacja SN3D · azymut dodatni w lewo, elewacja dodatnia w górę\n      Pogłos zakodowany bezkierunkowo (kanał W). Źródła w trybie Bezpośrednio również w kanale W.\n      ${ambixOpis}\n  ${prefix}_MAPA.jpg — wizualizacja sceny\n  ${prefix}_META.txt — ten plik\n  ${prefix}_SCENA.json — ten sam opis maszynowo, dla Ambisonic Web Playera\n      (nazwy obiektow, azymut/elewacja w stopniach, obwiednia glosnosci 50 Hz)\n\nUWAGA: pozycje źródeł i słuchacza są w obu plikach zamrożone na moment eksportu —\nruch (orbita, ścieżka, ruch losowy) oraz chodzenie po scenie nie są jeszcze utrwalane.\n`;
       metaBlob=new Blob([txt],{type:'text/plain;charset=utf-8'});
-      s4.textContent='✓ 4/4 Metadane TXT — OK'; s4.className='kpo-step done';
-    } catch(e){ s4.textContent='✗ 4/4 Metadane — błąd: '+e.message; s4.className='kpo-step error'; throw e; }
+      s4.textContent='✓ 4/5 Metadane TXT — OK'; s4.className='kpo-step done';
+    } catch(e){ s4.textContent='✗ 4/5 Metadane — błąd: '+e.message; s4.className='kpo-step error'; throw e; }
+
+    // 5. SCENA JSON — opis sceny do odczytu maszynowego (Ambisonic Web Player)
+    // -------------------------------------------------------------------------------------
+    // Osobny plik, nie blok w _META.txt: TXT zostaje czysto ludzki, a parser po stronie
+    // odtwarzacza jest zwyklym JSON.parse zamiast wlasnego formatu.
+    const s5=exportStep('5/5 Scena JSON — opis dla odtwarzacza…');
+    let sceneBlob;
+    try {
+      const scene={
+        format:'sal-scene',
+        version:1,
+        scene:{ number:nr, name:nm.replace(/_/g,' '), date:window._getDateFull(), duration:dur, sampleRate:sr },
+        audioFile:prefix+'_AMBIX.wav',
+        // Konwencja kierunku — ta sama, co w naglowku AmbiX: azymut dodatni w LEWO,
+        // elewacja dodatnia w GORE, zero = przod sluchacza w chwili eksportu.
+        convention:{ order:'ACN', normalization:'SN3D', azimuth:'dodatni w lewo', elevation:'dodatni w gore' },
+        // Pozycje zamrozone na moment eksportu — ruch zrodel nie jest jeszcze utrwalany.
+        // Gdy bedzie, az/el zamieni sie z liczby na sciezke czasowa i wersja pojdzie w gore.
+        frozen:true,
+        listener:{ x:+S.listener.x.toFixed(3), y:+S.listener.y.toFixed(3), angle:Math.round(S.listener.angle) },
+        peak:+peakOut.toFixed(4),
+        gainApplied:+normOut.toFixed(4),
+        objects:sceneObjects
+      };
+      sceneBlob=new Blob([JSON.stringify(scene)],{type:'application/json;charset=utf-8'});
+      const kb=Math.max(1,Math.round(sceneBlob.size/1024));
+      s5.textContent=`✓ 5/5 Scena JSON — OK · ${sceneObjects.length} obiektów · ${kb} KB`;
+      s5.className='kpo-step done';
+    } catch(e){ s5.textContent='✗ 5/5 Scena JSON — błąd: '+e.message; s5.className='kpo-step error'; throw e; }
 
     // DOWNLOAD
-    [[binauralBlob,prefix+'_BINAURAL.wav'],[ambixBlob,prefix+'_AMBIX.wav'],[mapBlob,prefix+'_MAPA.jpg'],[metaBlob,prefix+'_META.txt']].forEach(([blob,name])=>{
+    [[binauralBlob,prefix+'_BINAURAL.wav'],[ambixBlob,prefix+'_AMBIX.wav'],[mapBlob,prefix+'_MAPA.jpg'],[metaBlob,prefix+'_META.txt'],[sceneBlob,prefix+'_SCENA.json']].forEach(([blob,name])=>{
       const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href);
     });
-    exportStep('✓ Gotowe! 4 pliki pobrane.','done');
+    exportStep('✓ Gotowe! 5 plików pobranych.','done');
   } catch(e){ exportStep('Eksport przerwany: '+e.message,'error'); }
-  btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (4 pliki)';
+  btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (5 plików)';
 }
 
 // INIT
