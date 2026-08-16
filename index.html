@@ -1140,13 +1140,26 @@ function bufToWav(audioBuffer, nCh){
   return new Blob([buf],{type:'audio/wav'});
 }
 
-function floatArraysToWav(arrays, sr){
-  const nCh=arrays.length, len=arrays[0].length;
-  const buf=new ArrayBuffer(44+len*nCh*2), v=new DataView(buf);
+// WAV 32-bit float (IEEE), dowolna liczba kanalow. Uzywany dla AmbiX: pole ambisoniczne
+// nie ma naturalnego sufitu 0 dBFS jak miks stereo, a obciecie POJEDYNCZEGO kanalu
+// przesuwa zakodowany kierunek. Float nie obcina, wiec kierunek zostaje nietkniety.
+// Naglowek zgodny ze specyfikacja dla formatu 3: fmt o dlugosci 18 (cbSize=0) + chunk fact.
+function floatArraysToWav32(arrays, sr){
+  const nCh=arrays.length, len=arrays[0].length, bytes=len*nCh*4, HDR=58;
+  const buf=new ArrayBuffer(HDR+bytes), v=new DataView(buf);
   function ws(o,s){for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));}
-  ws(0,'RIFF');v.setUint32(4,36+len*nCh*2,true);ws(8,'WAVE');ws(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,nCh,true);v.setUint32(24,sr,true);v.setUint32(28,sr*nCh*2,true);v.setUint16(32,nCh*2,true);v.setUint16(34,16,true);ws(36,'data');v.setUint32(40,len*nCh*2,true);
-  let off=44;
-  for(let i=0;i<len;i++) for(let c=0;c<nCh;c++){ const s=Math.max(-1,Math.min(1,arrays[c][i])); v.setInt16(off, s<0?s*0x8000:s*0x7FFF, true); off+=2; }
+  ws(0,'RIFF'); v.setUint32(4,HDR-8+bytes,true); ws(8,'WAVE');
+  ws(12,'fmt '); v.setUint32(16,18,true);
+  v.setUint16(20,3,true);                 // WAVE_FORMAT_IEEE_FLOAT
+  v.setUint16(22,nCh,true); v.setUint32(24,sr,true);
+  v.setUint32(28,sr*nCh*4,true);          // byte rate
+  v.setUint16(32,nCh*4,true);             // block align
+  v.setUint16(34,32,true);                // bits per sample
+  v.setUint16(36,0,true);                 // cbSize
+  ws(38,'fact'); v.setUint32(42,4,true); v.setUint32(46,len,true);
+  ws(50,'data'); v.setUint32(54,bytes,true);
+  let off=HDR;
+  for(let i=0;i<len;i++) for(let c=0;c<nCh;c++){ v.setFloat32(off,arrays[c][i],true); off+=4; }
   return new Blob([buf],{type:'audio/wav'});
 }
 
@@ -1221,32 +1234,107 @@ async function exportScene(){
       s1.textContent='✓ 1/4 Binaural WAV — OK'; s1.className='kpo-step done';
     } catch(e){ s1.textContent='✗ 1/4 Binaural WAV — błąd: '+e.message; s1.className='kpo-step error'; throw e; }
 
-    // 2. AMBIX 4-CH WAV
-    const s2=exportStep('2/4 AmbiX WAV (4ch) — enkodowanie FOA…');
-    let ambixBlob;
+    // 2. AMBIX 4-CH WAV — ACN/SN3D, renderowany na TYM SAMYM grafie co binaural
+    // -------------------------------------------------------------------------------------
+    // Do sierpnia 2026 ten krok byl reczna petla po probkach, calkowicie niezalezna od toru
+    // binauralnego. Rozjezdzal sie z nim na szesc sposobow naraz: bufory sa dekodowane
+    // w audioCtx.sampleRate, a naglowek pisal na sztywno 44100 (plik gral o 1,5 poltonu
+    // nizej); normalizacja byla hybryda FuMa/N3D zamiast SN3D (kanaly kierunkowe +7,8 dB);
+    // poglos, suwak Master, filtr powietrza i szerokosc zrodla w ogole nie trafialy do pliku.
+    // Teraz oba pliki powstaja z tego samego grafu wezlow WebAudio, wiec te wielkosci nie
+    // moga sie juz rozjechac — nie ma dwoch implementacji, ktore trzeba porownywac.
+    const s2=exportStep('2/4 AmbiX WAV (4ch ACN/SN3D) — renderowanie FOA…');
+    let ambixBlob, ambixOpis='';
     try {
-      const len=Math.floor(sr*dur);
-      const outW=new Float32Array(len), outY=new Float32Array(len), outZ=new Float32Array(len), outX=new Float32Array(len);
+      const len=sr*dur;
+      const off=new OfflineAudioContext(4,len,sr);
+      const merger=off.createChannelMerger(4);          // ACN: 0=W 1=Y 2=Z 3=X
+      const foaMaster=off.createGain(); foaMaster.gain.value=reverbState.masterVol;
+      merger.connect(foaMaster); foaMaster.connect(off.destination);
+
       const listRad=S.listener.angle*Math.PI/180;
-      const SN3D_W=1/Math.SQRT2, SN3D_1=Math.sqrt(3);
-      for(const src of srcs){
-        if(src.routing==='direct') continue; // Skip direct sources — no spatial position
-        const buf=S.buffers[src.id]; if(!buf) continue;
-        const chData=buf.getChannelData(0), nSrcSamples=chData.length;
-        const dx=src.x-S.listener.x, dy=src.y-S.listener.y, dh=src.height||0;
-        const fwd=dx*Math.sin(listRad)-dy*Math.cos(listRad), rgt=dx*Math.cos(listRad)+dy*Math.sin(listRad);
+      // Kierunek punktu sceny w ukladzie sluchacza. Te same wektory, co listener.forward
+      // w torze binauralnym: przod = (sin a, -cos a), prawo = (cos a, sin a).
+      function kierunekFOA(px,py,ph){
+        const dx=px-S.listener.x, dy=py-S.listener.y, dh=ph||0;
+        const fwd=dx*Math.sin(listRad)-dy*Math.cos(listRad);
+        const rgt=dx*Math.cos(listRad)+dy*Math.sin(listRad);
         const distH=Math.sqrt(fwd*fwd+rgt*rgt), dist3d=Math.sqrt(distH*distH+dh*dh);
-        const distGain=src.volume/Math.max(dist3d,1.0);
-        const airAbs=Math.max(400,20000*Math.exp(-dist3d*0.06))/20000;
-        const az=Math.atan2(-rgt,fwd), el=Math.atan2(dh,distH);
-        const cosAz=Math.cos(az),sinAz=Math.sin(az),cosEl=Math.cos(el),sinEl=Math.sin(el);
-        for(let i=0;i<len;i++){
-          const samp=chData[i%nSrcSamples]*distGain*airAbs;
-          outW[i]+=SN3D_W*samp; outY[i]+=SN3D_1*sinAz*cosEl*samp; outZ[i]+=SN3D_1*sinEl*samp; outX[i]+=SN3D_1*cosAz*cosEl*samp;
-        }
+        // Konwencja ambisoniczna: azymut dodatni w LEWO, elewacja dodatnia w GORE.
+        return { az:Math.atan2(-rgt,fwd), el:Math.atan2(dh,distH), dist3d };
       }
-      ambixBlob=floatArraysToWav([outW,outY,outZ,outX],sr);
-      s2.textContent='✓ 2/4 AmbiX WAV (4ch ACN/SN3D) — OK'; s2.className='kpo-step done';
+      // Wzmocnienia AmbiX ACN/SN3D pierwszego rzedu. Dla fali plaskiej WSZYSTKIE rowne 1 —
+      // ten sam wzor, co shAcnSn3d() w odtwarzaczu ambi (W=1, Y=y, Z=z, X=x).
+      function sn3dFOA(az,el){ const ce=Math.cos(el); return [1, ce*Math.sin(az), Math.sin(el), ce*Math.cos(az)]; }
+      // Tlumienie odlegloscia identyczne z modelem 'inverse' PannerNode w torze binauralnym:
+      // refDistance=1, rolloffFactor=1, maxDistance=50.
+      function distGainFOA(d){ return 1/Math.min(Math.max(d,1),50); }
+      // Wpina sygnal mono w enkoder FOA ustawiony na zadany punkt sceny.
+      function encodeFOA(node,px,py,ph){
+        const k=kierunekFOA(px,py,ph), g=sn3dFOA(k.az,k.el), a=distGainFOA(k.dist3d);
+        for(let c=0;c<4;c++){ const gn=off.createGain(); gn.gain.value=g[c]*a; node.connect(gn); gn.connect(merger,0,c); }
+      }
+      // Sprowadza dowolny sygnal do jednego kanalu i wysyla go w W (pole bezkierunkowe).
+      function doW(node,gain){
+        const mono=off.createGain(); mono.channelCount=1; mono.channelCountMode='explicit'; mono.channelInterpretation='speakers';
+        mono.gain.value=(gain===undefined?1:gain);
+        node.connect(mono); mono.connect(merger,0,0);
+      }
+
+      // Poglos — te same wezly co w binauralu. W polu ambisonicznym jest rozproszony,
+      // wiec idzie w kanal W (bezkierunkowy), nie w konkretny punkt sceny.
+      let foaRevIn=null;
+      if(includeReverb && reverbState.enabled){
+        const revIn=off.createGain();
+        const pre=off.createBiquadFilter(); pre.type='highpass'; pre.frequency.value=250; pre.Q.value=0.7;
+        const conv=off.createConvolver(); conv.normalize=true; conv.buffer=generateIR(reverbState.roomSize,reverbState.damping);
+        const wet=off.createGain(); wet.gain.value=reverbState.wet;
+        revIn.connect(pre); pre.connect(conv); conv.connect(wet); doW(wet);
+        foaRevIn=revIn;
+      }
+
+      let nPrzestrzenne=0, nBezkierunkowe=0;
+      for(const s of srcs){
+        const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=true;
+        if(s.routing==='direct'){
+          // Zrodla "Bezposrednio" nie maja pozycji na scenie. W FOA sa polem bezkierunkowym
+          // (sam kanal W) — slychac je wszedzie tak samo, dokladnie jak w aplikacji.
+          // Wczesniej byly z pliku AmbiX po cichu wyrzucane.
+          const g=off.createGain(); g.gain.value=s.volume;
+          n.connect(g); doW(g);
+          nBezkierunkowe++;
+        } else {
+          const g=off.createGain(); g.gain.value=s.volume; g.channelCount=2; g.channelCountMode='explicit'; g.channelInterpretation='speakers';
+          const airF=off.createBiquadFilter(); airF.type='lowpass'; airF.Q.value=0.5;
+          const dist3d=Math.sqrt((s.x-S.listener.x)**2+(s.y-S.listener.y)**2+(s.height||0)**2);
+          airF.frequency.value=Math.max(400,20000*Math.exp(-dist3d*0.06));
+          const splitter=off.createChannelSplitter(2);
+          n.connect(g); g.connect(airF); airF.connect(splitter);
+          // Szerokosc zrodla: te same dwa punkty, co pannerL/pannerR w torze binauralnym.
+          const halfW=s.width/2, srad=(s.spreadAngle||0)*Math.PI/180;
+          const ddx=halfW*Math.cos(srad), ddy=halfW*Math.sin(srad), h=s.height||0;
+          const encL=off.createGain(), encR=off.createGain();
+          splitter.connect(encL,0); splitter.connect(encR,1);
+          encodeFOA(encL, s.x-ddx, s.y-ddy, h);
+          encodeFOA(encR, s.x+ddx, s.y+ddy, h);
+          if(foaRevIn){ const rs=off.createGain(); const send=Math.min(0.7,0.05+0.65*(1-1/(1+dist3d*0.12))); rs.gain.value=send; g.connect(rs); rs.connect(foaRevIn); }
+          nPrzestrzenne++;
+        }
+        n.start(0); n.stop(dur);
+      }
+
+      const rendered=await off.startRendering();
+      const chans=[]; let peak=0;
+      for(let c=0;c<4;c++){ const d=rendered.getChannelData(c); chans.push(d); for(let i=0;i<d.length;i++){ const a=Math.abs(d[i]); if(a>peak) peak=a; } }
+      // Jesli scena przekracza 0 dBFS, wyrownanie idzie JEDNYM wspolnym wspolczynnikiem na
+      // wszystkie cztery kanaly. Osobne skalowanie (albo obciecie samego X/Y/Z) przesunelo
+      // by zakodowany kierunek — to wlasnie robil poprzedni zapis 16-bitowy.
+      let norm=1;
+      if(peak>1){ norm=0.999/peak; for(const d of chans) for(let i=0;i<d.length;i++) d[i]*=norm; }
+      ambixBlob=floatArraysToWav32(chans,sr);
+      ambixOpis=`szczyt ${(20*Math.log10(Math.max(peak,1e-9))).toFixed(1)} dBFS`+(norm<1?`, wyrownanie -${(-20*Math.log10(norm)).toFixed(1)} dB wspolne dla 4 kanalow`:'');
+      s2.textContent=`✓ 2/4 AmbiX WAV (4ch ACN/SN3D, 32-bit float) — OK · ${nPrzestrzenne} przestrzennych, ${nBezkierunkowe} bezkierunkowych · ${ambixOpis}`;
+      s2.className='kpo-step done';
     } catch(e){ s2.textContent='✗ 2/4 AmbiX WAV — błąd: '+e.message; s2.className='kpo-step error'; throw e; }
 
     // 3. MAP JPG
@@ -1307,7 +1395,7 @@ async function exportScene(){
         if(src.motion.mode!=='static') txt+=`    Ruch: ${src.motion.mode} (prędkość: ${src.motion.speed.toFixed(1)} m/s)\n`;
         if(src.attrAuthor) txt+=`    Autor: ${src.attrAuthor} (Freesound)\n`;
       });
-      txt+=`\n${'═'.repeat(40)}\nPliki:\n  ${prefix}_BINAURAL.wav — stereo HRTF (2ch, ${sr}Hz)\n  ${prefix}_AMBIX.wav — First Order Ambisonics (4ch ACN/SN3D)\n  ${prefix}_MAPA.jpg — wizualizacja sceny\n  ${prefix}_META.txt — ten plik\n`;
+      txt+=`\n${'═'.repeat(40)}\nPliki:\n  ${prefix}_BINAURAL.wav — stereo HRTF (2ch, 16-bit, ${sr} Hz)\n  ${prefix}_AMBIX.wav — First Order Ambisonics (4ch, 32-bit float, ${sr} Hz)\n      Kolejność ACN: W, Y, Z, X · normalizacja SN3D · azymut dodatni w lewo, elewacja dodatnia w górę\n      Pogłos zakodowany bezkierunkowo (kanał W). Źródła w trybie Bezpośrednio również w kanale W.\n      ${ambixOpis}\n  ${prefix}_MAPA.jpg — wizualizacja sceny\n  ${prefix}_META.txt — ten plik\n\nUWAGA: pozycje źródeł i słuchacza są w obu plikach zamrożone na moment eksportu —\nruch (orbita, ścieżka, ruch losowy) oraz chodzenie po scenie nie są jeszcze utrwalane.\n`;
       metaBlob=new Blob([txt],{type:'text/plain;charset=utf-8'});
       s4.textContent='✓ 4/4 Metadane TXT — OK'; s4.className='kpo-step done';
     } catch(e){ s4.textContent='✗ 4/4 Metadane — błąd: '+e.message; s4.className='kpo-step error'; throw e; }
