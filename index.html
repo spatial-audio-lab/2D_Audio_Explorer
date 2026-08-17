@@ -120,6 +120,10 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .hud-row:last-child { margin-bottom: 0; }
 .hud-label { color: var(--mid); font-size: var(--fs-xs); letter-spacing: 0.2em; text-transform: uppercase; }
 .hud-val { color: var(--cyan); font-weight: 700; font-size: var(--fs-sm); }
+.hud-sep { height: 1px; background: var(--dim); margin: 7px 0 6px; }
+.hud-small .hud-label { font-size: 11px; letter-spacing: 0.14em; }
+.hud-small .hud-val { font-size: var(--fs-xs); }
+.hud-amber { color: var(--amber); }
 .mode-switch-float { position: absolute; top: var(--md); left: 50%; transform: translateX(-50%); display: flex; border: 1px solid var(--dim); background: var(--surface); z-index: 5; }
 .mode-btn { padding: var(--sm) var(--md); background: none; border: none; border-right: 1px solid var(--dim); color: var(--mid); font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
 .mode-btn:last-child { border-right: none; }
@@ -146,7 +150,7 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .acc-head:hover { background: rgba(0,229,204,0.03); }
 .acc-head-left { display: flex; align-items: center; gap: var(--sm); }
 .acc-num { font-family: var(--font-ui); font-size: 22px; font-weight: 300; color: var(--muted); width: 28px; }
-.acc-title { font-size: var(--fs-sm); letter-spacing: 0.15em; text-transform: uppercase; color: var(--white); }
+.acc-title { font-size: var(--fs-sm); letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber); font-weight: 700; }
 .acc-count { font-family: var(--font-ui); font-size: 18px; font-weight: 300; color: var(--cyan); }
 .acc-arrow { font-size: var(--fs-xs); color: var(--mid); transition: transform 0.3s; margin-left: var(--sm); }
 .acc-head.collapsed .acc-arrow { transform: rotate(-90deg); }
@@ -177,7 +181,6 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .btn-sm { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; padding: 4px 10px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.2s; flex: 1; text-align: center; }
 .btn-sm:hover { border-color: var(--cyan); color: var(--cyan); }
 
-.sel-name-label { display: block; font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); margin-bottom: var(--xs); }
 .sel-name { display: block; width: 100%; font-family: var(--font-ui); font-size: var(--fs-lg); font-weight: 300; margin-bottom: var(--sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--amber); background: none; border: 1px solid transparent; border-bottom-color: var(--dim); padding: 4px 2px; transition: border-color 0.2s, background 0.2s; }
 .sel-name:hover:not(:disabled) { border-bottom-color: var(--amber); }
 .sel-name:focus { outline: none; border-color: var(--amber); background: rgba(255,171,0,0.06); }
@@ -190,12 +193,19 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .param-row input[type="range"] { flex: 1; accent-color: var(--cyan); height: 24px; }
 .param-val { font-size: var(--fs-sm); color: var(--cyan); width: 46px; text-align: right; flex-shrink: 0; }
 .param-section { margin-top: var(--sm); padding-top: var(--sm); border-top: 1px solid var(--dim); }
-.param-section-title { font-size: var(--fs-2xs); letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber); margin-bottom: 6px; }
+.param-section-title { font-size: var(--fs-2xs); letter-spacing: 0.15em; text-transform: uppercase; color: var(--white); font-weight: 700; margin-bottom: 6px; }
 .stereo-indicator { display: inline-block; font-size: var(--fs-2xs); letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 6px; border: 1px solid var(--dim); color: var(--mid); margin-left: var(--sm); vertical-align: middle; }
 .stereo-indicator.wide { border-color: rgba(0,229,204,0.3); color: var(--cyan); }
+/* W naglowku podsekcji wskaznik jest samym tekstem — ramka w ramce robi balagan. */
+.sub-summary .stereo-indicator { border: none; padding: 0; margin-left: 0; }
+.sub-summary .stereo-indicator.wide { color: var(--cyan); }
 .routing-toggle { display: flex; gap: 0; margin-bottom: var(--sm); }
-.routing-btn { flex: 1; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; padding: 6px var(--sm); border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.25s; text-align: center; }
-.routing-btn:first-child { border-right: none; }
+.routing-btn { flex: 1; position: relative; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; padding: 6px var(--sm); border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.25s; text-align: center; }
+/* Kazdy przycisk ma pelna ramke, sasiedzi nachodza na siebie o 1 px, a aktywny idzie na
+   wierzch. Wczesniej pierwszy przycisk mial `border-right: none` — przy zaznaczonym SPATIAL
+   jego prawa scianka byla wiec rysowana kolorem sasiada i wygladalo to na brak ramki. */
+.routing-btn + .routing-btn { margin-left: -1px; }
+.routing-btn.active, .routing-btn.active-direct { z-index: 1; }
 .routing-btn:hover { color: var(--white); }
 .routing-btn.active { color: var(--cyan); border-color: var(--cyan); background: rgba(0,229,204,0.06); }
 .routing-btn.active-direct { color: var(--amber); border-color: var(--amber); background: rgba(255,171,0,0.06); }
@@ -215,9 +225,34 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .path-hint { font-size: var(--fs-2xs); color: var(--mid); margin-top: 4px; line-height: 1.5; }
 .path-hint kbd { color: var(--cyan); font-family: inherit; }
 
-.export-label { font-size: var(--fs-xs); color: var(--amber); margin-bottom: var(--xs); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+.export-label { font-size: var(--fs-xs); color: var(--white); margin-bottom: var(--xs); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
 .export-input { width: 100%; background: rgba(240,235,224,0.04); border: 1px solid var(--dim); color: var(--white); font-family: var(--font-mono); font-size: var(--fs-sm); padding: 8px; text-align: left; transition: border-color 0.2s; }
-.export-input:focus { border-color: var(--cyan); }
+.export-input:focus { border-color: var(--cyan); outline: none; }
+.export-input:disabled { opacity: 0.35; cursor: not-allowed; }
+.export-area { font-family: var(--font-ui); font-size: var(--fs-sm); line-height: 1.5; resize: vertical; min-height: 62px; }
+.kpo-hint { font-size: 12px; color: var(--muted); margin-top: 3px; padding: 0 2px; line-height: 1.4; }
+/* Podsekcje rozwijane: Szerokosc stereo, Ruch, Reverb, Opis i autorstwo, Opcje pliku.
+   Domyslnie zwiniete — panel miesci sie wtedy na ekranie bez przewijania, a naglowek
+   pokazuje aktualny stan, wiec nie trzeba rozwijac, zeby wiedziec, co jest ustawione. */
+.sub-box { border: 1px solid var(--border-soft); margin: var(--sm) 0; }
+.sub-summary { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--white); font-weight: 700; padding: 9px 10px; cursor: pointer; display: flex; align-items: center; gap: var(--sm); list-style: none; }
+.sub-summary::-webkit-details-marker { display: none; }
+.sub-summary::after { content: '+'; color: var(--mid); font-weight: 400; }
+.sub-box[open] .sub-summary::after { content: '\2212'; }
+.sub-box[open] { border-color: var(--dim); }
+.sub-summary:hover { background: rgba(0,229,204,0.03); }
+.sub-num { color: var(--muted); font-weight: 400; }
+.sub-key { white-space: nowrap; }
+.sub-state { flex: 1; text-align: right; font-size: 11px; font-weight: 400; color: var(--muted); text-transform: none; letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sub-body { padding: 0 10px 10px; }
+.row-between { display: flex; justify-content: space-between; align-items: center; gap: var(--sm); }
+.opt-check { display: flex; align-items: center; gap: 5px; cursor: pointer; font-family: var(--font-mono); font-size: 12px; font-weight: 400; letter-spacing: 0.1em; text-transform: none; color: var(--mid); }
+.opt-check input { accent-color: var(--cyan); width: 16px; height: 16px; }
+.q-btn { width: 18px; height: 18px; flex-shrink: 0; border: 1px solid var(--dim); background: none; color: var(--mid); font-family: var(--font-mono); font-size: 11px; line-height: 1; cursor: pointer; transition: all 0.2s; }
+.q-btn:hover, .q-btn[aria-expanded="true"] { border-color: var(--cyan); color: var(--cyan); }
+.q-hint { font-size: 12px; color: var(--muted); line-height: 1.5; margin: 4px 0 6px; padding: 6px 8px; border-left: 2px solid var(--dim); }
+.q-hint.hidden { display: none; }
+.field-label { display: block; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; margin: var(--sm) 0 var(--xs); }
 .export-row { display: flex; gap: var(--sm); margin-bottom: var(--sm); }
 .btn-export { flex: 1; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px var(--md); border: 1px solid var(--dim); background: none; color: var(--white); cursor: pointer; transition: all 0.3s; }
 .btn-export:hover { border-color: var(--cyan); color: var(--cyan); }
@@ -269,6 +304,9 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .help-box h2 em { font-style: italic; color: var(--cyan); }
 .help-box h3 { font-size: var(--fs-xs); letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); margin: var(--lg) 0 var(--sm); padding-bottom: var(--xs); border-bottom: 1px solid var(--dim); }
 .help-box p { font-size: var(--fs-md); color: var(--white); line-height: 1.8; margin-bottom: var(--sm); opacity: 0.95; }
+.help-box a { color: var(--cyan); text-decoration: none; border-bottom: 1px solid rgba(0,229,204,0.35); transition: border-color 0.2s, color 0.2s; }
+.help-box a:hover, .help-box a:focus-visible { border-bottom-color: var(--cyan); color: var(--white); outline: none; }
+.help-box em { font-style: normal; color: var(--amber); }
 .help-box kbd { display: inline-block; padding: 2px 6px; border: 1px solid var(--dim); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--cyan); }
 .help-tabs { display: flex; gap: 0; margin: var(--md) 0 var(--sm); border: 1px solid var(--dim); }
 .help-tab { flex: 1; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px var(--md); border: none; border-right: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.25s; }
@@ -296,7 +334,6 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
   border: 1px solid var(--dim); padding: 8px 14px; text-decoration: none; display: inline-flex;
   align-items: center; min-height: 36px; transition: color 0.2s, border-color 0.2s; }
 .hub-back:hover { color: var(--cyan); border-color: var(--cyan); }
-.tool-sub { font-family: var(--font-mono); font-weight: 400; font-size: 0.68em; letter-spacing: 0.1em; text-transform: lowercase; color: var(--mid); }
 .tool-name { font-family: var(--font-ui); font-weight: 500; font-size: 0.85rem; color: var(--white);
   padding-left: 16px; margin-left: 16px; border-left: 1px solid var(--dim); }
 .ctx-status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono);
@@ -385,7 +422,10 @@ input[type="checkbox"] { accent-color: var(--cyan); }
 }
 
 /* --- par.01 semantyka akcentow: amber tylko dla 3D / pozycji / ostrzezen / trybu Direct --- */
-.param-section-title, .export-label, .help-box h3 { color: var(--mid); }
+/* Etykiety kontrolek: jasny bold. Wczesniej byly wygaszone do --mid i ginely,
+   przez co szukanie funkcji w panelu wymagalo wpatrywania sie w ekran. */
+.param-section-title, .export-label, .attr-label, .field-label { color: var(--white); font-weight: 700; }
+.help-box h3 { color: var(--amber); }
 .lib-cat-head .ico { color: var(--mid); }
 .lib-count-badge { color: var(--cyan); font-weight: 400; }
 .lib-badge, .lib-badge.cc0, .lib-badge.stream { color: var(--mid); border-color: var(--dim); }
@@ -399,7 +439,7 @@ input[type="checkbox"] { accent-color: var(--cyan); }
 <body>
 <div class="app-layout edit-mode" id="app">
   <nav class="nav">
-    <div class="nav-brand"><a class="hub-back" href="/">&larr; Hub</a><span class="tool-name">Scena <span class="tool-sub">&middot; scenografia dźwiękowa</span></span></div>
+    <div class="nav-brand"><a class="hub-back" href="/">&larr; Hub</a><span class="tool-name">Scena</span></div>
     <div class="nav-actions"><button class="nav-link" id="helpBtn">Pomoc</button><button class="nav-link" id="libToggle">Biblioteka</button><span class="ctx-status" id="ctxStatus"><span class="ctx-dot"></span><span id="ctxStatusText">Audio Context: Idle</span></span></div>
   </nav>
 
@@ -412,7 +452,12 @@ input[type="checkbox"] { accent-color: var(--cyan); }
 
   <div class="canvas-area" id="canvasArea">
     <canvas id="mainCanvas"></canvas>
-    <div class="hud"><div class="hud-row"><span class="hud-label">POS</span><span class="hud-val" id="hudPos">0.0, 0.0</span></div><div class="hud-row"><span class="hud-label">ROT</span><span class="hud-val" id="hudRot">0°</span></div><div class="hud-row"><span class="hud-label">SRC</span><span class="hud-val" id="hudSrc">0</span></div></div>
+    <div class="hud"><div class="hud-row"><span class="hud-label">POS</span><span class="hud-val" id="hudPos">0.0, 0.0</span></div><div class="hud-row"><span class="hud-label">ROT</span><span class="hud-val" id="hudRot">0°</span></div><div class="hud-row"><span class="hud-label">SRC</span><span class="hud-val" id="hudSrc">0</span></div>
+      <!-- Dystans i absorpcja dotycza wybranego dzwieku i zmieniaja sie, gdy chodzisz po
+           scenie — ich miejsce jest przy podgladzie, nie w panelu, ktory trzeba przewijac. -->
+      <div class="hud-sep"></div>
+      <div class="hud-row hud-small"><span class="hud-label">Dystans</span><span class="hud-val" id="selDist">—</span></div>
+      <div class="hud-row hud-small"><span class="hud-label">Absorpcja</span><span class="hud-val hud-amber" id="selAbsorb">—</span></div></div>
     <div class="mode-switch-float"><button class="mode-btn active" data-mode="edit">Edycja</button><button class="mode-btn" data-mode="explore">Eksploracja</button></div>
     <div class="compass" id="compassBtn" role="button" tabindex="0" aria-label="Wyśrodkuj scenę i obróć na północ" title="Wyśrodkuj i obróć na północ"><span class="compass-n">N</span><div class="compass-needle" id="compassNeedle"></div></div>
     <div class="minimap"><span class="minimap-label">Mapa</span><canvas id="minimapCanvas"></canvas></div>
@@ -421,54 +466,105 @@ input[type="checkbox"] { accent-color: var(--cyan); }
   </div>
 
   <aside class="sidebar" id="sidebar">
-    <div class="acc-panel"><div class="acc-head" data-acc="add" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">01</span><span class="acc-title">Dodaj dźwięki</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="file-drop" id="fileDrop"><div style="font-size:18px;margin-bottom:4px;color:var(--cyan)">+</div><div>Kliknij lub upuść pliki audio</div></div><input type="file" class="hidden-input" id="fileInput" accept="audio/*" multiple></div></div>
+    <div class="acc-panel"><div class="acc-head" data-acc="add" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">1</span><span class="acc-title">Dodaj dźwięki</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="file-drop" id="fileDrop"><div style="font-size:18px;margin-bottom:4px;color:var(--cyan)">+</div><div>Kliknij lub upuść pliki audio</div></div><input type="file" class="hidden-input" id="fileInput" accept="audio/*" multiple></div></div>
 
-    <div class="acc-panel"><div class="acc-head" data-acc="sources" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">02</span><span class="acc-title">Źródła</span></div><span class="acc-count" id="accSrcCount">0</span><span class="acc-arrow">▾</span></div><div class="acc-body" id="accSources"><div class="src-actions-row"><button class="btn-sm" id="playAllBtn">▶ Wszystkie</button><button class="btn-sm" id="stopAllBtn">◼ Stop</button></div><div id="sourcesList"><div class="sources-empty">Brak źródeł dźwięku</div></div></div></div>
+    <div class="acc-panel"><div class="acc-head" data-acc="sources" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">2</span><span class="acc-title">Źródła</span></div><span class="acc-count" id="accSrcCount">0</span><span class="acc-arrow">▾</span></div><div class="acc-body" id="accSources"><div class="src-actions-row"><button class="btn-sm" id="playAllBtn">▶ Wszystkie</button><button class="btn-sm" id="stopAllBtn">◼ Stop</button></div><div id="sourcesList"><div class="sources-empty">Brak źródeł dźwięku</div></div></div></div>
 
-    <div class="acc-panel"><div class="acc-head" data-acc="selected" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">03</span><span class="acc-title">Wybrany</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
-      <!-- Nazwa jest edytowalna: trafia na listę, na mapę JPG, do pliku META i na kulę
-           w Sferze, więc musi być krótka i Twoja, a nie nazwą pliku z dysku. -->
-      <label class="sel-name-label" for="selName">Nazwa dźwięku</label>
+    <div class="acc-panel"><div class="acc-head" data-acc="selected" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">3</span><span class="acc-title">Wybrany dźwięk</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
+      <!-- Nazwa trafia na listę, na mapę JPG, do META i na kulę w Sferze — musi być krótka
+           i własna, a nie nazwą pliku z dysku. -->
+      <label class="field-label" for="selName">Nazwa dźwięku</label>
       <input class="sel-name empty" id="selName" type="text" maxlength="40" disabled
              placeholder="— brak wyboru —" aria-label="Nazwa wybranego dźwięku" />
+
+      <!-- Atrybucja nad przełącznikiem trybu: to metryczka dźwięku, a nie parametr brzmienia. -->
+      <details class="sub-box" id="attrBox">
+        <summary class="sub-summary"><span class="sub-key">Atrybucja</span><span class="sub-state" id="attrState">—</span></summary>
+        <div class="sub-body">
+          <label class="field-label" for="selAuthor">Autor nagrania</label>
+          <input class="export-input" id="selAuthor" type="text" maxlength="80" disabled placeholder="kto nagrał ten dźwięk">
+          <label class="field-label" for="selLicense">Licencja</label>
+          <input class="export-input" id="selLicense" type="text" maxlength="80" disabled list="licenseList" placeholder="np. CC BY 4.0">
+          <label class="field-label" for="selUrl">Link do źródła</label>
+          <input class="export-input" id="selUrl" type="url" maxlength="300" disabled placeholder="https://…">
+        </div>
+      </details>
+
       <div class="routing-toggle" id="routingToggle"><button class="routing-btn active" data-route="spatial">◎ Spatial</button><button class="routing-btn" data-route="direct">♫ Direct Stereo</button></div>
       <div class="param-row"><label>Vol</label><input type="range" id="volSlider" min="0" max="100" value="70"><span class="param-val" id="volVal">70%</span></div>
       <div class="param-row"><label>Wys</label><input type="range" id="heightSlider" min="-100" max="100" value="0"><span class="param-val" id="heightVal">0.0m</span></div>
-      <div id="spatialSection" class="param-section">
-        <div class="param-section-title">Szerokość stereo<span class="stereo-indicator" id="stereoInd">Punkt</span></div>
-        <div class="param-row"><label>Szer.</label><input type="range" id="widthSlider" min="0" max="200" value="0" step="1"><span class="param-val" id="widthVal">0.0m</span></div>
-        <div class="param-row"><label>Kąt</label><input type="range" id="angleSlider" min="-180" max="180" value="0" step="1"><span class="param-val" id="angleVal">0°</span></div>
-        <div style="display:flex;gap:var(--md);margin-top:6px">
-          <div style="flex:1"><div style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)">Dystans</div><div style="font-size:13px;color:var(--cyan);font-weight:700" id="selDist">—</div></div>
-          <div style="flex:1"><div style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)">Absorpcja</div><div style="font-size:13px;color:var(--amber);font-weight:700" id="selAbsorb">—</div></div>
+
+      <div id="spatialSection">
+        <details class="sub-box">
+          <summary class="sub-summary"><span class="sub-num">3.1</span><span class="sub-key">Szerokość stereo</span><span class="sub-state stereo-indicator" id="stereoInd">Punkt</span></summary>
+          <div class="sub-body">
+            <div class="param-row"><label>Szer.</label><input type="range" id="widthSlider" min="0" max="200" value="0" step="1"><span class="param-val" id="widthVal">0.0m</span></div>
+            <div class="param-row"><label>Kąt</label><input type="range" id="angleSlider" min="-180" max="180" value="0" step="1"><span class="param-val" id="angleVal">0°</span></div>
+          </div>
+        </details>
+      </div>
+
+      <details class="sub-box">
+        <summary class="sub-summary"><span class="sub-num">3.2</span><span class="sub-key">Ruch</span><span class="sub-state" id="motionState">Statyczny</span></summary>
+        <div class="sub-body">
+          <div class="motion-mode-row" id="motionModeRow"><button class="motion-mode-btn active" data-motion="static">Statyczny</button><button class="motion-mode-btn" data-motion="orbit">Orbita</button><button class="motion-mode-btn" data-motion="random">Random</button><button class="motion-mode-btn" data-motion="path">Ścieżka</button></div>
+          <div class="param-row"><label>Prędk.</label><input type="range" id="motionSpeed" min="1" max="100" value="20" step="1"><span class="param-val" id="motionSpeedVal">2.0</span></div>
+          <div class="motion-params" id="orbitParams"><div class="param-row"><label>Promień</label><input type="range" id="orbitRadius" min="5" max="200" value="50" step="1"><span class="param-val" id="orbitRadiusVal">5.0m</span></div></div>
+          <div class="motion-params" id="randomParams"><div class="param-row"><label>Zasięg</label><input type="range" id="randomRange" min="10" max="200" value="80" step="1"><span class="param-val" id="randomRangeVal">8.0m</span></div></div>
+          <div class="motion-params" id="pathParams"><div class="path-actions"><button class="btn-sm" id="clearPathBtn">✕ Wyczyść</button></div><div class="path-hint"><kbd>Shift</kbd>+klik na canvas = dodaj punkt ścieżki</div><div class="param-row" style="margin-top:4px"><label>Pętla</label><input type="range" id="pathLoop" min="0" max="1" value="1" step="1"><span class="param-val" id="pathLoopVal">Tak</span></div></div>
         </div>
-      </div>
-      <div class="param-section">
-        <div class="param-section-title">Ruch</div>
-        <div class="motion-mode-row" id="motionModeRow"><button class="motion-mode-btn active" data-motion="static">Statyczny</button><button class="motion-mode-btn" data-motion="orbit">Orbita</button><button class="motion-mode-btn" data-motion="random">Random</button><button class="motion-mode-btn" data-motion="path">Ścieżka</button></div>
-        <div class="param-row"><label>Prędk.</label><input type="range" id="motionSpeed" min="1" max="100" value="20" step="1"><span class="param-val" id="motionSpeedVal">2.0</span></div>
-        <div class="motion-params" id="orbitParams"><div class="param-row"><label>Promień</label><input type="range" id="orbitRadius" min="5" max="200" value="50" step="1"><span class="param-val" id="orbitRadiusVal">5.0m</span></div></div>
-        <div class="motion-params" id="randomParams"><div class="param-row"><label>Zasięg</label><input type="range" id="randomRange" min="10" max="200" value="80" step="1"><span class="param-val" id="randomRangeVal">8.0m</span></div></div>
-        <div class="motion-params" id="pathParams"><div class="path-actions"><button class="btn-sm" id="clearPathBtn">✕ Wyczyść</button></div><div class="path-hint"><kbd>Shift</kbd>+klik na canvas = dodaj punkt ścieżki</div><div class="param-row" style="margin-top:4px"><label>Pętla</label><input type="range" id="pathLoop" min="0" max="1" value="1" step="1"><span class="param-val" id="pathLoopVal">Tak</span></div></div>
-      </div>
+      </details>
     </div></div>
 
-    <div class="acc-panel"><div class="acc-head" data-acc="room" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">04</span><span class="acc-title">Przestrzeń</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
+    <div class="acc-panel"><div class="acc-head" data-acc="room" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">4</span><span class="acc-title">Przestrzeń</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
       <div class="param-row"><label>Master</label><input type="range" id="masterVolSlider" min="0" max="100" value="100"><span class="param-val" id="masterVolVal">100%</span></div>
-      <div class="param-section"><div class="param-section-title">Reverb</div>
-        <div class="param-row"><label>Stan</label><button class="btn-toggle active" id="reverbEnableBtn" aria-pressed="true">Włączony</button></div>
-        <div class="param-row"><label>Wet</label><input type="range" id="reverbWet" min="0" max="100" value="35"><span class="param-val" id="reverbWetVal">35%</span></div>
-        <div class="param-row"><label>Rozmiar</label><input type="range" id="reverbSize" min="0" max="100" value="60"><span class="param-val" id="reverbSizeVal">0.60</span></div>
-        <div class="param-row"><label>Tłum.</label><input type="range" id="reverbDamp" min="0" max="100" value="50"><span class="param-val" id="reverbDampVal">0.50</span></div>
-      </div>
+      <details class="sub-box">
+        <summary class="sub-summary"><span class="sub-num">4.1</span><span class="sub-key">Reverb</span><span class="sub-state" id="reverbState2">Włączony</span></summary>
+        <div class="sub-body">
+          <div class="param-row"><label>Stan</label><button class="btn-toggle active" id="reverbEnableBtn" aria-pressed="true">Włączony</button></div>
+          <div class="param-row"><label>Wet</label><input type="range" id="reverbWet" min="0" max="100" value="35"><span class="param-val" id="reverbWetVal">35%</span></div>
+          <div class="param-row"><label>Rozmiar</label><input type="range" id="reverbSize" min="0" max="100" value="60"><span class="param-val" id="reverbSizeVal">0.60</span></div>
+          <div class="param-row"><label>Tłum.</label><input type="range" id="reverbDamp" min="0" max="100" value="50"><span class="param-val" id="reverbDampVal">0.50</span></div>
+        </div>
+      </details>
     </div></div>
 
-    <div class="acc-panel"><div class="acc-head" data-acc="export" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">05</span><span class="acc-title">Eksport</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
-      <div class="kpo-field"><div class="export-label">Numer sceny</div><input class="export-input" id="sceneNumber" type="text" value="001" placeholder="np. 001"></div>
+    <div class="acc-panel"><div class="acc-head" data-acc="export" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">5</span><span class="acc-title">Eksport</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
+      <div class="kpo-field">
+        <div class="export-label row-between"><span>Numer sceny</span><label class="opt-check"><input type="checkbox" id="sceneNumberOn" checked> numeruj</label></div>
+        <input class="export-input" id="sceneNumber" type="text" value="001" placeholder="np. 001">
+      </div>
       <div class="kpo-field"><div class="export-label">Nazwa sceny / lokalizacji</div><input class="export-input" id="sceneName" type="text" placeholder="np. Las_Deszczowy"></div>
       <div class="kpo-field"><div class="export-label">Czas trwania (s)</div><input class="export-input" id="kpoDuration" type="number" value="30" min="1" max="600"></div>
-      <div class="kpo-field"><div class="export-label" style="display:flex;justify-content:space-between;align-items:center"><span>Data utworzenia</span><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;letter-spacing:0.1em;color:var(--mid)"><input type="checkbox" id="kpoDateManual" style="accent-color:var(--cyan);width:16px;height:16px"> ręcznie</label></div><input class="export-input" id="kpoDate" type="date" style="color-scheme:dark" disabled><div id="kpoDateAuto" style="font-size:12px;color:var(--muted);margin-top:3px;padding:0 2px">auto</div></div>
-      <div class="kpo-field"><div class="export-label" style="display:flex;justify-content:space-between;align-items:center"><span>Reverb w eksporcie</span><label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;letter-spacing:0.1em;color:var(--mid)"><input type="checkbox" id="exportReverb" checked style="accent-color:var(--cyan);width:16px;height:16px"> włącz</label></div></div>
+
+      <details class="sub-box">
+        <summary class="sub-summary"><span class="sub-num">5.1</span><span class="sub-key">Opis i autorstwo</span><span class="sub-state" id="sceneAttrState">nie podano</span></summary>
+        <div class="sub-body">
+          <div class="export-label row-between"><span>Opis sceny</span><button class="q-btn" type="button" data-hint="hintDesc" aria-label="Do czego służy opis sceny">?</button></div>
+          <div class="q-hint hidden" id="hintDesc">Pokaże się w rogu wizualizacji w Sferze, gdy wrzucisz tam plik SCENA.json razem z nagraniem.</div>
+          <textarea class="export-input export-area" id="sceneDesc" rows="3" maxlength="400" placeholder="Co to za miejsce, kiedy nagrane, czego słuchacz ma szukać…"></textarea>
+
+          <label class="field-label" for="sceneAuthor">Autor sceny</label>
+          <input class="export-input" id="sceneAuthor" type="text" maxlength="80" placeholder="imię i nazwisko albo pseudonim">
+
+          <div class="export-label row-between"><span>Licencja sceny</span><button class="q-btn" type="button" data-hint="hintLic" aria-label="Gdzie trafia licencja">?</button></div>
+          <div class="q-hint hidden" id="hintLic">Trafia do pliku META i do SCENA.json, razem z autorami i licencjami poszczególnych dźwięków.</div>
+          <input class="export-input" id="sceneLicense" type="text" maxlength="80" list="licenseList" placeholder="np. CC BY 4.0">
+          <datalist id="licenseList"><option value="CC0 1.0 (domena publiczna)"><option value="CC BY 4.0"><option value="CC BY-SA 4.0"><option value="CC BY-NC 4.0"><option value="Wszystkie prawa zastrzeżone"></datalist>
+        </div>
+      </details>
+
+      <details class="sub-box">
+        <summary class="sub-summary"><span class="sub-num">5.2</span><span class="sub-key">Opcje pliku</span><span class="sub-state" id="fileOptState">pogłos, bez daty</span></summary>
+        <div class="sub-body">
+          <div class="export-label row-between"><span>Data utworzenia</span><label class="opt-check"><input type="checkbox" id="kpoDateManual"> ręcznie</label></div>
+          <input class="export-input" id="kpoDate" type="date" style="color-scheme:dark" disabled>
+          <div id="kpoDateAuto" class="kpo-hint">auto</div>
+          <div class="export-label row-between" style="margin-top:10px"><span>Data na mapie JPG</span><label class="opt-check"><input type="checkbox" id="mapDateOn"> pokaż</label></div>
+          <div class="export-label row-between" style="margin-top:10px"><span>Pogłos w eksporcie</span><label class="opt-check"><input type="checkbox" id="exportReverb" checked> włącz</label></div>
+        </div>
+      </details>
+
       <button class="btn-kpo" id="generateExport">⬇ Eksportuj scenę (5 plików)</button>
       <div id="kpoSteps" style="margin-top:10px"></div>
     </div></div>
@@ -505,7 +601,7 @@ input[type="checkbox"] { accent-color: var(--cyan); }
   <div class="help-tabs" role="tablist">
     <button class="help-tab active" id="helpTabBasic" role="tab" aria-selected="true" aria-controls="helpBasic">Podstawy</button>
     <button class="help-tab" id="helpTabAdvanced" role="tab" aria-selected="false" aria-controls="helpAdvanced">Zaawansowane</button>
-    <button class="help-tab" id="helpTabGlossary" role="tab" aria-selected="false" aria-controls="helpGlossary">Słownik</button>
+    <button class="help-tab" id="helpTabGlossary" role="tab" aria-selected="false" aria-controls="helpGlossary">Banki dźwięków</button>
   </div>
   <div id="helpBasic" class="help-panel" role="tabpanel">
     <h3>Zacznij tutaj</h3>
@@ -513,7 +609,7 @@ input[type="checkbox"] { accent-color: var(--cyan); }
     <p>2. Kliknij i przeciągnij kropkę na środkowym obrazie — tak ustawiasz, skąd w przestrzeni ma być słychać dany dźwięk.</p>
     <p>3. U góry przełącz się z «Edycja» na «Eksploracja» i porusz się po scenie klawiszami <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> (albo strzałkami) — dźwięk będzie się zmieniał zależnie od tego, gdzie jesteś i w którą stronę patrzysz.</p>
     <p>4. Załóż słuchawki — bez nich efekt przestrzenny nie zadziała.</p>
-    <p>Na liście źródeł po prawej możesz kliknąć dowolny dźwięk, żeby zmienić jego głośność suwakiem albo usunąć go przyciskiem ✕. Gdy poczujesz się pewniej, zajrzyj do zakładki «Zaawansowane» — jest tam pogłos, ruch dźwięków w czasie i eksport gotowej sceny. Niezrozumiałe słowo? Sprawdź zakładkę «Słownik».</p>
+    <p>Na liście źródeł po prawej możesz kliknąć dowolny dźwięk, żeby zmienić jego głośność suwakiem albo usunąć go przyciskiem ✕. Gdy poczujesz się pewniej, zajrzyj do zakładki «Zaawansowane» — jest tam pogłos, ruch dźwięków w czasie i eksport gotowej sceny. Nie masz jeszcze materiału? Zakładka «Banki dźwięków» zbiera miejsca, z których można legalnie pobrać nagrania.</p>
   </div>
   <div id="helpAdvanced" class="help-panel" style="display:none" role="tabpanel">
     <h3>Biblioteka dźwięków</h3>
@@ -539,17 +635,50 @@ input[type="checkbox"] { accent-color: var(--cyan); }
     <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> (albo strzałki) — chodzenie po scenie w trybie Eksploracja · <kbd>Q</kbd><kbd>E</kbd> — obracanie się · <kbd>Space</kbd> — odtwórz/zatrzymaj zaznaczony dźwięk · <kbd>Shift</kbd>+klik — dodaj punkt trasy, gdy dźwięk ma tryb ruchu „Ścieżka"</p>
   </div>
   <div id="helpGlossary" class="help-panel" style="display:none" role="tabpanel">
-    <h3>Dźwięk przestrzenny</h3><p>Ogólne określenie na dźwięk, który — w odróżnieniu od zwykłej muzyki z głośników — brzmi tak, jakby dochodził z konkretnego miejsca dookoła Ciebie: z przodu, z tyłu, z boku, z góry czy z daleka. Ta aplikacja właśnie to symuluje.</p>
-    <h3>Binauralny</h3><p>Nagranie lub symulacja stworzona specjalnie pod słuchawki, tak by mózg dał się „oszukać" i uwierzył, że dźwięk dochodzi z realnej przestrzeni dookoła, a nie tylko z lewej i prawej słuchawki. Bez słuchawek ten efekt nie działa poprawnie.</p>
-    <h3>HRTF</h3><p>Skrót od sposobu, w jaki Twoje własne uszy, głowa i barki naturalnie zmieniają dźwięk zależnie od tego, skąd on dochodzi (dlatego łatwo rozpoznajesz „zza pleców" czy „z lewej"). Program matematycznie naśladuje ten efekt, żeby na słuchawkach dało się rozpoznać kierunek dźwięku tak samo, jak w realnym świecie.</p>
-    <h3>Ambisonics / AmbiX / FOA</h3><p>Sposób zapisania całej sceny dźwiękowej dookoła (pełne 360°) w jednym pliku, tak by można było go później odtworzyć w innym programie lub w goglach VR i „rozglądać się" dźwiękiem w dowolną stronę. To zaawansowany format do dalszej pracy w innych narzędziach — większość osób go nie potrzebuje, wystarczy zwykły plik binauralny.</p>
-    <h3>Elewacja</h3><p>Wysokość dźwięku względem słuchacza — czy coś jest wyżej (np. nad głową), czy niżej (np. pod nogami).</p>
-    <h3>Azymut</h3><p>Kierunek w poziomie, z którego dochodzi dźwięk — z przodu, z tyłu, z lewej, z prawej albo gdzieś pomiędzy.</p>
-    <h3>Pogłos / reverb</h3><p>Odbicia dźwięku od ścian, podłogi i przedmiotów w otoczeniu, które sprawiają, że brzmi on jakby był w prawdziwym pomieszczeniu, a nie nagrany „na sucho" w próżni.</p>
-    <h3>Mono / Stereo</h3><p>Mono to jeden, wspólny kanał dźwięku — ten sam sygnał w obu słuchawkach. Stereo to dwa osobne kanały (lewy i prawy), dzięki czemu dźwięk może brzmieć inaczej w każdym uchu — to podstawa efektu przestrzennego.</p>
-    <h3>Częstotliwość (Hz)</h3><p>Określa, jak „wysoki" albo „niski" jest dźwięk — niskie częstotliwości to np. dudnienie basu, wysokie to np. cichy pisk czy syk. Odległe dźwięki tracą wysokie częstotliwości pierwsze — dlatego z daleka brzmią bardziej „stłumione".</p>
-    <h3>Sample rate (częstotliwość próbkowania)</h3><p>Ile razy na sekundę komputer „mierzy" dźwięk, żeby zapisać go cyfrowo. Więcej pomiarów = wierniejszy, dokładniejszy dźwięk, ale też większy plik. Standardowa wartość (44100 Hz) w zupełności wystarcza do normalnego odsłuchu.</p>
-    <h3>WAV</h3><p>Format pliku dźwiękowego bez utraty jakości (w przeciwieństwie np. do mp3) — dlatego pliki eksportowane z tej aplikacji są w tym formacie: brzmią dokładnie tak samo dobrze jak w programie, kosztem trochę większego rozmiaru pliku.</p>
+    <h3>Skąd wziąć dźwięki</h3>
+    <p>Scena nie ma własnej biblioteki nagrań — dźwięki wczytujesz z dysku. Poniżej banki, z których można legalnie pobierać materiał. <strong>Zawsze sprawdzaj licencję konkretnego pliku</strong>: w tych samych serwisach obok siebie leżą nagrania na CC0 i takie, które wymagają podania autora. Stan opisów: sierpień 2026.</p>
+
+    <h3>Freesound</h3>
+    <p><a href="https://freesound.org" target="_blank" rel="noopener">freesound.org</a> — największy i najbardziej różnorodny zbiór. Prowadzony przez Uniwersytet Pompeu Fabra w Barcelonie, wypełniany przez społeczność od 2005 roku. Znajdziesz tu praktycznie wszystko: pojedyncze efekty, długie nagrania terenowe, dźwięki miast, maszyn, zwierząt, pogody.</p>
+    <p><strong>Licencje:</strong> każdy plik ma własną — najczęściej CC0 (bez żadnych warunków), CC BY (trzeba podać autora) albo CC BY-NC (bez zastosowań komercyjnych). <strong>Licencja jest przy każdym pliku osobno i trzeba ją przeczytać przed pobraniem.</strong> Wymaga darmowego konta.</p>
+    <p><strong>Do czego się nadaje:</strong> gdy szukasz czegoś konkretnego i nietypowego. Jakość bywa różna — od nagrań studyjnych po telefon w kieszeni — więc warto odsłuchać przed użyciem.</p>
+
+    <h3>radio aporee ::: maps</h3>
+    <p><a href="https://aporee.org/maps/" target="_blank" rel="noopener">aporee.org/maps</a> — mapa świata pokryta nagraniami terenowymi, przypiętymi do miejsc, w których powstały. Projekt Udo Noll, prowadzony od 2006 roku. To nie jest bank efektów, tylko archiwum <em>miejsc</em>.</p>
+    <p><strong>Licencje:</strong> autor każdego nagrania wybiera przy wgrywaniu jedną z licencji Creative Commons albo domenę publiczną — trzeba więc sprawdzić przy konkretnym pliku.</p>
+    <p><strong>Do czego się nadaje:</strong> tło i atmosfera całej sceny. Regulamin serwisu wprost wyklucza krótkie efekty i miksy — są tam wyłącznie nagrania z prawdziwych miejsc, minimum minuta, w stereo, bez obróbki. Dokładnie ten materiał, z którego buduje się przekonującą scenografię dźwiękową.</p>
+
+    <h3>Pixabay</h3>
+    <p><a href="https://pixabay.com/sound-effects/" target="_blank" rel="noopener">pixabay.com/sound-effects</a> — duży zbiór efektów i muzyki na jednej, wspólnej licencji.</p>
+    <p><strong>Licencja:</strong> własna licencja Pixabay — użycie komercyjne dozwolone, podanie autora nie jest wymagane. Nie wolno natomiast odsprzedawać samych plików ani udostępniać ich jako własnej kolekcji dźwięków.</p>
+    <p><strong>Do czego się nadaje:</strong> gdy potrzebujesz czegoś szybko i bez zastanawiania się nad warunkami. Zbiór jest mniej „terenowy" niż Freesound, za to jednolicie opisany.</p>
+
+    <h3>Mixkit</h3>
+    <p><a href="https://mixkit.co/free-sound-effects/" target="_blank" rel="noopener">mixkit.co/free-sound-effects</a> — starannie wyselekcjonowany, niewielki zbiór efektów i muzyki.</p>
+    <p><strong>Licencja:</strong> Mixkit Free License — użycie komercyjne dozwolone, podanie autora niewymagane. Nie wolno odsprzedawać ani udostępniać plików w niezmienionej postaci jako osobnego produktu.</p>
+    <p><strong>Do czego się nadaje:</strong> czyste, gotowe efekty o przewidywalnej jakości. Mało tu nagrań terenowych, dużo dźwięków „użytkowych".</p>
+
+    <h3>BBC Sound Effects</h3>
+    <p><a href="https://sound-effects.bbcrewind.co.uk" target="_blank" rel="noopener">sound-effects.bbcrewind.co.uk</a> — ponad 30 tysięcy nagrań z archiwum BBC, część sięga lat trzydziestych. Nagrania historyczne, maszyny, transport, zwierzęta, atmosfery miejsc.</p>
+    <p><strong>Licencja:</strong> RemArc License — <strong>tylko do celów osobistych, edukacyjnych i badawczych</strong>. Do użycia komercyjnego trzeba wykupić osobną licencję. Przy pracy stypendialnej i pokazach niekomercyjnych warunki zwykle są spełnione, ale <strong>przed publikacją komercyjną sprawdź warunki na stronie</strong>.</p>
+    <p><strong>Do czego się nadaje:</strong> materiał archiwalny i dźwięki, których dziś już się nie nagra.</p>
+
+    <h3>Jak używać pobranego pliku w Scenie</h3>
+    <p>Panel <strong>01 Dodaj dźwięki</strong> po prawej — kliknij albo przeciągnij na niego pliki z dysku. Obsługiwane są wszystkie formaty, które umie odtworzyć przeglądarka: WAV, MP3, OGG, Opus, FLAC, M4A. Każdy plik ląduje w losowym miejscu sceny; potem przeciągasz go myszą tam, gdzie ma być.</p>
+    <p>Po wczytaniu nazwa jest sprzątana automatycznie — rozszerzenie, numer i podkreślenia znikają. Możesz ją zmienić w panelu <strong>03 Wybrany</strong>. Ta nazwa pojawi się na liście, na eksportowanej mapie i jako podpis punktu w Sferze, więc warto, żeby była krótka i mówiła, co to za dźwięk.</p>
+
+    <h3>Prawa autorskie — o czym trzeba pamiętać</h3>
+    <p>„Darmowe" nie znaczy „bez warunków". Trzy najczęstsze przypadki:</p>
+    <p><strong>CC0 / domena publiczna</strong> — możesz wszystko, autor zrzekł się praw. Podanie źródła nie jest wymagane, ale jest w dobrym tonie.</p>
+    <p><strong>CC BY</strong> — możesz wszystko, <em>pod warunkiem że podasz autora</em>. Jeśli nie podasz, łamiesz licencję. Właśnie po to w panelu <strong>03 Wybrany</strong> jest sekcja <strong>Autor i licencja</strong>: wpisz tam autora, licencję i link, a wszystko trafi do pliku META i do pliku JSON razem z gotową sceną.</p>
+    <p><strong>CC BY-NC oraz licencje typu RemArc</strong> — użycie niekomercyjne. Prezentacja w ramach stypendium czy pokaz w galerii zwykle się mieści, sprzedaż nagrania już nie.</p>
+    <p>Zapisuj autora i licencję <em>od razu przy wczytaniu pliku</em>, a nie na końcu pracy. Po tygodniu nikt już nie pamięta, skąd pochodził dwudziesty dźwięk w scenie.</p>
+
+    <h3>Scena i Sfera — jak współpracują</h3>
+    <p>To dwie aplikacje, które robią dwie różne rzeczy z tym samym materiałem.</p>
+    <p><strong>Scena</strong> (ta aplikacja) to warsztat: układasz w niej dźwięki wokół słuchacza, ustawiasz ich odległość, wysokość, szerokość i pogłos, a na końcu eksportujesz gotową scenę do pięciu plików.</p>
+    <p><strong>Sfera</strong> to odsłuch: wczytujesz do niej wyeksportowany plik <strong>AMBIX</strong> i możesz obracać całym polem dźwiękowym wokół nieruchomej głowy — sprawdzić, jak scena brzmi, gdy się w niej odwrócisz. Jeśli wrzucisz razem z nagraniem plik <strong>SCENA.json</strong>, na kuli zapalą się nazwane punkty w miejscach Twoich dźwięków, pulsujące w rytm głośności każdego z nich, a w rogu pojawi się opis sceny, autor i licencja.</p>
+    <p><strong>Który plik do czego:</strong> <em>BINAURAL</em> to gotowe nagranie na słuchawki — brzmi dokładnie tak, jak scena w tej aplikacji, i to jego zwykle chcesz komuś wysłać. <em>AMBIX</em> to wersja do dalszej obróbki i do Sfery; da się nią obracać, ale jest z natury nieco mniej ostra kierunkowo, bo cała kula jest w niej opisana czterema kanałami. <em>MAPA</em>, <em>META</em> i <em>SCENA.json</em> to dokumentacja: obrazek, opis dla człowieka i opis dla maszyny.</p>
   </div>
   <button class="help-close-btn" id="helpClose">Zamknij</button>
 </div></div>
@@ -627,6 +756,7 @@ const compassNeedle=$('compassNeedle'), hudPos=$('hudPos'), hudRot=$('hudRot'), 
 const targetIndicator=$('targetIndicator'), toastEl=$('toast');
 const fileInput=$('fileInput'), fileDrop=$('fileDrop');
 const sourcesList=$('sourcesList'), selName=$('selName');
+const selAuthor=$('selAuthor'), selLicense=$('selLicense'), selUrl=$('selUrl'), attrState=$('attrState');
 const volSlider=$('volSlider'), volVal=$('volVal');
 const heightSlider=$('heightSlider'), heightVal=$('heightVal'), selDist=$('selDist'), selAbsorb=$('selAbsorb');
 const widthSlider=$('widthSlider'), widthVal=$('widthVal');
@@ -745,7 +875,14 @@ function findInLib(id){ if(!libraryData) return null; for(const c of libraryData
 function updateLibBtns(){ const ids=new Set(S.sources.map(s=>s.libraryId).filter(Boolean)); libTree.querySelectorAll('[data-add]').forEach(b=>{ if(ids.has(b.dataset.add)){b.classList.add('in-scene');b.classList.remove('loading');b.textContent='✓';}else{b.classList.remove('in-scene');if(!b.classList.contains('loading'))b.textContent='+';}}); }
 libSearch.addEventListener('input', () => { libSearchQuery=libSearch.value; if(libraryData) renderLibTree(); });
 
-function applyAttr(src, def){ if(def.license?.attribution && src){ src.attrAuthor=def.author; src.attrUrl=def.freesound_url; } }
+function applyAttr(src, def){
+  if(!src) return;
+  // Biblioteka podaje autora tylko przy licencjach wymagajacych uznania autorstwa,
+  // ale zrodlo warto zapisac zawsze — przy CC0 tez wypada podac, skad sie wzielo.
+  if(def.author) src.attrAuthor=def.author;
+  if(def.freesound_url) src.attrUrl=def.freesound_url;
+  if(def.license) src.attrLicense=def.license.name || (def.license.attribution?'CC BY':'CC0');
+}
 async function loadFromLib(def, btn){
   const row=btn?btn.closest('.lib-sound'):null;
   if(btn){ btn.classList.add('loading'); btn.textContent='…'; }
@@ -785,7 +922,7 @@ function buildSrc(id, name, x, y, vol, libId){
     playing:false, node:null,
     gain, airFilter, splitter, pannerL, pannerR, reverbSend,
     libraryId:libId||null, isStream:false, audioElement:null, mediaSource:null,
-    attrAuthor:null, attrUrl:null,
+    attrAuthor:null, attrLicense:null, attrUrl:null,
     motion:{ mode:'static', speed:2, orbitRadius:5, orbitAngle:0, originX:x, originY:y,
       randomRange:8, randomTX:x, randomTY:y, randomTimer:0,
       waypoints:[], pathIndex:0, pathLoop:true, pathDir:1 }
@@ -929,11 +1066,14 @@ function removeSource(id){
   if(s.audioElement) s.audioElement.src='';
   delete S.buffers[id]; S.sources.splice(i,1); renderSources(); updateLibBtns(); showToast('Usunięto');
 }
-function selectSource(s){ S.selectedSource=s; updateSel(); renderSources(); }
+function selectSource(s){ S.selectedSource=s; updateSel(); renderSources(); syncSubStates(); }
 function updateSel(){
   const s=S.selectedSource;
   if(s){
     selName.value=s.name; selName.disabled=false; selName.classList.remove('empty');
+    selAuthor.value=s.attrAuthor||''; selLicense.value=s.attrLicense||''; selUrl.value=s.attrUrl||'';
+    selAuthor.disabled=false; selLicense.disabled=false; selUrl.disabled=false;
+    syncAttrState(s);
     volSlider.value=Math.round(s.volume*100); volVal.textContent=volSlider.value+'%';
     heightSlider.value=Math.round((s.height||0)*10); heightVal.textContent=(s.height||0).toFixed(1)+'m';
     widthSlider.value=Math.round(s.width*10); widthVal.textContent=s.width.toFixed(1)+'m';
@@ -950,6 +1090,9 @@ function updateSel(){
     orbitParams.classList.toggle('open',mo.mode==='orbit'); randomParams.classList.toggle('open',mo.mode==='random'); pathParams.classList.toggle('open',mo.mode==='path');
   } else {
     selName.value=''; selName.disabled=true; selName.classList.add('empty'); selDist.textContent='—'; selAbsorb.textContent='—';
+    selAuthor.value=''; selLicense.value=''; selUrl.value='';
+    selAuthor.disabled=true; selLicense.disabled=true; selUrl.disabled=true;
+    attrState.textContent='—';
     widthSlider.value=0; widthVal.textContent='0.0m'; angleSlider.value=0; angleVal.textContent='0°';
     stereoInd.textContent='Punkt'; stereoInd.classList.remove('wide');
     routingToggle.querySelectorAll('.routing-btn').forEach(b=>b.classList.remove('active','active-direct'));
@@ -962,7 +1105,7 @@ function updateSel(){
 
 // RENDER SOURCE LIST
 function renderSources(){
-  $('accSrcCount').textContent=String(S.sources.length).padStart(2,'0');
+  $('accSrcCount').textContent=String(S.sources.length);
   hudSrc.textContent=S.sources.length;
   if(!S.sources.length){ sourcesList.innerHTML='<div class="sources-empty">Brak źródeł dźwięku</div>'; updateCounters(); return; }
   sourcesList.innerHTML=S.sources.map((s,i)=>{
@@ -972,7 +1115,7 @@ function renderSources(){
     const mTag=s.motion.mode!=='static'?' · '+s.motion.mode:'';
     const hAbs=Math.abs(s.height||0);
     const hTag=hAbs>0.2?' · '+(s.height>0?'↑':'↓')+hAbs.toFixed(1)+'m':'';
-    return `<div class="source-item ${S.selectedSource===s?'selected':''} ${s.playing?'playing':''}" data-id="${s.id}" role="button" tabindex="0" aria-label="Zaznacz źródło ${s.name}"><div class="src-num">${String(i+1).padStart(2,'0')}</div><div class="src-info"><div class="src-name">${s.name}</div><div class="src-meta">${d}m · ${Math.round(s.volume*100)}%${hTag}${wTag}${rTag}${mTag}${s.isStream?' · stream':''}</div></div><button class="src-btn ${s.playing?'active':''}" data-a="t" aria-label="${s.playing?'Zatrzymaj':'Odtwórz'} ${s.name}">${s.playing?'‖':'▶'}</button><button class="src-btn del" data-a="d" aria-label="Usuń ${s.name}">✕</button></div>`;
+    return `<div class="source-item ${S.selectedSource===s?'selected':''} ${s.playing?'playing':''}" data-id="${s.id}" role="button" tabindex="0" aria-label="Zaznacz źródło ${s.name}"><div class="src-num">${i+1}</div><div class="src-info"><div class="src-name">${s.name}</div><div class="src-meta">${d}m · ${Math.round(s.volume*100)}%${hTag}${wTag}${rTag}${mTag}${s.isStream?' · stream':''}</div></div><button class="src-btn ${s.playing?'active':''}" data-a="t" aria-label="${s.playing?'Zatrzymaj':'Odtwórz'} ${s.name}">${s.playing?'‖':'▶'}</button><button class="src-btn del" data-a="d" aria-label="Usuń ${s.name}">✕</button></div>`;
   }).join('');
   sourcesList.querySelectorAll('.source-item').forEach(el=>{
     const s=S.sources.find(x=>x.id===el.dataset.id);
@@ -1004,6 +1147,50 @@ $('playAllBtn').addEventListener('click', ()=>S.sources.forEach(s=>playSource(s)
 $('stopAllBtn').addEventListener('click', ()=>S.sources.forEach(s=>stopSource(s)));
 $('tPlayAll').addEventListener('click', ()=>{ S.sources.some(s=>s.playing)?S.sources.forEach(s=>stopSource(s)):S.sources.forEach(s=>playSource(s)); });
 $('tStopAll').addEventListener('click', ()=>S.sources.forEach(s=>stopSource(s)));
+// Numer sceny jest opcjonalny. Wylaczony — pliki nazywaja sie samym tytulem sceny,
+// a numer nie pojawia sie ani w META, ani na mapie JPG.
+(function(){
+  const cb=$('sceneNumberOn'), inp=$('sceneNumber');
+  function sync(){ inp.disabled=!cb.checked; }
+  cb.addEventListener('change', sync); sync();
+})();
+
+// Wyjasnienia siedza pod znakiem zapytania, zeby nie zajmowac miejsca na stale.
+document.querySelectorAll('.q-btn').forEach(b=>{
+  b.setAttribute('aria-expanded','false');
+  b.addEventListener('click', ()=>{
+    const el=$(b.dataset.hint); if(!el) return;
+    const open=el.classList.toggle('hidden');
+    b.setAttribute('aria-expanded', open?'false':'true');
+  });
+});
+
+// Naglowki podsekcji pokazuja stan bez rozwijania — dzieki temu zwiniety panel
+// nadal mowi, co jest ustawione.
+const MOTION_LABEL={static:'Statyczny',orbit:'Orbita',random:'Random',path:'Ścieżka'};
+function syncSubStates(){
+  const s=S.selectedSource;
+  const ms=$('motionState'); if(ms) ms.textContent=s?(MOTION_LABEL[s.motion.mode]||'—'):'—';
+  const rs=$('reverbState2');
+  if(rs) rs.textContent=reverbState.enabled?('włączony · '+Math.round(reverbState.wet*100)+'%'):'wyłączony';
+  const sa=$('sceneAttrState');
+  if(sa){
+    const parts=[];
+    if(($('sceneDesc').value||'').trim()) parts.push('opis');
+    if(($('sceneAuthor').value||'').trim()) parts.push(($('sceneAuthor').value||'').trim());
+    if(($('sceneLicense').value||'').trim()) parts.push(($('sceneLicense').value||'').trim());
+    sa.textContent=parts.length?parts.join(' · '):'nie podano';
+  }
+  const fo=$('fileOptState');
+  if(fo){
+    const p=[]; p.push($('exportReverb').checked?'pogłos':'bez pogłosu');
+    p.push($('mapDateOn').checked?'data na mapie':'bez daty');
+    fo.textContent=p.join(', ');
+  }
+}
+['sceneDesc','sceneAuthor','sceneLicense'].forEach(id=>$(id).addEventListener('input', syncSubStates));
+['exportReverb','mapDateOn'].forEach(id=>$(id).addEventListener('change', syncSubStates));
+
 // Nazwa dzwieku — zmieniana w locie, bez przycisku "zapisz". Pusta wraca do poprzedniej,
 // zeby zaden obiekt nie wyladowal na kuli w Sferze bez podpisu.
 selName.addEventListener('input', ()=>{
@@ -1017,6 +1204,18 @@ selName.addEventListener('blur', ()=>{
 });
 selName.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); selName.blur(); } });
 
+// Autorstwo i licencja pojedynczego dzwieku — zapisywane od razu, bez przycisku.
+function syncAttrState(s){
+  const parts=[]; if(s.attrAuthor) parts.push(s.attrAuthor); if(s.attrLicense) parts.push(s.attrLicense);
+  attrState.textContent=parts.length?parts.join(' · '):'nie podano';
+}
+[[selAuthor,'attrAuthor'],[selLicense,'attrLicense'],[selUrl,'attrUrl']].forEach(([el,key])=>{
+  el.addEventListener('input', ()=>{
+    const s=S.selectedSource; if(!s) return;
+    s[key]=el.value.trim()||null; syncAttrState(s);
+  });
+});
+
 volSlider.addEventListener('input', ()=>{ volVal.textContent=volSlider.value+'%'; if(S.selectedSource){ S.selectedSource.volume=volSlider.value/100; S.selectedSource.gain.gain.setValueAtTime(S.selectedSource.volume,audioCtx.currentTime); renderSources(); } });
 heightSlider.addEventListener('input', ()=>{ const h=heightSlider.value/10; heightVal.textContent=h.toFixed(1)+'m'; if(S.selectedSource){ S.selectedSource.height=h; updPanners(S.selectedSource); } });
 routingToggle.querySelectorAll('.routing-btn').forEach(btn=>{ btn.addEventListener('click', e=>{ e.stopPropagation(); if(!S.selectedSource) return; setRouting(S.selectedSource,btn.dataset.route); updateSel(); renderSources(); showToast(btn.dataset.route==='direct'?'♫ Direct Stereo':'◎ Spatial HRTF'); }); });
@@ -1026,7 +1225,7 @@ angleSlider.addEventListener('input', ()=>{ angleVal.textContent=angleSlider.val
 // MOTION CONTROLS
 motionModeRow.querySelectorAll('.motion-mode-btn').forEach(btn=>{ btn.addEventListener('click', e=>{ e.stopPropagation(); if(!S.selectedSource) return; const mode=btn.dataset.motion, mo=S.selectedSource.motion;
   if((mode==='orbit'||mode==='random')&&mo.mode!==mode){ mo.originX=S.selectedSource.x; mo.originY=S.selectedSource.y; if(mode==='orbit') mo.orbitAngle=0; if(mode==='random'){mo.randomTX=S.selectedSource.x; mo.randomTY=S.selectedSource.y; mo.randomTimer=0;} }
-  mo.mode=mode; updateSel(); showToast('Ruch: '+{static:'Statyczny',orbit:'Orbita',random:'Random Walk',path:'Ścieżka'}[mode]); }); });
+  mo.mode=mode; updateSel(); syncSubStates(); showToast('Ruch: '+{static:'Statyczny',orbit:'Orbita',random:'Random Walk',path:'Ścieżka'}[mode]); }); });
 motionSpeed.addEventListener('input', ()=>{ const v=motionSpeed.value/10; motionSpeedVal.textContent=v.toFixed(1); if(S.selectedSource) S.selectedSource.motion.speed=v; });
 orbitRadiusEl.addEventListener('input', ()=>{ const v=orbitRadiusEl.value/10; orbitRadiusVal.textContent=v.toFixed(1)+'m'; if(S.selectedSource) S.selectedSource.motion.orbitRadius=v; });
 randomRangeEl.addEventListener('input', ()=>{ const v=randomRangeEl.value/10; randomRangeVal.textContent=v.toFixed(1)+'m'; if(S.selectedSource) S.selectedSource.motion.randomRange=v; });
@@ -1039,10 +1238,11 @@ function setReverbEnabled(on){
   reverbState.enabled=on;
   const btn=$('reverbEnableBtn'); btn.textContent=on?'Włączony':'Wyłączony'; btn.classList.toggle('active',on); btn.setAttribute('aria-pressed',on?'true':'false');
   reverbOutput.gain.setTargetAtTime(on?reverbState.wet:0,audioCtx.currentTime,0.05);
+  syncSubStates();
   for(const s of S.sources) updateReverbSend(s);
 }
 $('reverbEnableBtn').addEventListener('click', ()=>setReverbEnabled(!reverbState.enabled));
-$('reverbWet').addEventListener('input', ()=>{ const v=$('reverbWet').value/100; $('reverbWetVal').textContent=$('reverbWet').value+'%'; reverbState.wet=v; if(reverbState.enabled) reverbOutput.gain.setTargetAtTime(v,audioCtx.currentTime,0.05); });
+$('reverbWet').addEventListener('input', ()=>{ const v=$('reverbWet').value/100; $('reverbWetVal').textContent=$('reverbWet').value+'%'; reverbState.wet=v; if(reverbState.enabled) reverbOutput.gain.setTargetAtTime(v,audioCtx.currentTime,0.05); syncSubStates(); });
 let reverbUpdateTimer=null;
 function scheduleReverbUpdate(){ if(reverbUpdateTimer) clearTimeout(reverbUpdateTimer); reverbUpdateTimer=setTimeout(()=>{ updateReverb(); showToast('Reverb zaktualizowany'); },300); }
 $('reverbSize').addEventListener('input', ()=>{ const v=$('reverbSize').value/100; $('reverbSizeVal').textContent=v.toFixed(2); reverbState.roomSize=v; scheduleReverbUpdate(); });
@@ -1065,7 +1265,15 @@ $('helpClose').addEventListener('click', ()=>$('helpOverlay').classList.remove('
 $('helpOverlay').addEventListener('click', e=>{ if(e.target===$('helpOverlay')) $('helpOverlay').classList.remove('open'); });
 
 // KEYBOARD
-document.addEventListener('keydown', e=>{ if(e.target.tagName==='INPUT') return; S.keys[e.code]=true; if(e.code==='Space'){ e.preventDefault(); if(S.selectedSource){ S.selectedSource.playing?stopSource(S.selectedSource):playSource(S.selectedSource); } } });
+// Skroty klawiszowe milkna, gdy uzytkownik pisze. Wczesniej sprawdzany byl tylko
+// tagName==='INPUT', wiec spacja w polu OPISU SCENY (textarea) zatrzymywala odtwarzanie
+// zamiast wpisac odstep. Liczy sie kazde pole edytowalne, lacznie z contenteditable.
+function pisze(t){
+  if(!t) return false;
+  const tag=t.tagName;
+  return tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||t.isContentEditable;
+}
+document.addEventListener('keydown', e=>{ if(pisze(e.target)) return; S.keys[e.code]=true; if(e.code==='Space'){ e.preventDefault(); if(S.selectedSource){ S.selectedSource.playing?stopSource(S.selectedSource):playSource(S.selectedSource); } } });
 document.addEventListener('keyup', e=>{ S.keys[e.code]=false; });
 
 // MOUSE / TOUCH
@@ -1316,15 +1524,19 @@ function exportStep(msg, status='active'){
 
 async function exportScene(){
   const btn=$('generateExport');
-  const nr=($('sceneNumber').value||'001').trim();
+  const numerOn=$('sceneNumberOn').checked;
+  const nr=numerOn ? ($('sceneNumber').value||'001').trim() : '';
   const nm=($('sceneName').value||'Scena').trim().replace(/\s+/g,'_');
+  const opisSceny=($('sceneDesc').value||'').trim();
+  const autorSceny=($('sceneAuthor').value||'').trim();
+  const licencjaSceny=($('sceneLicense').value||'').trim();
   const dur=parseFloat($('kpoDuration').value)||30;
   // Czestotliwosc probkowania DZIEDZICZONA z zywego kontekstu, nie zaszyta na 44100.
   // Powod: `generateIR()` buduje odpowiedz impulsowa pogloso w `audioCtx.sampleRate`, wiec na
   // karcie 48 kHz `ConvolverNode` odmawial jej przyjecia ("buffer sample rate 48000 does not
   // match the context rate 44100") i PRZERYWAL caly eksport. Przy okazji: bufory zrodel tez
   // sa dekodowane w tej czestotliwosci, wiec teraz nic nie jest po drodze przepróbkowywane.
-  const sr=audioCtx.sampleRate, prefix=`SAL_SCENA_${nr}_${nm}`;
+  const sr=audioCtx.sampleRate, prefix=numerOn ? `SAL_SCENA_${nr}_${nm}` : `SAL_SCENA_${nm}`;
   const includeReverb=$('exportReverb').checked;
   const stepsEl=$('kpoSteps');
   btn.disabled=true; btn.textContent='⏳ Generowanie…'; stepsEl.innerHTML='';
@@ -1490,6 +1702,7 @@ async function exportScene(){
       for(const s of srcs){
         const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=true;
         const objMeta={ name:s.name, routing:s.routing, volume:+(s.volume.toFixed(3)),
+                        author:s.attrAuthor||null, license:s.attrLicense||null, sourceUrl:s.attrUrl||null,
                         level:{ hz:LEVEL_HZ, encoding:'uint8-db', dbFloor:LEVEL_FLOOR_DB,
                                 values:levelEnvelope(S.buffers[s.id],dur) } };
         sceneObjects.push(objMeta);
@@ -1547,8 +1760,10 @@ async function exportScene(){
       const snap=document.createElement('canvas'); snap.width=1200; snap.height=900;
       const sc2=snap.getContext('2d'), sc=Math.min(snap.width,snap.height)/(S.worldSize*2), cxM=snap.width/2, cyM=snap.height/2;
       sc2.fillStyle='#0A0C08'; sc2.fillRect(0,0,snap.width,snap.height);
-      sc2.fillStyle='#9C9890'; sc2.font="bold 14px 'Azeret Mono',monospace"; sc2.fillText(`SAL SCENA ${nr} — ${nm.replace(/_/g,' ')}`,20,28);
-      sc2.fillStyle='#9C9890'; sc2.font="11px 'Azeret Mono',monospace"; sc2.fillText(`Czas: ${dur}s · Źródeł: ${srcs.length} · ${window._getDate()}`,20,48);
+      sc2.fillStyle='#9C9890'; sc2.font="bold 14px 'Azeret Mono',monospace"; sc2.fillText(numerOn?`SAL SCENA ${nr} — ${nm.replace(/_/g,' ')}`:`SAL — ${nm.replace(/_/g,' ')}`,20,28);
+      sc2.fillStyle='#9C9890'; sc2.font="11px 'Azeret Mono',monospace";
+      // Data na obrazku jest opcjonalna — komplet danych i tak siedzi w META i w JSON.
+      sc2.fillText(`Czas: ${dur}s · Źródeł: ${srcs.length}`+($('mapDateOn').checked?` · ${window._getDate()}`:''),20,48);
       sc2.save(); sc2.translate(cxM,cyM);
       sc2.strokeStyle='rgba(0,229,204,0.06)';sc2.lineWidth=1;
       for(let i=-S.worldSize;i<=S.worldSize;i+=5){sc2.beginPath();sc2.moveTo(i*sc,-S.worldSize*sc);sc2.lineTo(i*sc,S.worldSize*sc);sc2.stroke();sc2.beginPath();sc2.moveTo(-S.worldSize*sc,i*sc);sc2.lineTo(S.worldSize*sc,i*sc);sc2.stroke();}
@@ -1586,7 +1801,7 @@ async function exportScene(){
     const s4=exportStep('4/5 Metadane TXT…');
     let metaBlob;
     try {
-      let txt=`SAL — Spatial Audio Lab\n${'═'.repeat(40)}\nScena: ${nr} — ${nm.replace(/_/g,' ')}\nData: ${window._getDateFull()}\nCzas trwania: ${dur}s\nSample rate: ${sr} Hz\nReverb: ${includeReverb&&reverbState.enabled?'Tak (rozmiar:'+reverbState.roomSize.toFixed(2)+', tłumienie:'+reverbState.damping.toFixed(2)+', wet:'+Math.round(reverbState.wet*100)+'%)':'Nie'}\n\nListener: x=${S.listener.x.toFixed(2)}, y=${S.listener.y.toFixed(2)}, angle=${Math.round(S.listener.angle)}°\n\nŹródła (${srcs.length}):\n${'─'.repeat(40)}\n`;
+      let txt=`SAL — Spatial Audio Lab\n${'═'.repeat(40)}\nScena: ${numerOn?nr+' — ':''}${nm.replace(/_/g,' ')}\n${autorSceny?'Autor sceny: '+autorSceny+'\n':''}${licencjaSceny?'Licencja sceny: '+licencjaSceny+'\n':''}${opisSceny?'\nOpis:\n'+opisSceny+'\n':''}\nData: ${window._getDateFull()}\nCzas trwania: ${dur}s\nSample rate: ${sr} Hz\nReverb: ${includeReverb&&reverbState.enabled?'Tak (rozmiar:'+reverbState.roomSize.toFixed(2)+', tłumienie:'+reverbState.damping.toFixed(2)+', wet:'+Math.round(reverbState.wet*100)+'%)':'Nie'}\n\nListener: x=${S.listener.x.toFixed(2)}, y=${S.listener.y.toFixed(2)}, angle=${Math.round(S.listener.angle)}°\n\nŹródła (${srcs.length}):\n${'─'.repeat(40)}\n`;
       srcs.forEach((src,i)=>{
         const dist=Math.sqrt((src.x-S.listener.x)**2+(src.y-S.listener.y)**2+(src.height||0)**2);
         txt+=`\n${String(i+1).padStart(2,'0')}. ${src.name}\n    Routing: ${src.routing}\n    Pozycja: x=${src.x.toFixed(2)}, y=${src.y.toFixed(2)}${(src.height||0)>0.1?', h='+src.height.toFixed(2)+'m':''}\n    Dystans: ${dist.toFixed(2)}m\n    Głośność: ${Math.round(src.volume*100)}%\n`;
@@ -1596,7 +1811,9 @@ async function exportScene(){
           if(src.width>0.05) txt+=`    Szerokość stereo: ${src.width.toFixed(1)}m @ ${Math.round(src.spreadAngle)}°\n`;
         }
         if(src.motion.mode!=='static') txt+=`    Ruch: ${src.motion.mode} (prędkość: ${src.motion.speed.toFixed(1)} m/s)\n`;
-        if(src.attrAuthor) txt+=`    Autor: ${src.attrAuthor} (Freesound)\n`;
+        if(src.attrAuthor) txt+=`    Autor: ${src.attrAuthor}\n`;
+        if(src.attrLicense) txt+=`    Licencja: ${src.attrLicense}\n`;
+        if(src.attrUrl) txt+=`    Źródło: ${src.attrUrl}\n`;
       });
       txt+=`\n${'═'.repeat(40)}\nPliki:\n  ${prefix}_BINAURAL.wav — stereo HRTF (2ch, 16-bit, ${sr} Hz)\n  ${prefix}_AMBIX.wav — First Order Ambisonics (4ch, 32-bit float, ${sr} Hz)\n      Kolejność ACN: W, Y, Z, X · normalizacja SN3D · azymut dodatni w lewo, elewacja dodatnia w górę\n      Pogłos zakodowany bezkierunkowo (kanał W). Źródła w trybie Bezpośrednio również w kanale W.\n      ${ambixOpis}\n  ${prefix}_MAPA.jpg — wizualizacja sceny\n  ${prefix}_META.txt — ten plik\n  ${prefix}_SCENA.json — ten sam opis maszynowo, dla Sfery\n      (nazwy obiektow, azymut/elewacja w stopniach, obwiednia glosnosci 50 Hz)\n\nUWAGA: pozycje źródeł i słuchacza są w obu plikach zamrożone na moment eksportu —\nruch (orbita, ścieżka, ruch losowy) oraz chodzenie po scenie nie są jeszcze utrwalane.\n`;
       metaBlob=new Blob([txt],{type:'text/plain;charset=utf-8'});
@@ -1613,7 +1830,9 @@ async function exportScene(){
       const scene={
         format:'sal-scene',
         version:1,
-        scene:{ number:nr, name:nm.replace(/_/g,' '), date:window._getDateFull(), duration:dur, sampleRate:sr },
+        scene:{ number:numerOn?nr:null, name:nm.replace(/_/g,' '), description:opisSceny||null,
+                author:autorSceny||null, license:licencjaSceny||null,
+                date:window._getDateFull(), duration:dur, sampleRate:sr },
         audioFile:prefix+'_AMBIX.wav',
         // Konwencja kierunku — ta sama, co w naglowku AmbiX: azymut dodatni w LEWO,
         // elewacja dodatnia w GORE, zero = przod sluchacza w chwili eksportu.
