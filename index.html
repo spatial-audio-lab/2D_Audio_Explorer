@@ -36,7 +36,7 @@
   --font-ui: 'Lexend', system-ui, sans-serif;
   --font-mono: 'Azeret Mono', ui-monospace, monospace;
   --xs: 4px; --sm: 8px; --md: 16px; --lg: 24px; --xl: 40px;
-  --nav-h: 52px; --lib-w: 300px; --side-w: 360px; --transport-h: 60px;
+  --nav-h: 64px; --lib-w: 300px; --side-w: 360px; --transport-h: 60px;
   --fs-2xs: 12px; --fs-xs: 13px; --fs-sm: 14px; --fs-md: 16px; --fs-lg: 18px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -271,6 +271,19 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .transport-btn { width: 40px; height: 40px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; font-family: var(--font-mono); font-size: var(--fs-md); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .transport-btn:hover { border-color: var(--cyan); color: var(--cyan); }
 .transport-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,204,0.07); }
+
+/* Stany transportu (decyzja Oskara 17.08), te same co w Sferze:
+     cisza  -> play ma ramke cyan i tekst cyan (zaproszenie), stop neutralny;
+     gra    -> play w pelnym wypelnieniu cyan, stop dostaje ramke crimson;
+     po sto -> ramka stopu GASNIE do neutralnej przez 0.6 s, zamiast zniknac skokiem.
+   Cyan jest w manifescie (par.02) kolorem sygnalu aktywnego — nie dokladamy zieleni. */
+#tPlayAll { border-color: var(--cyan); color: var(--cyan); }
+#tPlayAll:hover { background: rgba(0,229,204,0.10); }
+#tPlayAll.active { background: var(--cyan); color: var(--black); border-color: var(--cyan); }
+#tPlayAll.active:hover { background: var(--cyan); color: var(--black); opacity: 0.85; }
+#tStopAll { transition: color 0.6s ease, border-color 0.6s ease, background 0.6s ease; }
+#tStopAll.armed { color: var(--danger); border-color: var(--danger); }
+#tStopAll.armed:hover { color: var(--danger); border-color: var(--danger); background: rgba(255,51,85,0.10); }
 .transport-info { flex: 1; display: flex; align-items: center; gap: var(--lg); }
 .transport-scene { font-family: var(--font-ui); font-size: 15px; font-weight: 300; color: var(--mid); font-style: italic; }
 .transport-scene span { color: var(--cyan); font-style: normal; font-weight: 400; }
@@ -328,19 +341,42 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
    par.08 naglowek narzedzia / par.12 dostepnosc
    ============================================================ */
 
-/* --- par.08 minimalny naglowek narzedzia --- */
-.nav-brand { display: flex; align-items: center; gap: 0; }
-.hub-back { font-family: var(--font-mono); font-weight: 500; font-size: 0.72rem; color: var(--mid);
-  border: 1px solid var(--dim); padding: 8px 14px; text-decoration: none; display: inline-flex;
-  align-items: center; min-height: 36px; transition: color 0.2s, border-color 0.2s; }
+/* --- par.08 pasek marki SAL — wzorzec wspolny dla wszystkich narzedzi laboratorium:
+   [ikona SAL | <- SAL]  |  (dioda) NAZWA  opis     ...     status Audio Context
+   Ikona idzie z katalogu /assets/ Hubu: wszystkie aplikacje siedza pod tym samym originem
+   (spatial-audio-lab.github.io/<repo>/), wiec sciezka od roota trafia do repozytorium
+   portalu. Jedno miejsce aktualizacji, zero duplikatow binariow. Podglad z dysku (file://)
+   pokaze sam tekst alt — to swiadomy koszt. --- */
+.nav-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.hub-back { font-family: var(--font-mono); font-weight: 500; font-size: 0.68rem; color: var(--mid);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  border: 1px solid var(--dim); border-radius: 0; padding: 0 12px; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; flex-shrink: 0;
+  transition: color 0.2s, border-color 0.2s; }
 .hub-back:hover { color: var(--cyan); border-color: var(--cyan); }
-.tool-name { font-family: var(--font-ui); font-weight: 500; font-size: 0.85rem; color: var(--white);
-  padding-left: 16px; margin-left: 16px; border-left: 1px solid var(--dim); }
+.hub-back img { width: 18px; height: 18px; display: block; flex-shrink: 0; }
+.tool-sep { width: 1px; height: 20px; background: var(--dim); flex-shrink: 0; }
+/* Dioda stanu przy nazwie — ten sam stan co napis Audio Context po prawej,
+   ale widoczna takze wtedy, gdy napis zniknie na waskim ekranie (manifest par.12). */
+.tool-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mid); flex-shrink: 0;
+  transition: background 0.25s, box-shadow 0.25s; }
+.nav.running .tool-dot { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+.tool-name { font-family: var(--font-ui); font-weight: 700; font-size: 15px; color: var(--white);
+  letter-spacing: 0.01em; white-space: nowrap; flex-shrink: 0; }
+.tool-desc { font-family: var(--font-mono); font-weight: 300; font-size: var(--fs-2xs);
+  letter-spacing: 0.02em; color: var(--mid); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .ctx-status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono);
   font-weight: 400; font-size: 0.68rem; color: var(--mid); letter-spacing: 0.08em; white-space: nowrap; }
-.ctx-dot { width: 8px; height: 8px; background: var(--mid); flex-shrink: 0; }
-.ctx-status.running { color: var(--cyan); }
-.ctx-status.running .ctx-dot { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+.nav.running .ctx-status { color: var(--cyan); }
+
+/* Pasek marki na waskim ekranie: degradacja progowa, NIE zmniejszanie fontow
+   (manifest par.12 — tekst nie schodzi ponizej 12px). Kolejnosc ustepowania od rzeczy
+   najmniej potrzebnej: najpierw opis, potem napis statusu (dioda przy nazwie niesie ten
+   sam stan), na koncu slowo SAL — zostaje sama ikona, kierunek mowi tytul linku. */
+@media (max-width: 900px) { .tool-desc { display: none; } }
+@media (max-width: 620px) { .ctx-status { display: none; } }
+@media (max-width: 400px) { .hub-back span { display: none; } .hub-back { padding: 0 10px; } }
 
 /* --- par.12 ostrzezenie o sluchawkach --- */
 .hp-warn { grid-area: warn; display: flex; align-items: center; gap: var(--sm);
@@ -439,8 +475,8 @@ input[type="checkbox"] { accent-color: var(--cyan); }
 <body>
 <div class="app-layout edit-mode" id="app">
   <nav class="nav">
-    <div class="nav-brand"><a class="hub-back" href="/">&larr; Hub</a><span class="tool-name">Scena</span></div>
-    <div class="nav-actions"><button class="nav-link" id="helpBtn">Pomoc</button><button class="nav-link" id="libToggle">Biblioteka</button><span class="ctx-status" id="ctxStatus"><span class="ctx-dot"></span><span id="ctxStatusText">Audio Context: Idle</span></span></div>
+    <div class="nav-brand"><a class="hub-back" href="/" title="Powrót do Spatial Audio Lab"><img src="/assets/brand/icon-192.png" alt="" width="18" height="18"><span>&larr; SAL</span></a><span class="tool-sep" aria-hidden="true"></span><span class="tool-dot" id="ctxDot" aria-hidden="true"></span><span class="tool-name">Scena</span><span class="tool-desc">Scenografia dźwiękowa</span></div>
+    <div class="nav-actions"><button class="nav-link" id="helpBtn">Pomoc</button><button class="nav-link" id="libToggle">Biblioteka</button><span class="ctx-status" id="ctxStatus"><span id="ctxStatusText">Audio Context: Idle</span></span></div>
   </nav>
 
   <div class="hp-warn" id="hpWarn"><span class="hp-ico">&#9834;</span><span class="hp-txt">Załóż słuchawki — bez nich efekt przestrzenny (HRTF) nie zadziała poprawnie.</span><button class="hp-close" id="hpWarnClose" aria-label="Zamknij ostrzeżenie">&times;</button></div>
@@ -1140,6 +1176,9 @@ function updateCounters(){
   $('tSrcCount').textContent=String(S.sources.length).padStart(2,'0');
   $('tPlayCount').textContent=String(p).padStart(2,'0');
   $('tPlayAll').classList.toggle('active',p>0);
+  // Stop dostaje ramke crimson dokladnie wtedy, gdy jest co zatrzymac.
+  // Po zdjeciu klasy ramka gasnie sama — robi to transition, nie licznik.
+  $('tStopAll').classList.toggle('armed',p>0);
 }
 
 // CONTROLS
@@ -1866,12 +1905,14 @@ loadLibrary();
 requestAnimationFrame(loop);
 // --- SAL Manifest par.08: status Audio Context w naglowku narzedzia ---
 (function(){
-  var box = document.getElementById('ctxStatus');
+  // Klasa siedzi na calym pasku, nie na samym napisie: dioda przy nazwie i napis po
+  // prawej pokazuja ten sam stan, a na waskim ekranie napis znika i zostaje sama dioda.
+  var bar = document.querySelector('.nav');
   var txt = document.getElementById('ctxStatusText');
-  if(!box || !txt) return;
+  if(!bar || !txt) return;
   function refresh(){
     var running = audioCtx.state === 'running';
-    box.classList.toggle('running', running);
+    bar.classList.toggle('running', running);
     txt.textContent = running ? 'Audio Context: Running' : 'Audio Context: Idle';
   }
   audioCtx.addEventListener('statechange', refresh);
