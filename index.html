@@ -591,13 +591,14 @@ input[type="checkbox"] { accent-color: var(--cyan); }
       </details>
 
       <details class="sub-box">
-        <summary class="sub-summary"><span class="sub-num">5.2</span><span class="sub-key">Opcje pliku</span><span class="sub-state" id="fileOptState">pogłos, bez daty</span></summary>
+        <summary class="sub-summary"><span class="sub-num">5.2</span><span class="sub-key">Opcje pliku</span><span class="sub-state" id="fileOptState">pogłos, z ruchem, bez daty</span></summary>
         <div class="sub-body">
           <div class="export-label row-between"><span>Data utworzenia</span><label class="opt-check"><input type="checkbox" id="kpoDateManual"> ręcznie</label></div>
           <input class="export-input" id="kpoDate" type="date" style="color-scheme:dark" disabled>
           <div id="kpoDateAuto" class="kpo-hint">auto</div>
           <div class="export-label row-between" style="margin-top:10px"><span>Data na mapie JPG</span><label class="opt-check"><input type="checkbox" id="mapDateOn"> pokaż</label></div>
           <div class="export-label row-between" style="margin-top:10px"><span>Pogłos w eksporcie</span><label class="opt-check"><input type="checkbox" id="exportReverb" checked> włącz</label></div>
+          <div class="export-label row-between" style="margin-top:10px"><span>Ruch źródeł</span><label class="opt-check"><input type="checkbox" id="exportMotion" checked> utrwal</label></div>
         </div>
       </details>
 
@@ -961,6 +962,10 @@ function buildSrc(id, name, x, y, vol, libId){
     attrAuthor:null, attrLicense:null, attrUrl:null,
     motion:{ mode:'static', speed:2, orbitRadius:5, orbitAngle:0, originX:x, originY:y,
       randomRange:8, randomTX:x, randomTY:y, randomTimer:0,
+      // Ziarno generatora dla trybu Random. Ruch NA EKRANIE zostaje losowy (Math.random
+      // w updateMotion), ale symulacja na potrzeby eksportu idzie z tego ziarna — dzieki
+      // temu dwa eksporty tej samej sceny daja ten sam plik i da sie je porownac.
+      seed:(Math.random()*4294967296)>>>0,
       waypoints:[], pathIndex:0, pathLoop:true, pathDir:1 }
   };
   updPanners(s); updateReverbSend(s);
@@ -1223,12 +1228,13 @@ function syncSubStates(){
   const fo=$('fileOptState');
   if(fo){
     const p=[]; p.push($('exportReverb').checked?'pogłos':'bez pogłosu');
+    p.push($('exportMotion').checked?'z ruchem':'bez ruchu');
     p.push($('mapDateOn').checked?'data na mapie':'bez daty');
     fo.textContent=p.join(', ');
   }
 }
 ['sceneDesc','sceneAuthor','sceneLicense'].forEach(id=>$(id).addEventListener('input', syncSubStates));
-['exportReverb','mapDateOn'].forEach(id=>$(id).addEventListener('change', syncSubStates));
+['exportReverb','exportMotion','mapDateOn'].forEach(id=>$(id).addEventListener('change', syncSubStates));
 
 // Nazwa dzwieku — zmieniana w locie, bez przycisku "zapisz". Pusta wraca do poprzedniej,
 // zeby zaden obiekt nie wyladowal na kuli w Sferze bez podpisu.
@@ -1347,20 +1353,80 @@ function ptrMove(cx,cy){
 function ptrUp(cx,cy){ if(S.mode==='explore'&&!pMoved&&pDown){ const{x,y,rect}=gcp({clientX:cx,clientY:cy}); S.target=s2w(x,y,rect); } pDown=false; dragSrc=null; }
 
 // MOTION AUTOMATION
+// -----------------------------------------------------------------------------------------
+// JEDEN krok ruchu JEDNEGO zrodla. Wyciagniete z updateMotion() do osobnej funkcji, bo ten
+// sam kod obsluguje teraz dwa zegary: klatke ekranu (requestAnimationFrame) i symulacje
+// trajektorii na potrzeby eksportu. Gdyby to byly dwie kopie, plik zaczalby sie rozjezdzac
+// ze scena — dokladnie tak, jak tor FOA rozjechal sie z binauralnym przed sierpniem 2026.
+// `pos` (obiekt z .x/.y) i `mo` sa mutowane w miejscu — orbitAngle, pathIndex i randomTimer
+// to stan ruchu, nie parametry. `rnd` to zrodlo losowosci: na ekranie Math.random,
+// w eksporcie generator z ziarnem, zeby ten sam eksport dwa razy dal ten sam plik.
+function stepMotion(mo,pos,dt,m,rnd){
+  if(mo.mode==='orbit'){ const angSpeed=mo.speed/Math.max(mo.orbitRadius,0.5); mo.orbitAngle+=angSpeed*dt; pos.x=mo.originX+Math.cos(mo.orbitAngle)*mo.orbitRadius; pos.y=mo.originY+Math.sin(mo.orbitAngle)*mo.orbitRadius; }
+  else if(mo.mode==='random'){ mo.randomTimer-=dt; if(mo.randomTimer<=0){ const a=rnd()*Math.PI*2, r=rnd()*mo.randomRange; mo.randomTX=mo.originX+Math.cos(a)*r; mo.randomTY=mo.originY+Math.sin(a)*r; mo.randomTimer=1.5+rnd()*4; }
+    const dx=mo.randomTX-pos.x, dy=mo.randomTY-pos.y, dist=Math.hypot(dx,dy); if(dist>0.1){ const step=Math.min(mo.speed*dt,dist); pos.x+=(dx/dist)*step; pos.y+=(dy/dist)*step; } }
+  else if(mo.mode==='path'&&mo.waypoints.length>=2){ const wp=mo.waypoints; let ni=mo.pathIndex+mo.pathDir;
+    if(ni>=wp.length){ if(mo.pathLoop){ni=0;mo.pathIndex=-1;} else{mo.pathDir=-1;ni=mo.pathIndex+mo.pathDir;} }
+    else if(ni<0){ if(mo.pathLoop){ni=wp.length-1;mo.pathIndex=wp.length;} else{mo.pathDir=1;ni=mo.pathIndex+mo.pathDir;} }
+    if(ni>=0&&ni<wp.length){ const target=wp[ni]; const dx=target.x-pos.x, dy=target.y-pos.y, dist=Math.hypot(dx,dy); if(dist<0.2){pos.x=target.x;pos.y=target.y;mo.pathIndex=ni;} else{const step=Math.min(mo.speed*dt,dist);pos.x+=(dx/dist)*step;pos.y+=(dy/dist)*step;} } }
+  pos.x=Math.max(-m,Math.min(m,pos.x)); pos.y=Math.max(-m,Math.min(m,pos.y));
+}
 function updateMotion(dt){
   const m=S.worldSize-1;
   for(const s of S.sources){
     const mo=s.motion; if(mo.mode==='static') continue;
-    if(mo.mode==='orbit'){ const angSpeed=mo.speed/Math.max(mo.orbitRadius,0.5); mo.orbitAngle+=angSpeed*dt; s.x=mo.originX+Math.cos(mo.orbitAngle)*mo.orbitRadius; s.y=mo.originY+Math.sin(mo.orbitAngle)*mo.orbitRadius; }
-    else if(mo.mode==='random'){ mo.randomTimer-=dt; if(mo.randomTimer<=0){ const a=Math.random()*Math.PI*2, r=Math.random()*mo.randomRange; mo.randomTX=mo.originX+Math.cos(a)*r; mo.randomTY=mo.originY+Math.sin(a)*r; mo.randomTimer=1.5+Math.random()*4; }
-      const dx=mo.randomTX-s.x, dy=mo.randomTY-s.y, dist=Math.hypot(dx,dy); if(dist>0.1){ const step=Math.min(mo.speed*dt,dist); s.x+=(dx/dist)*step; s.y+=(dy/dist)*step; } }
-    else if(mo.mode==='path'&&mo.waypoints.length>=2){ const wp=mo.waypoints; let ni=mo.pathIndex+mo.pathDir;
-      if(ni>=wp.length){ if(mo.pathLoop){ni=0;mo.pathIndex=-1;} else{mo.pathDir=-1;ni=mo.pathIndex+mo.pathDir;} }
-      else if(ni<0){ if(mo.pathLoop){ni=wp.length-1;mo.pathIndex=wp.length;} else{mo.pathDir=1;ni=mo.pathIndex+mo.pathDir;} }
-      if(ni>=0&&ni<wp.length){ const target=wp[ni]; const dx=target.x-s.x, dy=target.y-s.y, dist=Math.hypot(dx,dy); if(dist<0.2){s.x=target.x;s.y=target.y;mo.pathIndex=ni;} else{const step=Math.min(mo.speed*dt,dist);s.x+=(dx/dist)*step;s.y+=(dy/dist)*step;} } }
-    s.x=Math.max(-m,Math.min(m,s.x)); s.y=Math.max(-m,Math.min(m,s.y));
+    stepMotion(mo,s,dt,m,Math.random);
     if(s.routing==='spatial'){ updPanners(s); updateReverbSend(s); }
   }
+}
+
+// SYMULACJA TRAJEKTORII NA POTRZEBY EKSPORTU
+// -----------------------------------------------------------------------------------------
+// updateMotion() zyje wylacznie w petli requestAnimationFrame, czyli TYLKO na ekranie.
+// Do sierpnia 2026 eksport tego nie widzial: pozycje szly do obu plikow jako jedna wartosc
+// z chwili klikniecia "Eksportuj" (setValueAtTime na czasie 0), wiec orbita, sciezka i ruch
+// losowy nie zostawialy w nagraniu zadnego sladu. Zeby ruch trafil do plikow, trzeba go
+// przeliczyc Z GORY i BEZ dotykania zywej sceny — eksport nie moze przesunac zrodel,
+// ktorych uzytkownik wlasnie slucha.
+
+// Xorshift32 zamiast Math.random(): ten sam eksport dwa razy ma dac ten sam plik, inaczej
+// trybu Random nie da sie ani porownac "przed/po", ani sprawdzic testem.
+function makeRng(seed){
+  let s=(seed>>>0)||0x9E3779B9;
+  return function(){ s^=s<<13; s>>>=0; s^=s>>>17; s^=s<<5; s>>>=0; return s/4294967296; };
+}
+
+// Czy zrodlo w ogole sie rusza. Sciezka z mniej niz dwoma punktami stoi w miejscu,
+// wiec nie ma po co jej automatyzowac.
+function maRuch(s){
+  const mo=s.motion;
+  if(!mo||mo.mode==='static') return false;
+  if(mo.mode==='path') return (mo.waypoints||[]).length>=2;
+  return true;
+}
+
+// Zwraca { xs, ys, frames, dt } — pozycje zrodla co 1/fps sekundy przez `dur` sekund.
+// Stan ruchu jest KOPIOWANY (mo, waypoints), wiec symulacja nie rusza obiektu na ekranie.
+function simulateTrajectory(s,dur,fps){
+  const dt=1/fps, frames=Math.max(2,Math.round(dur*fps)+1), m=S.worldSize-1;
+  const xs=new Float64Array(frames), ys=new Float64Array(frames);
+  const mo=Object.assign({},s.motion,{ waypoints:(s.motion.waypoints||[]).map(w=>({x:w.x,y:w.y})) });
+  const rnd=makeRng(mo.seed);
+  const pos={ x:s.x, y:s.y };
+  for(let i=0;i<frames;i++){
+    xs[i]=pos.x; ys[i]=pos.y;
+    stepMotion(mo,pos,dt,m,rnd);
+  }
+  return { xs, ys, frames, dt };
+}
+
+// Automatyzacja jednego AudioParam wzdluz trajektorii. Rampa LINIOWA, nie skok:
+// przy 50 klatkach na sekunde setValueAtTime slychac jako trzaski, bo wartosc przeskakuje
+// skokowo w jednej probce. linearRampToValueAtTime daje odcinkami liniowa, ciagla obwiednie.
+// Pierwsza klatka musi byc setValueAtTime — rampa potrzebuje poprzedzajacego zdarzenia.
+function rampParam(param,valueAt,tr){
+  param.setValueAtTime(valueAt(0),0);
+  for(let i=1;i<tr.frames;i++) param.linearRampToValueAtTime(valueAt(i),i*tr.dt);
 }
 
 // DATE HANDLING
@@ -1577,6 +1643,7 @@ async function exportScene(){
   // sa dekodowane w tej czestotliwosci, wiec teraz nic nie jest po drodze przepróbkowywane.
   const sr=audioCtx.sampleRate, prefix=numerOn ? `SAL_SCENA_${nr}_${nm}` : `SAL_SCENA_${nm}`;
   const includeReverb=$('exportReverb').checked;
+  const utrwalRuch=$('exportMotion').checked;
   const stepsEl=$('kpoSteps');
   btn.disabled=true; btn.textContent='⏳ Generowanie…'; stepsEl.innerHTML='';
 
@@ -1604,9 +1671,28 @@ async function exportScene(){
     exportStep('⚠ Pominięto '+pominiete.length+' źródeł w trybie stream: '+pominiete.map(s=>s.name).join(', '),'error');
   }
 
+  // TRAJEKTORIE — liczone RAZ, przed obydwoma renderami. Ten sam obiekt `trajektorie`
+  // karmi tor binauralny, tor FOA i opis w _SCENA.json, wiec te trzy nie moga pokazac
+  // trzech roznych ruchow. Zrodla statyczne (i "Bezposrednio", ktore nie ma pozycji)
+  // nie dostaja automatyzacji — plik dla sceny bez ruchu wychodzi identyczny jak dotad.
+  // Siatka klatek jest ta sama, co siatka obwiedni glosnosci (LEVEL_HZ), zeby odtwarzacz
+  // mogl indeksowac obie tablice tym samym numerem klatki.
+  const trajektorie={};
+  let nRuchome=0;
+  if(utrwalRuch){
+    for(const s of srcs){
+      if(s.routing==='direct'||!maRuch(s)) continue;
+      trajektorie[s.id]=simulateTrajectory(s,dur,LEVEL_HZ);
+      nRuchome++;
+    }
+  }
+  // Sluchacz zostaje nieruchomy: jego pozycja to uklad odniesienia pliku, a chodzenie po
+  // scenie jest wejsciem od uzytkownika w czasie rzeczywistym, wiec nie da sie go odtworzyc
+  // offline bez wczesniejszego nagrania spaceru. To osobny temat.
+
   try {
     // 1. BINAURAL WAV
-    const s1=exportStep('1/5 Binaural WAV — renderowanie HRTF…');
+    const s1=exportStep('1/5 Binaural WAV — renderowanie HRTF…'+(nRuchome?` (ruch: ${nRuchome})`:''));
     let binauralBlob;
     try {
       const len=sr*dur;
@@ -1633,20 +1719,40 @@ async function exportScene(){
           const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=true; n.connect(g); g.connect(offMaster); n.start(0); n.stop(dur);
         } else {
           // Spatial: air filter + dual panners
+          // `tr` jest ustawione tylko dla zrodel, ktore faktycznie sie ruszaja. Gdy go nie ma,
+          // wszystko idzie po staremu jednym setValueAtTime na czasie 0 — scena bez ruchu
+          // wychodzi z tego kodu bit w bit tak samo jak przed dolozeniem automatyzacji.
+          const tr=trajektorie[s.id]||null;
+          const h=s.height||0;
+          const dyst=(x,y)=>Math.sqrt((x-S.listener.x)**2+(y-S.listener.y)**2+h*h);
+          const cutoffZ=d=>Math.max(400,20000*Math.exp(-d*0.06));
+          const sendZ=d=>Math.min(0.7,0.05+0.65*(1-1/(1+d*0.12)));
+          const dist3d=dyst(s.x,s.y);
           const g=off.createGain(); g.gain.value=s.volume; g.channelCount=2; g.channelCountMode='explicit'; g.channelInterpretation='speakers';
           const airF=off.createBiquadFilter(); airF.type='lowpass'; airF.Q.value=0.5;
-          const dist3d=Math.sqrt((s.x-S.listener.x)**2+(s.y-S.listener.y)**2+(s.height||0)**2);
-          airF.frequency.value=Math.max(400,20000*Math.exp(-dist3d*0.06));
+          if(tr) rampParam(airF.frequency, i=>cutoffZ(dyst(tr.xs[i],tr.ys[i])), tr);
+          else airF.frequency.value=cutoffZ(dist3d);
           const splitter=off.createChannelSplitter(2);
           const pL=off.createPanner(); pL.panningModel='HRTF'; pL.distanceModel='inverse'; pL.refDistance=1; pL.maxDistance=50; pL.rolloffFactor=1;
           const pR=off.createPanner(); pR.panningModel='HRTF'; pR.distanceModel='inverse'; pR.refDistance=1; pR.maxDistance=50; pR.rolloffFactor=1;
           const halfW=s.width/2, srad=(s.spreadAngle||0)*Math.PI/180;
-          const ddx=halfW*Math.cos(srad), ddy=halfW*Math.sin(srad), h=s.height||0;
-          if(pL.positionX){pL.positionX.setValueAtTime(s.x-ddx,0);pL.positionY.setValueAtTime(h,0);pL.positionZ.setValueAtTime(s.y-ddy,0);}
-          if(pR.positionX){pR.positionX.setValueAtTime(s.x+ddx,0);pR.positionY.setValueAtTime(h,0);pR.positionZ.setValueAtTime(s.y+ddy,0);}
+          const ddx=halfW*Math.cos(srad), ddy=halfW*Math.sin(srad);
+          // Odsuniecie ddx/ddy (szerokosc zrodla) jedzie razem ze srodkiem, wiec zrodlo
+          // stereo obraca sie po scenie jako calosc, a nie rozciaga miedzy stara a nowa pozycja.
+          if(pL.positionX){
+            pL.positionY.setValueAtTime(h,0); pR.positionY.setValueAtTime(h,0);
+            if(tr){
+              rampParam(pL.positionX, i=>tr.xs[i]-ddx, tr); rampParam(pL.positionZ, i=>tr.ys[i]-ddy, tr);
+              rampParam(pR.positionX, i=>tr.xs[i]+ddx, tr); rampParam(pR.positionZ, i=>tr.ys[i]+ddy, tr);
+            } else {
+              pL.positionX.setValueAtTime(s.x-ddx,0); pL.positionZ.setValueAtTime(s.y-ddy,0);
+              pR.positionX.setValueAtTime(s.x+ddx,0); pR.positionZ.setValueAtTime(s.y+ddy,0);
+            }
+          }
           g.connect(airF); airF.connect(splitter); splitter.connect(pL,0); splitter.connect(pR,1); pL.connect(offMaster); pR.connect(offMaster);
-          // Reverb send
-          if(offRevInput){ const rs=off.createGain(); const send=Math.min(0.7,0.05+0.65*(1-1/(1+dist3d*0.12))); rs.gain.value=send; g.connect(rs); rs.connect(offRevInput); }
+          // Reverb send — takze zalezna od odleglosci, wiec przy ruchu tez musi jechac w czasie.
+          if(offRevInput){ const rs=off.createGain(); g.connect(rs); rs.connect(offRevInput);
+            if(tr) rampParam(rs.gain, i=>sendZ(dyst(tr.xs[i],tr.ys[i])), tr); else rs.gain.value=sendZ(dist3d); }
           const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=true; n.connect(g); n.start(0); n.stop(dur);
         }
       }
@@ -1696,9 +1802,25 @@ async function exportScene(){
       // refDistance=1, rolloffFactor=1, maxDistance=50.
       function distGainFOA(d){ return 1/Math.min(Math.max(d,1),50); }
       // Wpina sygnal mono w enkoder FOA ustawiony na zadany punkt sceny.
-      function encodeFOA(node,px,py,ph){
-        const k=kierunekFOA(px,py,ph), g=sn3dFOA(k.az,k.el), a=distGainFOA(k.dist3d);
-        for(let c=0;c<4;c++){ const gn=off.createGain(); gn.gain.value=g[c]*a; node.connect(gn); gn.connect(merger,0,c); }
+      // Gdy podana jest trajektoria `tr`, cztery wzmocnienia enkodera sa RAMPOWANE klatka po
+      // klatce wzdluz niej — kierunek i tlumienie odlegloscia zmieniaja sie w czasie zamiast
+      // stac na wartosci z chwili klikniecia "Eksportuj". `offX/offY` to stale odsuniecie
+      // punktu od srodka zrodla (polowa szerokosci stereo), jedzie razem ze srodkiem.
+      // Enkoder ambisoniczny nie ma czego "obrocic" — kierunek SIEDZI w tych czterech
+      // wzmocnieniach, wiec ruch w FOA to z definicji ich automatyzacja.
+      function encodeFOA(node,px,py,ph,tr,offX,offY){
+        const params=[];
+        for(let c=0;c<4;c++){ const gn=off.createGain(); node.connect(gn); gn.connect(merger,0,c); params.push(gn.gain); }
+        function wartosci(x,y){
+          const k=kierunekFOA(x,y,ph), g=sn3dFOA(k.az,k.el), a=distGainFOA(k.dist3d);
+          return [g[0]*a,g[1]*a,g[2]*a,g[3]*a];
+        }
+        if(!tr){ const v=wartosci(px,py); for(let c=0;c<4;c++) params[c].value=v[c]; return; }
+        // Kierunek liczony RAZ na klatke i buforowany — inaczej ta sama funkcja
+        // trygonometryczna szlaby cztery razy przez kazda klatke kazdego enkodera.
+        const dx=offX||0, dy=offY||0, buf=new Float64Array(tr.frames*4);
+        for(let i=0;i<tr.frames;i++){ const v=wartosci(tr.xs[i]+dx,tr.ys[i]+dy); buf[i*4]=v[0]; buf[i*4+1]=v[1]; buf[i*4+2]=v[2]; buf[i*4+3]=v[3]; }
+        for(let c=0;c<4;c++) rampParam(params[c], i=>buf[i*4+c], tr);
       }
       // Sprowadza dowolny sygnal do jednego kanalu i wysyla go w W (pole bezkierunkowe).
       function doW(node,gain){
@@ -1753,25 +1875,52 @@ async function exportScene(){
           n.connect(g); doW(g);
           nBezkierunkowe++;
         } else {
+          // Ta sama trajektoria, co w torze binauralnym — jeden obiekt `trajektorie`
+          // dla obu renderow, wiec pliki nie moga pokazac dwoch roznych ruchow.
+          const tr=trajektorie[s.id]||null;
+          const h=s.height||0;
+          const dyst=(x,y)=>Math.sqrt((x-S.listener.x)**2+(y-S.listener.y)**2+h*h);
+          const cutoffZ=d=>Math.max(400,20000*Math.exp(-d*0.06));
+          const sendZ=d=>Math.min(0.7,0.05+0.65*(1-1/(1+d*0.12)));
+          const dist3d=dyst(s.x,s.y);
           const g=off.createGain(); g.gain.value=s.volume; g.channelCount=2; g.channelCountMode='explicit'; g.channelInterpretation='speakers';
           const airF=off.createBiquadFilter(); airF.type='lowpass'; airF.Q.value=0.5;
-          const dist3d=Math.sqrt((s.x-S.listener.x)**2+(s.y-S.listener.y)**2+(s.height||0)**2);
-          airF.frequency.value=Math.max(400,20000*Math.exp(-dist3d*0.06));
+          if(tr) rampParam(airF.frequency, i=>cutoffZ(dyst(tr.xs[i],tr.ys[i])), tr);
+          else airF.frequency.value=cutoffZ(dist3d);
           const splitter=off.createChannelSplitter(2);
           n.connect(g); g.connect(airF); airF.connect(splitter);
           // Szerokosc zrodla: te same dwa punkty, co pannerL/pannerR w torze binauralnym.
           const halfW=s.width/2, srad=(s.spreadAngle||0)*Math.PI/180;
-          const ddx=halfW*Math.cos(srad), ddy=halfW*Math.sin(srad), h=s.height||0;
+          const ddx=halfW*Math.cos(srad), ddy=halfW*Math.sin(srad);
           // Kierunek SRODKA zrodla (nie punktow L/R szerokosci) — to on trafia na kule.
           const kMid=kierunekFOA(s.x,s.y,h);
           objMeta.az=+(kMid.az*180/Math.PI).toFixed(2);
           objMeta.el=+(kMid.el*180/Math.PI).toFixed(2);
           objMeta.dist=+kMid.dist3d.toFixed(2);
+          // Sciezka czasowa dla Sfery. Pola az/el/dist wyzej zostaja jako wartosc PIERWSZEJ
+          // klatki, wiec odtwarzacz, ktory o `path` nie wie, dziala jak dotad — punkt stanie
+          // w miejscu, ale stanie we wlasciwym. Siatka klatek = siatka obwiedni glosnosci.
+          if(tr){
+            const kl=Math.max(1,Math.ceil(dur*LEVEL_HZ));
+            const az=new Array(kl), el=new Array(kl), ds=new Array(kl);
+            let elPlaska=true;
+            for(let i=0;i<kl;i++){
+              const j=Math.min(i,tr.frames-1), k=kierunekFOA(tr.xs[j],tr.ys[j],h);
+              az[i]=+(k.az*180/Math.PI).toFixed(1); el[i]=+(k.el*180/Math.PI).toFixed(1); ds[i]=+k.dist3d.toFixed(1);
+              if(el[i]!==0) elPlaska=false;
+            }
+            objMeta.motion={ mode:s.motion.mode, speed:+s.motion.speed.toFixed(2), seed:s.motion.seed>>>0 };
+            // Zrodlo na wysokosci 0 ma elewacje 0 w kazdej klatce — tablica samych zer
+            // potrafi urosnac do setek kilobajtow, wiec wtedy jej nie piszemy. Odtwarzacz
+            // ma traktowac brak `el` jak elewacje zero (tak samo jak brak `path` = bez ruchu).
+            objMeta.path=elPlaska ? { hz:LEVEL_HZ, az, dist:ds } : { hz:LEVEL_HZ, az, el, dist:ds };
+          }
           const encL=off.createGain(), encR=off.createGain();
           splitter.connect(encL,0); splitter.connect(encR,1);
-          encodeFOA(encL, s.x-ddx, s.y-ddy, h);
-          encodeFOA(encR, s.x+ddx, s.y+ddy, h);
-          if(foaRevIn){ const rs=off.createGain(); const send=Math.min(0.7,0.05+0.65*(1-1/(1+dist3d*0.12))); rs.gain.value=send; g.connect(rs); rs.connect(foaRevIn); }
+          encodeFOA(encL, s.x-ddx, s.y-ddy, h, tr, -ddx, -ddy);
+          encodeFOA(encR, s.x+ddx, s.y+ddy, h, tr, +ddx, +ddy);
+          if(foaRevIn){ const rs=off.createGain(); g.connect(rs); rs.connect(foaRevIn);
+            if(tr) rampParam(rs.gain, i=>sendZ(dyst(tr.xs[i],tr.ys[i])), tr); else rs.gain.value=sendZ(dist3d); }
           nPrzestrzenne++;
         }
         n.start(0); n.stop(dur);
@@ -1788,7 +1937,7 @@ async function exportScene(){
       peakOut=peak; normOut=norm;
       ambixBlob=floatArraysToWav32(chans,sr);
       ambixOpis=`szczyt ${(20*Math.log10(Math.max(peak,1e-9))).toFixed(1)} dBFS`+(norm<1?`, wyrownanie -${(-20*Math.log10(norm)).toFixed(1)} dB wspolne dla 4 kanalow`:'');
-      s2.textContent=`✓ 2/5 AmbiX WAV (4ch ACN/SN3D, 32-bit float) — OK · ${nPrzestrzenne} przestrzennych, ${nBezkierunkowe} bezkierunkowych · ${ambixOpis}`;
+      s2.textContent=`✓ 2/5 AmbiX WAV (4ch ACN/SN3D, 32-bit float) — OK · ${nPrzestrzenne} przestrzennych, ${nBezkierunkowe} bezkierunkowych`+(nRuchome?`, ${nRuchome} w ruchu (${LEVEL_HZ} kl./s)`:', bez ruchu')+` · ${ambixOpis}`;
       s2.className='kpo-step done';
     } catch(e){ s2.textContent='✗ 2/5 AmbiX WAV — błąd: '+e.message; s2.className='kpo-step error'; throw e; }
 
@@ -1849,12 +1998,21 @@ async function exportScene(){
           txt+=`    Absorpcja: ${Math.round(cutoff)} Hz\n`;
           if(src.width>0.05) txt+=`    Szerokość stereo: ${src.width.toFixed(1)}m @ ${Math.round(src.spreadAngle)}°\n`;
         }
-        if(src.motion.mode!=='static') txt+=`    Ruch: ${src.motion.mode} (prędkość: ${src.motion.speed.toFixed(1)} m/s)\n`;
+        if(src.motion.mode!=='static'){
+          const utrwalony=!!trajektorie[src.id];
+          txt+=`    Ruch: ${src.motion.mode} (prędkość: ${src.motion.speed.toFixed(1)} m/s) — ${utrwalony?'utrwalony w plikach, '+LEVEL_HZ+' kl./s':'NIE utrwalony (pozycja zamrożona)'}\n`;
+          if(utrwalony&&src.motion.mode==='random') txt+=`    Ziarno ruchu losowego: ${src.motion.seed>>>0}\n`;
+        }
         if(src.attrAuthor) txt+=`    Autor: ${src.attrAuthor}\n`;
         if(src.attrLicense) txt+=`    Licencja: ${src.attrLicense}\n`;
         if(src.attrUrl) txt+=`    Źródło: ${src.attrUrl}\n`;
       });
-      txt+=`\n${'═'.repeat(40)}\nPliki:\n  ${prefix}_BINAURAL.wav — stereo HRTF (2ch, 16-bit, ${sr} Hz)\n  ${prefix}_AMBIX.wav — First Order Ambisonics (4ch, 32-bit float, ${sr} Hz)\n      Kolejność ACN: W, Y, Z, X · normalizacja SN3D · azymut dodatni w lewo, elewacja dodatnia w górę\n      Pogłos zakodowany bezkierunkowo (kanał W). Źródła w trybie Bezpośrednio również w kanale W.\n      ${ambixOpis}\n  ${prefix}_MAPA.jpg — wizualizacja sceny\n  ${prefix}_META.txt — ten plik\n  ${prefix}_SCENA.json — ten sam opis maszynowo, dla Sfery\n      (nazwy obiektow, azymut/elewacja w stopniach, obwiednia glosnosci 50 Hz)\n\nUWAGA: pozycje źródeł i słuchacza są w obu plikach zamrożone na moment eksportu —\nruch (orbita, ścieżka, ruch losowy) oraz chodzenie po scenie nie są jeszcze utrwalane.\n`;
+      txt+=`\n${'═'.repeat(40)}\nPliki:\n  ${prefix}_BINAURAL.wav — stereo HRTF (2ch, 16-bit, ${sr} Hz)\n  ${prefix}_AMBIX.wav — First Order Ambisonics (4ch, 32-bit float, ${sr} Hz)\n      Kolejność ACN: W, Y, Z, X · normalizacja SN3D · azymut dodatni w lewo, elewacja dodatnia w górę\n      Pogłos zakodowany bezkierunkowo (kanał W). Źródła w trybie Bezpośrednio również w kanale W.\n      ${ambixOpis}\n  ${prefix}_MAPA.jpg — wizualizacja sceny\n  ${prefix}_META.txt — ten plik\n  ${prefix}_SCENA.json — ten sam opis maszynowo, dla Sfery\n      (nazwy obiektow, azymut/elewacja w stopniach, obwiednia glosnosci 50 Hz)\n\n`+
+      (nRuchome
+        ? `RUCH: ${nRuchome} ${nRuchome===1?'źródło jest utrwalone':'źródeł jest utrwalonych'} w obu plikach audio —\ntrajektoria przeliczona co ${(1000/LEVEL_HZ).toFixed(0)} ms i zapisana jako automatyzacja (pozycja, absorpcja powietrza,\nwysyłka pogłosu). Ścieżka czasowa każdego źródła jest też w _SCENA.json (pole "path").\nRuch losowy idzie z zapisanego ziarna, więc powtórny eksport tej samej sceny da ten sam plik.\n\nPozycja SŁUCHACZA pozostaje zamrożona na moment eksportu — jest układem odniesienia pliku,\na chodzenie po scenie jest wejściem w czasie rzeczywistym i nie da się go odtworzyć offline.\n`
+        : (utrwalRuch
+          ? `RUCH: brak — wszystkie źródła są statyczne, pozycje w plikach są stałe.\n`
+          : `UWAGA: opcja "Ruch źródeł w eksporcie" była WYŁĄCZONA — pozycje w obu plikach są\nzamrożone na moment eksportu, mimo że część źródeł ma ustawiony ruch.\n`));
       metaBlob=new Blob([txt],{type:'text/plain;charset=utf-8'});
       s4.textContent='✓ 4/5 Metadane TXT — OK'; s4.className='kpo-step done';
     } catch(e){ s4.textContent='✗ 4/5 Metadane — błąd: '+e.message; s4.className='kpo-step error'; throw e; }
@@ -1868,7 +2026,10 @@ async function exportScene(){
     try {
       const scene={
         format:'sal-scene',
-        version:1,
+        // v2 dokladajac sciezke czasowa (obiekt.path) NIE lamie odtwarzacza czytajacego v1:
+        // pola az/el/dist zostaly na miejscu i trzymaja wartosc pierwszej klatki. Czytnik,
+        // ktory o `path` nie wie, postawi punkt tam, gdzie zawsze — po prostu bez ruchu.
+        version:2,
         scene:{ number:numerOn?nr:null, name:nm.replace(/_/g,' '), description:opisSceny||null,
                 author:autorSceny||null, license:licencjaSceny||null,
                 date:window._getDateFull(), duration:dur, sampleRate:sr },
@@ -1876,9 +2037,12 @@ async function exportScene(){
         // Konwencja kierunku — ta sama, co w naglowku AmbiX: azymut dodatni w LEWO,
         // elewacja dodatnia w GORE, zero = przod sluchacza w chwili eksportu.
         convention:{ order:'ACN', normalization:'SN3D', azimuth:'dodatni w lewo', elevation:'dodatni w gore' },
-        // Pozycje zamrozone na moment eksportu — ruch zrodel nie jest jeszcze utrwalany.
-        // Gdy bedzie, az/el zamieni sie z liczby na sciezke czasowa i wersja pojdzie w gore.
-        frozen:true,
+        // `frozen` mowi o ZRODLACH. false = przynajmniej jedno ma pole `path` ze sciezka
+        // czasowa i w plikach audio faktycznie sie rusza. Sluchacz jest zamrozony zawsze —
+        // jego pozycja to uklad odniesienia pliku, stad osobne `listenerFrozen`.
+        frozen:nRuchome===0,
+        listenerFrozen:true,
+        motion:{ hz:LEVEL_HZ, sources:nRuchome, captured:utrwalRuch },
         listener:{ x:+S.listener.x.toFixed(3), y:+S.listener.y.toFixed(3), angle:Math.round(S.listener.angle) },
         peak:+peakOut.toFixed(4),
         gainApplied:+normOut.toFixed(4),
