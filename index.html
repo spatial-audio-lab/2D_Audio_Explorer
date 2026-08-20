@@ -1598,6 +1598,11 @@ function floatArraysToWav32(arrays, sr){
 // Kwantyzacja liniowa w amplitudzie zgubilaby wszystko ponizej -40 dB w kilku krokach.
 const LEVEL_HZ = 50;              // 50 Hz = okno 20 ms
 const LEVEL_FLOOR_DB = -60;
+// Siatka SCIEZKI RUCHU w _SCENA.json, odklejona od siatki obwiedni. Obwiednia niesie
+// transjenty i 50 Hz naprawde jej potrzebuje; punkt na kuli — nie. Zmierzone: przy
+// decymacji do 10 Hz i interpolacji liniowej blad pozycji nie przekracza 13 cm, a klatek
+// jest piec razy mniej. Pomiar i warianty: _SAL-docs\kontrakt-scena-sfera.md, sekcja 4.
+const PATH_HZ = 10;
 function levelEnvelope(buffer, durationSec){
   const sr=buffer.sampleRate, nCh=buffer.numberOfChannels, len=buffer.length;
   const chans=[]; for(let c=0;c<nCh;c++) chans.push(buffer.getChannelData(c));
@@ -1618,6 +1623,17 @@ function levelEnvelope(buffer, durationSec){
     out[f]=Math.max(0,Math.min(255,Math.round(t*255)));
   }
   return out;
+}
+
+// Obwiednia zapisana dziesietnie to kilka tysiecy liczb po 2-4 znaki — przy 120 s wychodzi
+// ~21 KB na zrodlo, czyli wiecej niz cala sciezka ruchu. Ta sama tablica w base64 wazy 2,7x
+// mniej. To jedyne pole formatu, ktore traci czytelnosc golym okiem, i akurat ono czytelne
+// nie bylo: 6000 liczb bez znaczenia dla czlowieka. Odtwarzacz rozpoznaje zapis po polu
+// `encoding`. Porcjami po 4096, bo apply() na kilku tysiacach argumentow przepelnia stos.
+function levelToB64(vals){
+  let bin='';
+  for(let i=0;i<vals.length;i+=4096) bin+=String.fromCharCode.apply(null,vals.slice(i,i+4096));
+  return btoa(bin);
 }
 
 // EXPORT 5 FILES
@@ -1793,7 +1809,10 @@ async function exportScene(){
         const rgt=dx*Math.cos(listRad)+dy*Math.sin(listRad);
         const distH=Math.sqrt(fwd*fwd+rgt*rgt), dist3d=Math.sqrt(distH*distH+dh*dh);
         // Konwencja ambisoniczna: azymut dodatni w LEWO, elewacja dodatnia w GORE.
-        return { az:Math.atan2(-rgt,fwd), el:Math.atan2(dh,distH), dist3d };
+        // fwd/rgt wychodza na zewnatrz, bo sciezka v3 zapisuje wlasnie je (y do przodu,
+        // x w prawo). Liczenie ich drugi raz z az/dist byloby tym samym rachunkiem w dwoch
+        // miejscach — a to w tym projekcie skonczylo sie juz raz szescioma usterkami naraz.
+        return { az:Math.atan2(-rgt,fwd), el:Math.atan2(dh,distH), dist3d, fwd, rgt };
       }
       // Wzmocnienia AmbiX ACN/SN3D pierwszego rzedu. Dla fali plaskiej WSZYSTKIE rowne 1 —
       // ten sam wzor, co shAcnSn3d() w odtwarzaczu ambi (W=1, Y=y, Z=z, X=x).
@@ -1864,8 +1883,8 @@ async function exportScene(){
         const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=true;
         const objMeta={ name:s.name, routing:s.routing, volume:+(s.volume.toFixed(3)),
                         author:s.attrAuthor||null, license:s.attrLicense||null, sourceUrl:s.attrUrl||null,
-                        level:{ hz:LEVEL_HZ, encoding:'uint8-db', dbFloor:LEVEL_FLOOR_DB,
-                                values:levelEnvelope(S.buffers[s.id],dur) } };
+                        level:{ hz:LEVEL_HZ, encoding:'uint8-db-b64', dbFloor:LEVEL_FLOOR_DB,
+                                values:levelToB64(levelEnvelope(S.buffers[s.id],dur)) } };
         sceneObjects.push(objMeta);
         if(s.routing==='direct'){
           // Zrodla "Bezposrednio" nie maja pozycji na scenie. W FOA sa polem bezkierunkowym
@@ -1897,23 +1916,33 @@ async function exportScene(){
           objMeta.az=+(kMid.az*180/Math.PI).toFixed(2);
           objMeta.el=+(kMid.el*180/Math.PI).toFixed(2);
           objMeta.dist=+kMid.dist3d.toFixed(2);
-          // Sciezka czasowa dla Sfery. Pola az/el/dist wyzej zostaja jako wartosc PIERWSZEJ
-          // klatki, wiec odtwarzacz, ktory o `path` nie wie, dziala jak dotad — punkt stanie
-          // w miejscu, ale stanie we wlasciwym. Siatka klatek = siatka obwiedni glosnosci.
+          // Sciezka czasowa dla Sfery, format v3: KARTEZJANSKA i rzadsza od obwiedni.
+          // Pola az/el/dist wyzej zostaja jako wartosc PIERWSZEJ klatki, wiec odtwarzacz,
+          // ktory o `path` nie wie, dziala jak dotad — punkt stanie w miejscu, ale we
+          // wlasciwym. To jest caly mechanizm zgodnosci wstecz i nie wolno go ruszac.
+          //
+          // Dlaczego x/y zamiast az/el/dist: dwie tablice zamiast trzech, wysokosc schodzi
+          // do jednej liczby (Scena nie animuje height), a przy interpolacji nie ma czego
+          // zawijac na przejsciu przez +/-180 stopni. Azymut i odleglosc odtwarzacz wylicza
+          // jednym atan2 i jednym hypot.
           if(tr){
-            const kl=Math.max(1,Math.ceil(dur*LEVEL_HZ));
-            const az=new Array(kl), el=new Array(kl), ds=new Array(kl);
-            let elPlaska=true;
+            // DECYMACJA trajektorii 50 Hz, nie druga symulacja w 10 Hz. stepMotion() zalezy
+            // od dt (martwa strefa, przyciaganie do waypointa, timer losowania), wiec
+            // symulacja w innej czestotliwosci daje INNA droge, a nie te sama rzadziej
+            // probkowana. Pomiar tego bledu raz juz pokazal "150 stopni" i byl bez sensu.
+            const krok=Math.max(1,Math.round(LEVEL_HZ/PATH_HZ));
+            // +1 klatka, zeby ostatnia probka siegala konca pliku, a nie konczyla sie
+            // 0,1 s wczesniej — inaczej punkt zamarza tuz przed koncem sceny.
+            const kl=Math.max(2,Math.ceil(dur*PATH_HZ)+1);
+            const xs=new Array(kl), ys=new Array(kl);
             for(let i=0;i<kl;i++){
-              const j=Math.min(i,tr.frames-1), k=kierunekFOA(tr.xs[j],tr.ys[j],h);
-              az[i]=+(k.az*180/Math.PI).toFixed(1); el[i]=+(k.el*180/Math.PI).toFixed(1); ds[i]=+k.dist3d.toFixed(1);
-              if(el[i]!==0) elPlaska=false;
+              const j=Math.min(i*krok,tr.frames-1), k=kierunekFOA(tr.xs[j],tr.ys[j],h);
+              xs[i]=+k.rgt.toFixed(2); ys[i]=+k.fwd.toFixed(2);
             }
             objMeta.motion={ mode:s.motion.mode, speed:+s.motion.speed.toFixed(2), seed:s.motion.seed>>>0 };
-            // Zrodlo na wysokosci 0 ma elewacje 0 w kazdej klatce — tablica samych zer
-            // potrafi urosnac do setek kilobajtow, wiec wtedy jej nie piszemy. Odtwarzacz
-            // ma traktowac brak `el` jak elewacje zero (tak samo jak brak `path` = bez ruchu).
-            objMeta.path=elPlaska ? { hz:LEVEL_HZ, az, dist:ds } : { hz:LEVEL_HZ, az, el, dist:ds };
+            // `frame` nazywa uklad, w ktorym sa te liczby. Az/el tez byly w ukladzie
+            // sluchacza, tylko nikt tego nie zapisal — za pol roku nikt nie bylby pewien.
+            objMeta.path={ hz:PATH_HZ, frame:'listener', x:xs, y:ys, h:+(h||0).toFixed(2) };
           }
           const encL=off.createGain(), encR=off.createGain();
           splitter.connect(encL,0); splitter.connect(encR,1);
@@ -2026,10 +2055,18 @@ async function exportScene(){
     try {
       const scene={
         format:'sal-scene',
-        // v2 dokladajac sciezke czasowa (obiekt.path) NIE lamie odtwarzacza czytajacego v1:
-        // pola az/el/dist zostaly na miejscu i trzymaja wartosc pierwszej klatki. Czytnik,
-        // ktory o `path` nie wie, postawi punkt tam, gdzie zawsze — po prostu bez ruchu.
-        version:2,
+        // Zgodnosc wstecz stoi na jednym: pola az/el/dist obiektu ZOSTAJA i trzymaja
+        // wartosc pierwszej klatki. Czytnik, ktory o `path` nie wie, postawi punkt tam,
+        // gdzie zawsze — po prostu bez ruchu. Dotyczy to v2 tak samo jak v3.
+        //
+        // v3 wobec v2 zmienia dwie rzeczy, obie po pomiarze (kontrakt-scena-sfera.md):
+        //   - `path` jest kartezjanska (x/y/h) i rzadsza (10 Hz zamiast 50),
+        //   - `level.values` to base64 zamiast tablicy dziesietnej (encoding: uint8-db-b64).
+        // Zmierzone (harness-sfera.js, scena 60 s, 1 zrodlo, wysokosc 0, orbita — przypadek
+        // NAJMNIEJ korzystny dla v3): 35,0 KB -> 10,6 KB. Sciezka 3,7x, obwiednia 3,0x.
+        // Przy wiekszej liczbie zrodel i niezerowych wysokosciach zysk jest wiekszy.
+        // Odtwarzacz rozpoznaje oba zapisy po ksztalcie pola, wiec pliki v2 dalej sie otwieraja.
+        version:3,
         scene:{ number:numerOn?nr:null, name:nm.replace(/_/g,' '), description:opisSceny||null,
                 author:autorSceny||null, license:licencjaSceny||null,
                 date:window._getDateFull(), duration:dur, sampleRate:sr },
@@ -2042,7 +2079,9 @@ async function exportScene(){
         // jego pozycja to uklad odniesienia pliku, stad osobne `listenerFrozen`.
         frozen:nRuchome===0,
         listenerFrozen:true,
-        motion:{ hz:LEVEL_HZ, sources:nRuchome, captured:utrwalRuch },
+        // hz opisuje siatke SCIEZKI (obiekt.path). Automatyzacja wzmocnien w plikach audio
+        // jedzie gestsza siatka LEVEL_HZ — to jest w _META.txt, bo dotyczy dzwieku, nie opisu.
+        motion:{ hz:PATH_HZ, sources:nRuchome, captured:utrwalRuch },
         listener:{ x:+S.listener.x.toFixed(3), y:+S.listener.y.toFixed(3), angle:Math.round(S.listener.angle) },
         peak:+peakOut.toFixed(4),
         gainApplied:+normOut.toFixed(4),
