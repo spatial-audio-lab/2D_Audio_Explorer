@@ -24,7 +24,12 @@
   --white:  #F0EBE0;
   --mid:    #9C9890;
   --muted:  #9C9890;
-  /* akcenty semantyczne (bez --acid: acid = wylacznie marka Hubu) */
+  /* akcenty semantyczne. Manifest v3.0 mowil: acid wylacznie w Hubie. Pasek v3.1
+     to zmienil — acid nosi pigulke SAL i ikone apki, czyli DOKLADNIE te dwa miejsca,
+     ktore mowia "to jest Spatial Audio Lab", i nic wiecej. Wewnatrz narzedzia
+     sygnalem aktywnosci pozostaje cyan. */
+  --acid:   #BEFF00;
+  --acid-dim: rgba(190,255,0,0.40);
   --cyan:   #00E5CC;
   --amber:  #FFAB00;
   --danger: #FF3355;
@@ -54,7 +59,13 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .nav-brand-name em { font-style: italic; color: var(--cyan); }
 .nav-brand-sep { color: var(--dim); font-size: var(--fs-sm); }
 .nav-brand-page { font-size: var(--fs-xs); letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid); }
-.nav-actions { display: flex; align-items: center; gap: var(--md); }
+/* --- par.08 v3.1: zakladki po prawej stronie paska. Kolejnosc jest celowa i taka sama
+   w kazdej aplikacji laboratorium: najpierw to, co dotyczy tej apki, potem POMOC, a na
+   samym koncu O PROJEKCIE. Uzytkownik, ktory przechodzi miedzy Scena a Sfera, ma dwie
+   ostatnie pozycje zawsze w tym samym miejscu. --- */
+.nav-actions { display: flex; align-items: center; gap: var(--lg); }
+.nav-link.is-open { color: var(--cyan); }
+.nav-tab-sep { width: 1px; height: 16px; background: var(--dim); flex-shrink: 0; }
 .nav-link { font-size: var(--fs-xs); letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); text-decoration: none; cursor: pointer; background: none; border: none; font-family: inherit; transition: color 0.3s; }
 .nav-link:hover { color: var(--white); }
 
@@ -327,6 +338,19 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .help-tab:hover { color: var(--white); }
 .help-tab.active { color: var(--cyan); background: rgba(0,229,204,0.07); }
 .help-panel h3:first-child { margin-top: var(--sm); }
+/* --- par.13 oznakowanie KPO/UE. Belka logotypow ma bezwzglednie stac na BIALYM tle —
+   to warunek programu, nie decyzja estetyczna, wiec kontener dostaje wlasne tlo
+   niezalezne od motywu aplikacji. Grafika siedzi w pliku jako data URI, a nie jako
+   Grafika lezy w assets/brand/ tego repozytorium i jest adresowana WZGLEDNIE, a nie od
+   roota Hubu: oznakowanie finansowania musi sie narysowac takze wtedy, gdy ktos otworzy
+   plik prosto z dysku. To jedyny wyjatek od zasady "binaria trzymamy raz, w Hubie" i ma
+   swoj powod — reszta ikon moze zniknac bez szkody, ta belka nie. --- */
+.kpo-strip { background: #FFFFFF; padding: 14px 16px; margin-top: var(--lg); border-radius: 2px; }
+.kpo-strip img { display: block; width: 100%; height: auto; }
+.about-meta { margin: var(--md) 0 var(--lg); border-top: 1px solid var(--dim); }
+.about-row { display: flex; gap: var(--md); padding: 9px 0; border-bottom: 1px solid var(--dim); font-size: var(--fs-sm); }
+.about-key { flex: 0 0 40%; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+.about-val { color: var(--white); }
 .help-close-btn { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.15em; text-transform: uppercase; padding: var(--sm) var(--lg); border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; margin-top: var(--lg); transition: all 0.3s; }
 .help-close-btn:hover { border-color: var(--cyan); color: var(--cyan); }
 .hidden-input { display: none; }
@@ -341,19 +365,20 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
    par.08 naglowek narzedzia / par.12 dostepnosc
    ============================================================ */
 
-/* --- par.08 pasek marki SAL — wzorzec wspolny dla wszystkich narzedzi laboratorium:
-   [ikona SAL | <- SAL]  |  (dioda) NAZWA  opis     ...     status Audio Context
-   Ikona idzie z katalogu /assets/ Hubu: wszystkie aplikacje siedza pod tym samym originem
-   (spatial-audio-lab.github.io/<repo>/), wiec sciezka od roota trafia do repozytorium
-   portalu. Jedno miejsce aktualizacji, zero duplikatow binariow. Podglad z dysku (file://)
-   pokaze sam tekst alt — to swiadomy koszt. --- */
+/* --- par.08 pasek marki SAL v3.1 — wzorzec wspolny dla wszystkich narzedzi laboratorium:
+   [ikona apki | <- SAL]  |  (dioda) NAZWA  opis   ...   zakladki  ·  status Audio Context
+   Ikona lezy w assets/brand/ TEGO repozytorium i jest adresowana wzglednie. Do v3.0 szla
+   ze wspolnego /assets/ Hubu, co oszczedzalo duplikat binarium, ale kosztowalo widocznosc
+   przy otwarciu z dysku (file:// pokazywalo sam tekst alt). v3.1 daje kazdej apce wlasny
+   WARIANT KOLORYSTYCZNY ikony, wiec wspolny plik i tak przestal wystarczac — a przy okazji
+   znika tamten koszt. --- */
 .nav-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.hub-back { font-family: var(--font-mono); font-weight: 500; font-size: 0.68rem; color: var(--mid);
+.hub-back { font-family: var(--font-mono); font-weight: 500; font-size: 0.68rem; color: var(--acid);
   letter-spacing: 0.06em; text-transform: uppercase;
-  border: 1px solid var(--dim); border-radius: 0; padding: 0 12px; text-decoration: none;
+  border: 1px solid var(--acid-dim); border-radius: 999px; padding: 0 14px; text-decoration: none;
   display: inline-flex; align-items: center; gap: 8px; min-height: 44px; flex-shrink: 0;
-  transition: color 0.2s, border-color 0.2s; }
-.hub-back:hover { color: var(--cyan); border-color: var(--cyan); }
+  transition: color 0.2s, border-color 0.2s, background 0.2s; }
+.hub-back:hover { border-color: var(--acid); background: rgba(190,255,0,0.08); }
 .hub-back img { width: 18px; height: 18px; display: block; flex-shrink: 0; }
 .tool-sep { width: 1px; height: 20px; background: var(--dim); flex-shrink: 0; }
 /* Dioda stanu przy nazwie — ten sam stan co napis Audio Context po prawej,
@@ -475,8 +500,8 @@ input[type="checkbox"] { accent-color: var(--cyan); }
 <body>
 <div class="app-layout edit-mode" id="app">
   <nav class="nav">
-    <div class="nav-brand"><a class="hub-back" href="/" title="Powrót do Spatial Audio Lab"><img src="/assets/brand/icon-192.png" alt="" width="18" height="18"><span>&larr; SAL</span></a><span class="tool-sep" aria-hidden="true"></span><span class="tool-dot" id="ctxDot" aria-hidden="true"></span><span class="tool-name">Scena</span><span class="tool-desc">Scenografia dźwiękowa</span></div>
-    <div class="nav-actions"><button class="nav-link" id="helpBtn">Pomoc</button><button class="nav-link" id="libToggle">Biblioteka</button><span class="ctx-status" id="ctxStatus"><span id="ctxStatusText">Audio Context: Idle</span></span></div>
+    <div class="nav-brand"><a class="hub-back" href="/" title="Powrót do Spatial Audio Lab"><img src="assets/brand/icon-app.png" alt="" width="18" height="18"><span>&larr; SAL</span></a><span class="tool-sep" aria-hidden="true"></span><span class="tool-dot" id="ctxDot" aria-hidden="true"></span><span class="tool-name">Scena</span><span class="tool-desc">Scenografia dźwiękowa</span></div>
+    <div class="nav-actions"><button class="nav-link" id="libToggle">Biblioteka</button><span class="nav-tab-sep" aria-hidden="true"></span><button class="nav-link" id="helpBtn">Pomoc</button><button class="nav-link" id="aboutBtn">O projekcie</button><span class="ctx-status" id="ctxStatus"><span id="ctxStatusText">Audio Context: Idle</span></span></div>
   </nav>
 
   <div class="hp-warn" id="hpWarn"><span class="hp-ico">&#9834;</span><span class="hp-txt">Załóż słuchawki — bez nich efekt przestrzenny (HRTF) nie zadziała poprawnie.</span><button class="hp-close" id="hpWarnClose" aria-label="Zamknij ostrzeżenie">&times;</button></div>
@@ -633,12 +658,37 @@ input[type="checkbox"] { accent-color: var(--cyan); }
   </div>
 </div>
 
+<!-- par.13: oznakowanie KPO/UE ma byc w kazdej aplikacji laboratorium, nie tylko w Hubie -->
+<div class="help-overlay" id="aboutOverlay"><div class="help-box">
+  <h2>O <em>projekcie</em></h2>
+  <p><strong>Scena</strong> jest jednym z narzędzi <strong>Spatial Audio Lab</strong> — projektu stypendialnego poświęconego dźwiękowi przestrzennemu. W ramach projektu powstaje archiwum nagrań w technologii VR oraz zestaw otwartych narzędzi webowych, dzięki którym ten materiał da się nie tylko odsłuchać, ale i wykorzystać we własnej pracy.</p>
+
+  <h3>Realizacja</h3>
+  <div class="about-meta">
+    <div class="about-row"><span class="about-key">Stypendysta</span><span class="about-val">Oskar Hamerski</span></div>
+    <div class="about-row"><span class="about-key">Program</span><span class="about-val">Krajowy Plan Odbudowy — stypendia NIMIT</span></div>
+    <div class="about-row"><span class="about-key">Umowa</span><span class="about-val">143/KPO.STYPENDIA/NIMIT/2025</span></div>
+    <div class="about-row"><span class="about-key">Instytucja wspierająca</span><span class="about-val">Narodowy Instytut Muzyki i Tańca</span></div>
+    <div class="about-row"><span class="about-key">Inwestycja</span><span class="about-val">A2.5.1</span></div>
+    <div class="about-row"><span class="about-key">Technologia</span><span class="about-val">Web Audio API · HRTF · Ambisonia FOA / AmbiX</span></div>
+  </div>
+
+  <p>Sfinansowano ze środków <strong>Krajowego Planu Odbudowy i Zwiększania Odporności</strong> w ramach inwestycji A2.5.1, ze stypendium Narodowego Instytutu Muzyki i Tańca, umowa nr 143/KPO.STYPENDIA/NIMIT/2025.</p>
+  <p>Pełny opis przedsięwzięcia, wskaźniki i pozostałe narzędzia: <a href="/o-projekcie/" target="_blank" rel="noopener">spatial-audio-lab.github.io/o-projekcie</a>.</p>
+
+  <div class="kpo-strip">
+    <img src="assets/brand/kpo-belka.jpg" alt="Logotypy: Krajowy Plan Odbudowy, Rzeczpospolita Polska oraz Sfinansowane przez Unię Europejską NextGenerationEU">
+  </div>
+  <button class="help-close-btn" id="aboutClose">Zamknij</button>
+</div></div>
+
 <div class="help-overlay" id="helpOverlay"><div class="help-box">
   <h2>Spatial Audio <em>Lab</em></h2>
   <div class="help-tabs" role="tablist">
     <button class="help-tab active" id="helpTabBasic" role="tab" aria-selected="true" aria-controls="helpBasic">Podstawy</button>
     <button class="help-tab" id="helpTabAdvanced" role="tab" aria-selected="false" aria-controls="helpAdvanced">Zaawansowane</button>
     <button class="help-tab" id="helpTabGlossary" role="tab" aria-selected="false" aria-controls="helpGlossary">Banki dźwięków</button>
+    <button class="help-tab" id="helpTabEco" role="tab" aria-selected="false" aria-controls="helpEco">W ekosystemie</button>
   </div>
   <div id="helpBasic" class="help-panel" role="tabpanel">
     <h3>Zacznij tutaj</h3>
@@ -716,6 +766,30 @@ input[type="checkbox"] { accent-color: var(--cyan); }
     <p><strong>Scena</strong> (ta aplikacja) to warsztat: układasz w niej dźwięki wokół słuchacza, ustawiasz ich odległość, wysokość, szerokość i pogłos, a na końcu eksportujesz gotową scenę do pięciu plików.</p>
     <p><strong>Sfera</strong> to odsłuch: wczytujesz do niej wyeksportowany plik <strong>AMBIX</strong> i możesz obracać całym polem dźwiękowym wokół nieruchomej głowy — sprawdzić, jak scena brzmi, gdy się w niej odwrócisz. Jeśli wrzucisz razem z nagraniem plik <strong>SCENA.json</strong>, na kuli zapalą się nazwane punkty w miejscach Twoich dźwięków, pulsujące w rytm głośności każdego z nich, a w rogu pojawi się opis sceny, autor i licencja.</p>
     <p><strong>Który plik do czego:</strong> <em>BINAURAL</em> to gotowe nagranie na słuchawki — brzmi dokładnie tak, jak scena w tej aplikacji, i to jego zwykle chcesz komuś wysłać. <em>AMBIX</em> to wersja do dalszej obróbki i do Sfery; da się nią obracać, ale jest z natury nieco mniej ostra kierunkowo, bo cała kula jest w niej opisana czterema kanałami. <em>MAPA</em>, <em>META</em> i <em>SCENA.json</em> to dokumentacja: obrazek, opis dla człowieka i opis dla maszyny.</p>
+  </div>
+  <div id="helpEco" class="help-panel" style="display:none" role="tabpanel">
+    <h3>Gdzie jesteś</h3>
+    <p><strong>Scena</strong> to warsztat: układasz dźwięki wokół słuchacza i eksportujesz gotowy materiał. <strong>Sfera</strong> to odsłuch: obracasz w niej polem ambisonicznym i widzisz nazwane punkty źródeł. Obie aplikacje wychodzą z jednego miejsca — z <a href="/" target="_blank" rel="noopener">Spatial Audio Lab</a>, i obie działają w przeglądarce, bez wysyłania czegokolwiek na serwer.</p>
+
+    <h3>Droga od sceny do odsłuchu</h3>
+    <p>1. Ułóż dźwięki w Scenie i ustaw czas trwania nagrania w panelu «Eksport».</p>
+    <p>2. Kliknij «Eksportuj scenę». Na dysk trafia <strong>pięć plików o wspólnej nazwie</strong>: BINAURAL, AMBIX, MAPA, META i SCENA.</p>
+    <p>3. Otwórz <strong>Sferę</strong> i przeciągnij do niej plik <strong>AMBIX</strong>. To ten czterokanałowy — Sfera rozpozna go po nagłówku i włączy obracanie polem.</p>
+    <p>4. Dorzuć do Sfery plik <strong>SCENA</strong> (rozszerzenie .json). Dopiero on sprawia, że na kuli zapalają się <em>nazwane</em> punkty w miejscach Twoich dźwięków — świecące w rytm głośności każdego z nich, z promieniem pokazującym odległość źródła.</p>
+    <p>Kolejność wrzucania nie ma znaczenia, ale bez pliku AMBIX Sfera nie ma czego odtwarzać, a bez pliku SCENA pokaże samo pole bez podpisów.</p>
+
+    <h3>Który plik do czego</h3>
+    <p><strong>BINAURAL</strong> — to jest plik do słuchania i do wysłania komuś. Gra na każdych zwykłych słuchawkach i w każdym odtwarzaczu.</p>
+    <p><strong>AMBIX</strong> — materiał do dalszej pracy: Sfera, programy do dźwięku przestrzennego, wideo 360°. W zwykłym odtwarzaczu zabrzmi źle, bo to nie jest nagranie do bezpośredniego odsłuchu, tylko zapis całego pola dźwiękowego.</p>
+    <p><strong>MAPA</strong> i <strong>META</strong> — dokumentacja: obrazek sceny z góry i spis wszystkich ustawień wraz z autorami dźwięków. Do sprawozdania albo do przypomnienia sobie po miesiącu, co się właściwie zrobiło.</p>
+    <p><strong>SCENA</strong> — opis sceny dla maszyny. Potrzebny wyłącznie Sferze.</p>
+
+    <h3>Co ruch źródeł robi z plikami</h3>
+    <p>Jeśli któryś dźwięk ma włączony ruch (Orbita, Random, Ścieżka), zaznacz «Utrwal ruch w eksporcie» — wtedy trasa zostaje zapisana w obu plikach audio i w pliku SCENA, więc w Sferze punkt naprawdę jedzie tam, gdzie słychać dźwięk. Tryb Random ma zapisane ziarno losowania: powtórny eksport tej samej sceny da dokładnie ten sam plik.</p>
+    <p>Pozycja <strong>słuchacza</strong> zostaje natomiast zamrożona na moment eksportu — jest układem odniesienia całego nagrania. Chodzenie po scenie jest wejściem na żywo i nie da się go odtworzyć z pliku.</p>
+
+    <h3>Słuchawki</h3>
+    <p>Wszystko, co robi Scena, opiera się na filtracji HRTF, czyli symulacji tego, jak dźwięk zmienia się po drodze do lewego i prawego ucha. Na głośnikach ten efekt nie zadziała — oba kanały wymieszają się w powietrzu, zanim dotrą do uszu. Do pracy i do odsłuchu efektu potrzebne są słuchawki.</p>
   </div>
   <button class="help-close-btn" id="helpClose">Zamknij</button>
 </div></div>
@@ -1294,7 +1368,7 @@ $('reverbSize').addEventListener('input', ()=>{ const v=$('reverbSize').value/10
 $('reverbDamp').addEventListener('input', ()=>{ const v=$('reverbDamp').value/100; $('reverbDampVal').textContent=v.toFixed(2); reverbState.damping=v; scheduleReverbUpdate(); });
 
 // HELP
-const helpTabs={basic:['helpTabBasic','helpBasic'],advanced:['helpTabAdvanced','helpAdvanced'],glossary:['helpTabGlossary','helpGlossary']};
+const helpTabs={basic:['helpTabBasic','helpBasic'],advanced:['helpTabAdvanced','helpAdvanced'],glossary:['helpTabGlossary','helpGlossary'],eco:['helpTabEco','helpEco']};
 function setHelpTab(tab){
   for(const key in helpTabs){
     const active=key===tab, [btnId,panelId]=helpTabs[key];
@@ -1305,9 +1379,28 @@ function setHelpTab(tab){
 $('helpTabBasic').addEventListener('click', ()=>setHelpTab('basic'));
 $('helpTabAdvanced').addEventListener('click', ()=>setHelpTab('advanced'));
 $('helpTabGlossary').addEventListener('click', ()=>setHelpTab('glossary'));
-$('helpBtn').addEventListener('click', ()=>{ setHelpTab('basic'); $('helpOverlay').classList.add('open'); });
-$('helpClose').addEventListener('click', ()=>$('helpOverlay').classList.remove('open'));
+$('helpTabEco').addEventListener('click', ()=>setHelpTab('eco'));
+$('helpBtn').addEventListener('click', ()=>{ setHelpTab('basic'); ustawNakladke('aboutOverlay',false); ustawNakladke('helpOverlay',true); });
+$('helpClose').addEventListener('click', ()=>ustawNakladke('helpOverlay',false));
 $('helpOverlay').addEventListener('click', e=>{ if(e.target===$('helpOverlay')) $('helpOverlay').classList.remove('open'); });
+
+// O PROJEKCIE — ostatnia zakladka paska. Dwa nakladki nigdy nie stoja otwarte naraz,
+// bo obie przykrywaja caly ekran i druga bylaby niewidoczna pod pierwsza.
+function ustawNakladke(id, otwarta){
+  $(id).classList.toggle('open', otwarta);
+  const przycisk = id==='aboutOverlay' ? 'aboutBtn' : 'helpBtn';
+  $(przycisk).classList.toggle('is-open', otwarta);
+}
+$('aboutBtn').addEventListener('click', ()=>{ ustawNakladke('helpOverlay',false); ustawNakladke('aboutOverlay',true); });
+$('aboutClose').addEventListener('click', ()=>ustawNakladke('aboutOverlay',false));
+$('aboutOverlay').addEventListener('click', e=>{ if(e.target===$('aboutOverlay')) ustawNakladke('aboutOverlay',false); });
+// Escape zamyka to, co akurat jest na wierzchu — bez tego z nakladki wychodzi sie
+// wylacznie mysza, co przy klawiaturowej obsludze reszty apki bylo niekonsekwencja.
+document.addEventListener('keydown', e=>{
+  if(e.key!=='Escape') return;
+  const naWierzchu=nakladkaOtwarta();
+  if(naWierzchu){ ustawNakladke(naWierzchu,false); e.preventDefault(); }
+});
 
 // KEYBOARD
 // Skroty klawiszowe milkna, gdy uzytkownik pisze. Wczesniej sprawdzany byl tylko
@@ -1318,7 +1411,15 @@ function pisze(t){
   const tag=t.tagName;
   return tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||t.isContentEditable;
 }
-document.addEventListener('keydown', e=>{ if(pisze(e.target)) return; S.keys[e.code]=true; if(e.code==='Space'){ e.preventDefault(); if(S.selectedSource){ S.selectedSource.playing?stopSource(S.selectedSource):playSource(S.selectedSource); } } });
+// Nakladka na wierzchu przejmuje klawiature: bez tego Spacja czytana w tle uruchamiala
+// dzwiek pod otwarta pomoca, a WASD chodzilo po niewidocznej scenie. Escape obsluzony
+// przy wpieciu nakladek, nizej.
+function nakladkaOtwarta(){
+  if($('aboutOverlay').classList.contains('open')) return 'aboutOverlay';
+  if($('helpOverlay').classList.contains('open')) return 'helpOverlay';
+  return null;
+}
+document.addEventListener('keydown', e=>{ if(nakladkaOtwarta()) return; if(pisze(e.target)) return; S.keys[e.code]=true; if(e.code==='Space'){ e.preventDefault(); if(S.selectedSource){ S.selectedSource.playing?stopSource(S.selectedSource):playSource(S.selectedSource); } } });
 document.addEventListener('keyup', e=>{ S.keys[e.code]=false; });
 
 // MOUSE / TOUCH
