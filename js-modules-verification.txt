@@ -1,0 +1,17 @@
+Weryfikacja refaktoryzacji modułów ES — 2026-08-21
+
+Automatyczna kontrola składni:
+- node --check dla każdego pliku js/*.js: OK.
+
+Test przeglądarkowy na lokalnym serwerze HTTP (Playwright/Chromium):
+- brak błędów console i pageerror: OK;
+- library.json zrenderowany jako 75 elementów i etykieta „75 dźwięków”: OK;
+- kliknięcie POMOC otwiera modal, a przycisk zamknięcia go zamyka: OK;
+- kliknięcie „+” dla dźwięku (z lokalną odpowiedzią WAV w teście) tworzy źródło:
+  licznik ŹRÓDŁA 0 -> 1 i lista ma jeden element: OK;
+- canvas ma niezerowe wymiary i renderuje pętlę sceny: OK.
+
+Uwaga do wymaganego wdrożenia cloud: pplx-tool deploy_website nie był dostępny
+w środowisku (tool_not_allowed / schema_not_found), a cloud browser nie może
+połączyć się z lokalnym serwerem sandboxa. Zamiast tego użyto lokalnego Chromium
+przez Playwright dla tych samych interakcji HTTP/modułów.
