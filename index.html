@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Scena — Spatial Audio Lab</title>
 <meta name="description" content="Buduj sceny dźwięku przestrzennego w przeglądarce: rozstaw źródła na płaszczyźnie, chodź po scenie na słuchawkach, eksportuj binauralny WAV i AmbiX.">
+<link rel="icon" href="assets/brand/icon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/brand/icon-16.png" sizes="16x16" type="image/png">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="https://spatial-audio-lab.github.io/assets/brand/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Scenografia Dźwiękowa 2D — Spatial Audio Lab">
 <meta property="og:description" content="Buduj sceny dźwięku przestrzennego w przeglądarce i eksportuj je do WAV binauralnego oraz AmbiX.">
@@ -53,21 +54,11 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 
 .app-layout { position: relative; z-index: 1; display: grid; grid-template-rows: var(--nav-h) auto 1fr var(--transport-h); grid-template-columns: auto 1fr var(--side-w); grid-template-areas: "nav nav nav" "warn warn warn" "lib canvas side" "lib transport side"; height: 100vh; height: 100dvh; }
 
-.nav { grid-area: nav; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--lg); border-bottom: 1px solid var(--dim); background: var(--black); z-index: 50; }
-.nav-brand { display: flex; align-items: baseline; gap: var(--sm); }
-.nav-brand-name { font-family: var(--font-ui); font-size: 20px; font-weight: 300; color: var(--white); }
-.nav-brand-name em { font-style: italic; color: var(--cyan); }
-.nav-brand-sep { color: var(--dim); font-size: var(--fs-sm); }
-.nav-brand-page { font-size: var(--fs-xs); letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid); }
 /* --- par.08 v3.1: zakladki po prawej stronie paska. Kolejnosc jest celowa i taka sama
    w kazdej aplikacji laboratorium: najpierw to, co dotyczy tej apki, potem POMOC, a na
    samym koncu O PROJEKCIE. Uzytkownik, ktory przechodzi miedzy Scena a Sfera, ma dwie
    ostatnie pozycje zawsze w tym samym miejscu. --- */
-.nav-actions { display: flex; align-items: center; gap: var(--lg); }
-.nav-link.is-open { color: var(--cyan); }
 .nav-tab-sep { width: 1px; height: 16px; background: var(--dim); flex-shrink: 0; }
-.nav-link { font-size: var(--fs-xs); letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); text-decoration: none; cursor: pointer; background: none; border: none; font-family: inherit; transition: color 0.3s; }
-.nav-link:hover { color: var(--white); }
 
 .library-panel { grid-area: lib; display: flex; flex-direction: column; border-right: 1px solid var(--dim); background: rgba(10,12,8,0.5); overflow: hidden; min-width: 0; max-width: var(--lib-w); width: var(--lib-w); transition: max-width 0.4s ease, width 0.4s ease; }
 .library-panel.collapsed { max-width: 0; width: 0; border-right-width: 0; }
@@ -321,38 +312,50 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .confirm-btn.danger { border-color: var(--danger); color: var(--danger); }
 .confirm-btn.danger:hover, .confirm-btn.danger:focus-visible { background: var(--danger); color: var(--black); }
 
-.help-overlay { position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center; background: rgba(10,12,8,0.92); }
-.help-overlay.open { display: flex; }
-.help-box { width: 500px; max-width: 90vw; max-height: 80vh; border: 1px solid var(--dim); background: var(--black); overflow-y: auto; padding: var(--xl); }
-.help-box h2 { font-family: var(--font-ui); font-size: 28px; font-weight: 300; margin-bottom: var(--lg); color: var(--white); }
-.help-box h2 em { font-style: italic; color: var(--cyan); }
-.help-box h3 { font-size: var(--fs-xs); letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); margin: var(--lg) 0 var(--sm); padding-bottom: var(--xs); border-bottom: 1px solid var(--dim); }
-.help-box p { font-size: var(--fs-md); color: var(--white); line-height: 1.8; margin-bottom: var(--sm); opacity: 0.95; }
-.help-box a { color: var(--cyan); text-decoration: none; border-bottom: 1px solid rgba(0,229,204,0.35); transition: border-color 0.2s, color 0.2s; }
-.help-box a:hover, .help-box a:focus-visible { border-bottom-color: var(--cyan); color: var(--white); outline: none; }
-.help-box em { font-style: normal; color: var(--amber); }
-.help-box kbd { display: inline-block; padding: 2px 6px; border: 1px solid var(--dim); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--cyan); }
-.help-tabs { display: flex; gap: 0; margin: var(--md) 0 var(--sm); border: 1px solid var(--dim); }
-.help-tab { flex: 1; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px var(--md); border: none; border-right: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.25s; }
+/* ===== Modale Pomoc / O projekcie — wzorzec v3.1, sekcja "Tresc zakladek" =====
+   Wymiary i kolory jak w implementacji referencyjnej (sekwencer, src/styles/main.css),
+   zeby okno wygladalo tak samo we wszystkich narzedziach laboratorium. Zakladki wewnatrz
+   Pomocy sa rozszerzeniem tej apki: tresci jest tu wiecej niz w jednym oknie sekwencera,
+   a dzielenie jej naglowkami dalo pasek przewijania dlugi na dwa ekrany. */
+.sal-modal-overlay { position: fixed; inset: 0; background: rgba(10,12,8,0.82); display: none;
+  align-items: flex-start; justify-content: center; z-index: 60; padding: 5vh 24px; overflow-y: auto; }
+.sal-modal-overlay.is-open { display: flex; }
+.sal-modal { position: relative; background: var(--bg2, #12150F); border: 1px solid var(--dim);
+  border-radius: 0; max-width: 640px; width: 100%; padding: 40px; }
+.sal-modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
+  min-height: 0; display: flex; align-items: center; justify-content: center; background: transparent;
+  border: 1px solid var(--dim); color: var(--mid); cursor: pointer; font-size: 0.9rem;
+  transition: color 0.2s ease, border-color 0.2s ease; }
+.sal-modal-close:hover { color: var(--white); border-color: var(--cyan); }
+.sal-modal-h2 { font-family: var(--font-ui); font-weight: 700; font-size: 1.4rem; color: var(--white);
+  margin-bottom: 24px; }
+.sal-modal-h3 { font-family: var(--font-mono); font-weight: 600; font-size: 0.72rem;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--cyan); margin: 24px 0 12px; }
+.sal-modal-h2 + .sal-modal-h3 { margin-top: 0; }
+.sal-modal p { font-family: var(--font-ui); font-size: 0.85rem; line-height: 1.75; color: #C9C4B8; margin: 0 0 16px; }
+.sal-modal p:last-child { margin-bottom: 0; }
+.sal-modal strong { color: var(--white); font-weight: 600; }
+.sal-modal em { font-style: normal; color: var(--amber); }
+.sal-modal a { color: var(--cyan); text-decoration: none; border-bottom: 1px solid rgba(0,229,204,0.35); }
+.sal-modal a:hover { border-bottom-color: var(--cyan); }
+.sal-modal kbd { display: inline-block; padding: 2px 6px; border: 1px solid var(--dim);
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--cyan); }
+.sal-modal-meta { display: flex; flex-direction: column; gap: 10px; font-family: var(--font-mono); font-size: 0.78rem; }
+.sal-modal-meta > div { display: flex; gap: 16px; border-bottom: 1px solid rgba(240,235,224,0.08); padding-bottom: 8px; }
+.sal-modal-meta dt { color: var(--mid); min-width: 130px; flex: none; }
+.sal-modal-meta dd { color: var(--white); margin: 0; }
+/* par.13: belka logotypow zawsze na BIALYM tle — warunek programu, nie estetyka. */
+.sal-kpo-strip { background: #fff; padding: 16px; margin: 20px 0; }
+.sal-kpo-strip img { display: block; width: 100%; height: auto; }
+
+.help-tabs { display: flex; gap: 0; margin: 0 0 20px; border: 1px solid var(--dim); }
+.help-tab { flex: 1; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 11px 8px; border: none; border-right: 1px solid var(--dim);
+  background: none; color: var(--mid); cursor: pointer; min-height: 44px; transition: all 0.25s; }
 .help-tab:last-child { border-right: none; }
 .help-tab:hover { color: var(--white); }
-.help-tab.active { color: var(--cyan); background: rgba(0,229,204,0.07); }
-.help-panel h3:first-child { margin-top: var(--sm); }
-/* --- par.13 oznakowanie KPO/UE. Belka logotypow ma bezwzglednie stac na BIALYM tle —
-   to warunek programu, nie decyzja estetyczna, wiec kontener dostaje wlasne tlo
-   niezalezne od motywu aplikacji. Grafika siedzi w pliku jako data URI, a nie jako
-   Grafika lezy w assets/brand/ tego repozytorium i jest adresowana WZGLEDNIE, a nie od
-   roota Hubu: oznakowanie finansowania musi sie narysowac takze wtedy, gdy ktos otworzy
-   plik prosto z dysku. To jedyny wyjatek od zasady "binaria trzymamy raz, w Hubie" i ma
-   swoj powod — reszta ikon moze zniknac bez szkody, ta belka nie. --- */
-.kpo-strip { background: #FFFFFF; padding: 14px 16px; margin-top: var(--lg); border-radius: 2px; }
-.kpo-strip img { display: block; width: 100%; height: auto; }
-.about-meta { margin: var(--md) 0 var(--lg); border-top: 1px solid var(--dim); }
-.about-row { display: flex; gap: var(--md); padding: 9px 0; border-bottom: 1px solid var(--dim); font-size: var(--fs-sm); }
-.about-key { flex: 0 0 40%; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
-.about-val { color: var(--white); }
-.help-close-btn { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.15em; text-transform: uppercase; padding: var(--sm) var(--lg); border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; margin-top: var(--lg); transition: all 0.3s; }
-.help-close-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.help-tab.active { color: var(--acid); background: rgba(190,255,0,0.07); }
+.help-panel h3:first-child { margin-top: 0; }
 .hidden-input { display: none; }
 
 @media (max-width: 900px) {
@@ -365,43 +368,90 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
    par.08 naglowek narzedzia / par.12 dostepnosc
    ============================================================ */
 
-/* --- par.08 pasek marki SAL v3.1 — wzorzec wspolny dla wszystkich narzedzi laboratorium:
-   [ikona apki | <- SAL]  |  (dioda) NAZWA  opis   ...   zakladki  ·  status Audio Context
-   Ikona lezy w assets/brand/ TEGO repozytorium i jest adresowana wzglednie. Do v3.0 szla
-   ze wspolnego /assets/ Hubu, co oszczedzalo duplikat binarium, ale kosztowalo widocznosc
-   przy otwarciu z dysku (file:// pokazywalo sam tekst alt). v3.1 daje kazdej apce wlasny
-   WARIANT KOLORYSTYCZNY ikony, wiec wspolny plik i tak przestal wystarczac — a przy okazji
-   znika tamten koszt. --- */
-.nav-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.hub-back { font-family: var(--font-mono); font-weight: 500; font-size: 0.68rem; color: var(--acid);
-  letter-spacing: 0.06em; text-transform: uppercase;
-  border: 1px solid var(--acid-dim); border-radius: 999px; padding: 0 14px; text-decoration: none;
-  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; flex-shrink: 0;
-  transition: color 0.2s, border-color 0.2s, background 0.2s; }
-.hub-back:hover { border-color: var(--acid); background: rgba(190,255,0,0.08); }
-.hub-back img { width: 18px; height: 18px; display: block; flex-shrink: 0; }
-.tool-sep { width: 1px; height: 20px; background: var(--dim); flex-shrink: 0; }
-/* Dioda stanu przy nazwie — ten sam stan co napis Audio Context po prawej,
-   ale widoczna takze wtedy, gdy napis zniknie na waskim ekranie (manifest par.12). */
-.tool-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mid); flex-shrink: 0;
-  transition: background 0.25s, box-shadow 0.25s; }
-.nav.running .tool-dot { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
-.tool-name { font-family: var(--font-ui); font-weight: 700; font-size: 15px; color: var(--white);
-  letter-spacing: 0.01em; white-space: nowrap; flex-shrink: 0; }
-.tool-desc { font-family: var(--font-mono); font-weight: 300; font-size: var(--fs-2xs);
-  letter-spacing: 0.02em; color: var(--mid); white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.ctx-status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono);
-  font-weight: 400; font-size: 0.68rem; color: var(--mid); letter-spacing: 0.08em; white-space: nowrap; }
-.nav.running .ctx-status { color: var(--cyan); }
+/* ============================================================================
+   par.08 PASEK MARKI SAL v3.1
+   Wzorzec: "SAL Brand System.dc.html" (system brandowania, 18.08) oraz implementacja
+   referencyjna w sekwencerze: src/styles/header.css + src/js/header.js.
+   Uklad: [pigulka SAL] | (dioda) NAZWA | opis .................... zakladki
+   Wymiary sa czescia wzorca, nie propozycja — pasek ma wygladac identycznie
+   we wszystkich siedmiu aplikacjach, wiec liczby ida wprost z systemu.
+   ============================================================================ */
+@keyframes salPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.82); }
+}
+@keyframes salRing {
+  0% { opacity: 0.55; transform: scale(1); }
+  100% { opacity: 0; transform: scale(2.6); }
+}
+.sal-bar { grid-area: nav; display: flex; align-items: stretch; height: 68px; padding: 0 20px;
+  background: var(--black); border-bottom: 1px solid var(--dim); font-family: var(--font-ui);
+  position: relative; z-index: 50; transition: box-shadow 0.2s ease; }
+.sal-bar.is-playing { box-shadow: inset 0 -1px 0 rgba(190,255,0,0.1); }
+.sal-bar-left { display: flex; align-items: center; flex: 1; min-width: 0; }
 
-/* Pasek marki na waskim ekranie: degradacja progowa, NIE zmniejszanie fontow
-   (manifest par.12 — tekst nie schodzi ponizej 12px). Kolejnosc ustepowania od rzeczy
-   najmniej potrzebnej: najpierw opis, potem napis statusu (dioda przy nazwie niesie ten
-   sam stan), na koncu slowo SAL — zostaje sama ikona, kierunek mowi tytul linku. */
-@media (max-width: 900px) { .tool-desc { display: none; } }
-@media (max-width: 620px) { .ctx-status { display: none; } }
-@media (max-width: 400px) { .hub-back span { display: none; } .hub-back { padding: 0 10px; } }
+/* Pigulka jest linkiem do Hubu. Acid siedzi WYLACZNIE na literze L — sam znak zostaje
+   kremowy, a ramka neutralna. To odroznia marke laboratorium od sygnalow wnetrza. */
+.sal-pill { display: flex; align-items: center; gap: 11px; padding: 7px 14px 7px 9px;
+  border: 1px solid var(--dim); text-decoration: none; flex: none; }
+.sal-pill-mark { height: 38px; width: auto; display: block; }
+.sal-pill-text { font-family: var(--font-ui); font-weight: 800; font-size: 20px;
+  letter-spacing: 0.01em; line-height: 1; color: var(--white); }
+.sal-acid { color: var(--acid); }
+
+.sal-sep { width: 1px; height: 34px; background: var(--dim); margin: 0 20px; flex: none; }
+.sal-sep--inline { height: 20px; margin: 0 18px; }
+
+/* Dioda niesie caly stan dzwieku — dlatego w pasku NIE MA juz napisu "Audio Context".
+   Decyzja Oskara 18.08, ta sama co w sekwencerze: przycisk transportu i tak pokazuje
+   stan slowami, a napis w pasku powtarzal to trzeci raz. */
+.sal-status-dot { position: relative; width: 11px; height: 11px; flex: none; margin-right: 16px;
+  border-radius: 50%; background: rgba(240,235,224,0.18); border: 1px solid rgba(240,235,224,0.28); }
+.sal-status-dot.is-playing { background: var(--cyan); border: none; animation: salPulse 1.5s ease-in-out infinite; }
+.sal-status-dot.is-playing::after { content: ''; position: absolute; inset: -1px; border-radius: 50%;
+  border: 1px solid var(--cyan); animation: salRing 1.5s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .sal-status-dot, .sal-status-dot.is-playing, .sal-status-dot.is-playing::after { animation: none !important; }
+}
+
+.sal-name-wrap { display: flex; align-items: baseline; min-width: 0; }
+.sal-name { font-family: var(--font-ui); font-weight: 700; font-size: 22px; letter-spacing: -0.01em;
+  line-height: 1; color: var(--white); white-space: nowrap; }
+.sal-desc { font-family: var(--font-ui); font-weight: 300; font-size: 15px; line-height: 1.2;
+  color: var(--mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.sal-tabs { display: flex; align-items: stretch; gap: 26px; flex: none; margin-left: 32px;
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; }
+.sal-tab { display: flex; align-items: center; color: var(--mid); border-bottom: 2px solid transparent;
+  text-decoration: none; background: none; border-left: none; border-right: none; border-top: none;
+  cursor: pointer; font-family: inherit; font-size: inherit; letter-spacing: inherit;
+  text-transform: inherit; transition: color 0.2s ease, border-color 0.2s ease; }
+.sal-tab:hover { color: var(--white); }
+.sal-tab.is-active { color: var(--acid); border-bottom: 2px solid var(--acid); }
+
+.sal-burger { display: none; flex-direction: column; justify-content: center; gap: 4px; flex: none;
+  margin-left: 10px; padding: 8px 6px; background: none; border: none; cursor: pointer; }
+.sal-burger span { width: 18px; height: 1.5px; background: var(--mid); display: block; }
+.sal-mobile-menu { display: none; }
+
+@media (max-width: 380px) {
+  .sal-bar { height: 60px; padding: 0 12px; }
+  .sal-pill { padding: 5px 10px 5px 6px; gap: 8px; }
+  .sal-pill-mark { height: 30px; }
+  .sal-pill-text { font-size: 15px; }
+  .sal-sep { margin: 0 11px; }
+  .sal-status-dot { width: 9px; height: 9px; margin-right: 10px; }
+  .sal-name-wrap { flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; flex: 1; }
+  .sal-name { font-size: 16px; }
+  .sal-desc { font-size: 11.5px; max-width: 100%; }
+  .sal-sep--inline { display: none; }
+  .sal-tabs { display: none; }
+  .sal-burger { display: flex; }
+  .sal-mobile-menu.is-open { display: flex; flex-direction: column; position: absolute; top: 60px;
+    left: 0; right: 0; z-index: 50; background: var(--black); border-bottom: 1px solid var(--dim);
+    padding: 8px 12px 14px; gap: 4px; }
+  .sal-mobile-menu .sal-tab { padding: 10px 4px; border-bottom: 1px solid rgba(240,235,224,0.08); }
+}
 
 /* --- par.12 ostrzezenie o sluchawkach --- */
 .hp-warn { grid-area: warn; display: flex; align-items: center; gap: var(--sm);
@@ -419,7 +469,7 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 /* --- par.02 role typografii: LABEL = Azeret Mono 500 uppercase --- */
 .param-row label, .acc-title, .lib-title, .param-section-title, .export-label,
 .hud-label, .t-counter-label, .minimap-label, .lib-sub-head, .lib-badge,
-.stereo-indicator, .nav-link, .mode-btn, .help-tab, .routing-btn, .btn-toggle,
+.stereo-indicator, .sal-tab, .mode-btn, .help-tab, .routing-btn, .btn-toggle,
 .motion-mode-btn, .btn-sm, .lib-count-badge {
   font-family: var(--font-mono); font-weight: 500; }
 .lib-title, .acc-title { text-transform: uppercase; letter-spacing: 0.15em; font-size: var(--fs-xs); }
@@ -442,15 +492,12 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 /* --- par.02 UI/BODY = Lexend --- */
 .sel-name { font-family: var(--font-ui); font-weight: 600; font-style: normal; font-size: var(--fs-md); }
 .sel-name.empty { font-style: normal; font-weight: 400; }
-.lib-sound-name, .src-name, .help-box p, .file-drop { font-family: var(--font-ui); font-weight: 400; }
-.help-box h2 { font-family: var(--font-ui); font-weight: 800; font-size: 24px; }
-.help-box h2 em { font-style: normal; }
-.help-box h3 { font-family: var(--font-mono); font-weight: 500; }
-.help-box kbd, .hint kbd, .path-hint kbd { font-family: var(--font-mono); font-weight: 500; }
+.lib-sound-name, .src-name, .sal-modal p, .file-drop { font-family: var(--font-ui); font-weight: 400; }
+.sal-modal kbd, .hint kbd, .path-hint kbd { font-family: var(--font-mono); font-weight: 500; }
 .lib-cat-head .label { font-family: var(--font-ui); font-weight: 600; letter-spacing: 0.02em; }
 
 /* --- par.05 przyciski: ostre, min-height 44px, padding 14/24 --- */
-.btn-export, .help-close-btn { font-family: var(--font-ui); font-weight: 600; text-transform: none;
+.btn-export { font-family: var(--font-ui); font-weight: 600; text-transform: none;
   letter-spacing: 0.02em; min-height: 44px; padding: 14px 24px; border-radius: 0; }
 .btn-kpo { font-family: var(--font-ui); font-weight: 600; text-transform: none; letter-spacing: 0.02em;
   min-height: 44px; padding: 14px 24px; border-radius: 0;
@@ -464,7 +511,6 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .source-item { grid-template-columns: 28px 1fr 44px 44px; }
 .btn-sm, .routing-btn, .btn-toggle, .motion-mode-btn, .help-tab, .mode-btn {
   min-height: 44px; border-radius: 0; }
-.nav-link { min-height: 44px; display: inline-flex; align-items: center; }
 .lib-cat-head { padding-top: 12px; padding-bottom: 12px; }
 .param-row { min-height: 44px; }
 
@@ -486,7 +532,6 @@ input[type="checkbox"] { accent-color: var(--cyan); }
 /* Etykiety kontrolek: jasny bold. Wczesniej byly wygaszone do --mid i ginely,
    przez co szukanie funkcji w panelu wymagalo wpatrywania sie w ekran. */
 .param-section-title, .export-label, .attr-label, .field-label { color: var(--white); font-weight: 700; }
-.help-box h3 { color: var(--amber); }
 .lib-cat-head .ico { color: var(--mid); }
 .lib-count-badge { color: var(--cyan); font-weight: 400; }
 .lib-badge, .lib-badge.cc0, .lib-badge.stream { color: var(--mid); border-color: var(--dim); }
@@ -499,10 +544,34 @@ input[type="checkbox"] { accent-color: var(--cyan); }
 </head>
 <body>
 <div class="app-layout edit-mode" id="app">
-  <nav class="nav">
-    <div class="nav-brand"><a class="hub-back" href="/" title="Powrót do Spatial Audio Lab"><img src="assets/brand/icon-app.png" alt="" width="18" height="18"><span>&larr; SAL</span></a><span class="tool-sep" aria-hidden="true"></span><span class="tool-dot" id="ctxDot" aria-hidden="true"></span><span class="tool-name">Scena</span><span class="tool-desc">Scenografia dźwiękowa</span></div>
-    <div class="nav-actions"><button class="nav-link" id="libToggle">Biblioteka</button><span class="nav-tab-sep" aria-hidden="true"></span><button class="nav-link" id="helpBtn">Pomoc</button><button class="nav-link" id="aboutBtn">O projekcie</button><span class="ctx-status" id="ctxStatus"><span id="ctxStatusText">Audio Context: Idle</span></span></div>
-  </nav>
+  <header class="sal-bar" id="salBar">
+    <div class="sal-bar-left">
+      <a href="/" class="sal-pill" title="Powrót do Hubu (Spatial Audio Lab)">
+        <img src="assets/brand/mark-cream-1024.png" alt="" class="sal-pill-mark">
+        <span class="sal-pill-text">SA<span class="sal-acid">L</span></span>
+      </a>
+      <span class="sal-sep"></span>
+      <span class="sal-status-dot" id="salStatusDot"></span>
+      <span class="sal-name-wrap">
+        <span class="sal-name">Scena</span>
+        <span class="sal-sep sal-sep--inline"></span>
+        <span class="sal-desc">Rozstaw dźwięki i wyeksportuj pięć plików</span>
+      </span>
+    </div>
+    <nav class="sal-tabs" id="salTabs" aria-label="Nawigacja narzędzia">
+      <button type="button" class="sal-tab" data-tab="biblioteka" id="libToggle">Biblioteka</button>
+      <button type="button" class="sal-tab" data-tab="pomoc" data-modal="modalPomoc">Pomoc</button>
+      <button type="button" class="sal-tab" data-tab="o-projekcie" data-modal="modalOProjekcie">O projekcie</button>
+    </nav>
+    <button class="sal-burger" id="salBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="sal-mobile-menu" id="salMobileMenu" aria-label="Nawigacja narzędzia (mobile)">
+      <button type="button" class="sal-tab" data-tab="biblioteka" data-proxy="libToggle">Biblioteka</button>
+      <button type="button" class="sal-tab" data-tab="pomoc" data-modal="modalPomoc">Pomoc</button>
+      <button type="button" class="sal-tab" data-tab="o-projekcie" data-modal="modalOProjekcie">O projekcie</button>
+    </nav>
+  </header>
 
   <div class="hp-warn" id="hpWarn"><span class="hp-ico">&#9834;</span><span class="hp-txt">Załóż słuchawki — bez nich efekt przestrzenny (HRTF) nie zadziała poprawnie.</span><button class="hp-close" id="hpWarnClose" aria-label="Zamknij ostrzeżenie">&times;</button></div>
 
@@ -659,31 +728,48 @@ input[type="checkbox"] { accent-color: var(--cyan); }
 </div>
 
 <!-- par.13: oznakowanie KPO/UE ma byc w kazdej aplikacji laboratorium, nie tylko w Hubie -->
-<div class="help-overlay" id="aboutOverlay"><div class="help-box">
-  <h2>O <em>projekcie</em></h2>
-  <p><strong>Scena</strong> jest jednym z narzędzi <strong>Spatial Audio Lab</strong> — projektu stypendialnego poświęconego dźwiękowi przestrzennemu. W ramach projektu powstaje archiwum nagrań w technologii VR oraz zestaw otwartych narzędzi webowych, dzięki którym ten materiał da się nie tylko odsłuchać, ale i wykorzystać we własnej pracy.</p>
+<div class="sal-modal-overlay" id="modalOProjekcie" aria-hidden="true">
+  <div class="sal-modal" role="dialog" aria-modal="true" aria-labelledby="modalOProjekcieTitle">
+    <button type="button" class="sal-modal-close" data-close-modal aria-label="Zamknij">&#10005;</button>
+    <h2 id="modalOProjekcieTitle" class="sal-modal-h2">O projekcie</h2>
 
-  <h3>Realizacja</h3>
-  <div class="about-meta">
-    <div class="about-row"><span class="about-key">Stypendysta</span><span class="about-val">Oskar Hamerski</span></div>
-    <div class="about-row"><span class="about-key">Program</span><span class="about-val">Krajowy Plan Odbudowy — stypendia NIMIT</span></div>
-    <div class="about-row"><span class="about-key">Umowa</span><span class="about-val">143/KPO.STYPENDIA/NIMIT/2025</span></div>
-    <div class="about-row"><span class="about-key">Instytucja wspierająca</span><span class="about-val">Narodowy Instytut Muzyki i Tańca</span></div>
-    <div class="about-row"><span class="about-key">Inwestycja</span><span class="about-val">A2.5.1</span></div>
-    <div class="about-row"><span class="about-key">Technologia</span><span class="about-val">Web Audio API · HRTF · Ambisonia FOA / AmbiX</span></div>
+    <p>Scena to jedno z siedmiu narzędzi <strong>Spatial Audio Lab</strong> — projektu stypendialnego
+      finansowanego w ramach Krajowego Planu Odbudowy. Powstała jako część archiwum dźwięku
+      przestrzennego łączącego inżynierię dźwięku z edukacją teatralną i technikami uważności.</p>
+
+    <h3 class="sal-modal-h3">Jak to działa</h3>
+    <p>Web Audio API (<code>PannerNode</code>, model HRTF) spatializuje dźwięk w czasie rzeczywistym;
+      ta sama pozycja karmi jednocześnie widok sceny i enkoder ambisoniczny, więc to, co widzisz,
+      jest dokładnie tym, co słyszysz. Eksport do WAV 48 kHz / 32-bit float — binauralny (stereo)
+      oraz ambisoniczny FOA w formacie AmbiX.</p>
+
+    <h3 class="sal-modal-h3">Metadane</h3>
+    <dl class="sal-modal-meta">
+      <div><dt>Autor</dt><dd>Oskar Hamerski</dd></div>
+      <div><dt>Program</dt><dd>Stypendia kulturowe KPO — Narodowy Instytut Muzyki i Tańca (NIMiT)</dd></div>
+      <div><dt>Umowa</dt><dd>143/KPO.STYPENDIA/NIMIT/2025</dd></div>
+      <div><dt>Technologia</dt><dd>Web Audio API (HRTF) + ambisonia FOA / AmbiX</dd></div>
+    </dl>
+
+    <h3 class="sal-modal-h3">Finansowanie</h3>
+    <p>Projekt sfinansowany przez Unię Europejską — NextGenerationEU. Wsparcie w ramach Krajowego
+      Planu Odbudowy i Zwiększania Odporności, Inwestycja A2.5.1: Program wspierania działalności
+      podmiotów sektora kultury i przemysłów kreatywnych na rzecz stymulowania ich rozwoju.
+      Instytucja Wspierająca: Narodowy Instytut Muzyki i Tańca.</p>
+
+    <div class="sal-kpo-strip">
+      <img src="assets/kpo/KPO.jpg" alt="Logotypy: Krajowy Plan Odbudowy, Rzeczpospolita Polska, Sfinansowane przez Unię Europejską NextGenerationEU">
+    </div>
+
+    <p><a href="https://spatial-audio-lab.github.io/o-projekcie/" target="_blank" rel="noopener">Pełne
+      informacje o projekcie (wskaźniki, certyfikaty, kontakt) &#8599;</a></p>
   </div>
+</div>
 
-  <p>Sfinansowano ze środków <strong>Krajowego Planu Odbudowy i Zwiększania Odporności</strong> w ramach inwestycji A2.5.1, ze stypendium Narodowego Instytutu Muzyki i Tańca, umowa nr 143/KPO.STYPENDIA/NIMIT/2025.</p>
-  <p>Pełny opis przedsięwzięcia, wskaźniki i pozostałe narzędzia: <a href="/o-projekcie/" target="_blank" rel="noopener">spatial-audio-lab.github.io/o-projekcie</a>.</p>
-
-  <div class="kpo-strip">
-    <img src="assets/brand/kpo-belka.jpg" alt="Logotypy: Krajowy Plan Odbudowy, Rzeczpospolita Polska oraz Sfinansowane przez Unię Europejską NextGenerationEU">
-  </div>
-  <button class="help-close-btn" id="aboutClose">Zamknij</button>
-</div></div>
-
-<div class="help-overlay" id="helpOverlay"><div class="help-box">
-  <h2>Spatial Audio <em>Lab</em></h2>
+<div class="sal-modal-overlay" id="modalPomoc" aria-hidden="true">
+  <div class="sal-modal" role="dialog" aria-modal="true" aria-labelledby="modalPomocTitle">
+  <button type="button" class="sal-modal-close" data-close-modal aria-label="Zamknij">&#10005;</button>
+  <h2 id="modalPomocTitle" class="sal-modal-h2">Pomoc</h2>
   <div class="help-tabs" role="tablist">
     <button class="help-tab active" id="helpTabBasic" role="tab" aria-selected="true" aria-controls="helpBasic">Podstawy</button>
     <button class="help-tab" id="helpTabAdvanced" role="tab" aria-selected="false" aria-controls="helpAdvanced">Zaawansowane</button>
@@ -691,7 +777,7 @@ input[type="checkbox"] { accent-color: var(--cyan); }
     <button class="help-tab" id="helpTabEco" role="tab" aria-selected="false" aria-controls="helpEco">W ekosystemie</button>
   </div>
   <div id="helpBasic" class="help-panel" role="tabpanel">
-    <h3>Zacznij tutaj</h3>
+    <h3 class="sal-modal-h3">Zacznij tutaj</h3>
     <p>1. Dodaj dźwięk — przeciągnij plik audio do panelu «Dodaj dźwięki» po prawej, albo wybierz gotowy dźwięk z biblioteki po lewej.</p>
     <p>2. Kliknij i przeciągnij kropkę na środkowym obrazie — tak ustawiasz, skąd w przestrzeni ma być słychać dany dźwięk.</p>
     <p>3. U góry przełącz się z «Edycja» na «Eksploracja» i porusz się po scenie klawiszami <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> (albo strzałkami) — dźwięk będzie się zmieniał zależnie od tego, gdzie jesteś i w którą stronę patrzysz.</p>
@@ -699,100 +785,100 @@ input[type="checkbox"] { accent-color: var(--cyan); }
     <p>Na liście źródeł po prawej możesz kliknąć dowolny dźwięk, żeby zmienić jego głośność suwakiem albo usunąć go przyciskiem ✕. Gdy poczujesz się pewniej, zajrzyj do zakładki «Zaawansowane» — jest tam pogłos, ruch dźwięków w czasie i eksport gotowej sceny. Nie masz jeszcze materiału? Zakładka «Banki dźwięków» zbiera miejsca, z których można legalnie pobrać nagrania.</p>
   </div>
   <div id="helpAdvanced" class="help-panel" style="display:none" role="tabpanel">
-    <h3>Biblioteka dźwięków</h3>
+    <h3 class="sal-modal-h3">Biblioteka dźwięków</h3>
     <p>Po lewej stronie masz gotowe, darmowe dźwięki pobrane z serwisu Freesound.org, poukładane w kategorie (Natura, Nastrój...). Wpisz coś w polu wyszukiwania, żeby szybciej znaleźć konkretny dźwięk — np. „woda" albo „ptaki". Kliknięcie „+" od razu wstawia dźwięk na scenę w losowym miejscu; potem przeciągnij go tam, gdzie ma być słychać. Niektóre dźwięki wymagają podania autora — jeśli tak, jego nazwisko z linkiem pojawi się pod nazwą dźwięku w bibliotece; warto go zachować, jeśli scena ma być gdzieś publikowana.</p>
-    <h3>Panel „Wybrany" — ustawienia dźwięku, który właśnie kliknąłeś</h3>
+    <h3 class="sal-modal-h3">Panel „Wybrany" — ustawienia dźwięku, który właśnie kliknąłeś</h3>
     <p><strong>Tryb: W przestrzeni / Bezpośrednio.</strong> To najważniejszy przełącznik dla danego dźwięku. „W przestrzeni" sprawia, że dźwięk brzmi tak, jakby naprawdę dochodził z konkretnego punktu na mapie — im dalej się od niego oddalisz albo im bardziej się od niego odwrócisz, tym ciszej i inaczej będzie brzmiał, dokładnie jak w prawdziwym świecie. „Bezpośrednio" wyłącza ten efekt — dźwięk gra jednakowo, niezależnie gdzie jesteś i w którą stronę patrzysz. Używaj „Bezpośrednio" dla rzeczy, które mają być zawsze wyraźnie słyszalne i nie są częścią sceny — np. narracja lektora, muzyka w tle, albo gdy dźwięk sam już został nagrany jako gotowe nagranie „na słuchawki" i nie chcesz, żeby program dodatkowo go przetwarzał.</p>
     <p><strong>Vol (głośność).</strong> Głośność tego jednego, wybranego dźwięku — niezależna od głośności innych dźwięków i od suwaka „Master" w panelu Przestrzeń.</p>
     <p><strong>Wys (wysokość).</strong> Przesuwa dźwięk w górę albo w dół względem słuchacza. Przydatne dla dźwięków, które w naturze też są wyżej lub niżej — np. śpiew ptaka wysoko nad głową, albo bulgotanie wody pod nogami.</p>
     <p><strong>Szerokość stereo (Szer. i Kąt).</strong> Zwykle dźwięk brzmi jak punkt — jedno konkretne miejsce. Zwiększając „Szer." rozciągasz go na większy obszar, jakby dochodził z całej okolicy naraz, a nie z jednego miejsca — dobre dla szumu lasu, tłumu ludzi, rzeki czy wiatru. „Kąt" ustawia, w którą stronę ten obszar jest rozciągnięty. Wskaźnik obok pokazuje, czy dźwięk jest teraz „Punktem" czy już „Stereo".</p>
     <p><strong>Dystans i Absorpcja (u dołu sekcji „W przestrzeni").</strong> To tylko podgląd, nic tu nie klikasz — pokazuje, jak daleko aktualnie jesteś od wybranego dźwięku i jak bardzo przez tę odległość „przytłumia się" (traci wysokie tony) — dokładnie tak, jak odległe dźwięki brzmią stłumione w prawdziwym świecie.</p>
     <p><strong>Ruch źródła.</strong> Zamiast trzymać dźwięk w jednym miejscu, możesz sprawić, żeby sam się poruszał: <strong>Orbita</strong> — krąży w kółko wokół punktu, w którym go postawiłeś (np. bzyczący owad dookoła głowy). <strong>Random</strong> — błądzi losowo po okolicy (np. zwierzę, które się nie trzyma jednego miejsca). <strong>Ścieżka</strong> — porusza się po trasie, którą sam narysujesz: zaznacz dźwięk, wybierz „Ścieżka", potem trzymaj <kbd>Shift</kbd> i klikaj kolejne punkty na scenie (np. dla przejeżdżającego samochodu albo kogoś przechodzącego obok). „Prędkość" ustawia, jak szybko się porusza, a poszczególne tryby mają jeszcze własne suwaki (promień orbity, zasięg błądzenia, czy ścieżka ma się powtarzać w pętli).</p>
-    <h3>Panel „Przestrzeń" — ustawienia całej sceny naraz</h3>
+    <h3 class="sal-modal-h3">Panel „Przestrzeń" — ustawienia całej sceny naraz</h3>
     <p><strong>Master.</strong> Ogólna głośność wszystkiego naraz — przydatna, gdy chcesz np. na chwilę wszystko przyciszyć bez zmieniania głośności każdego dźwięku z osobna.</p>
     <p><strong>Pogłos (reverb).</strong> Dodaje wrażenie, że wszystkie dźwięki dzieją się w jakimś konkretnym, fizycznym miejscu, a nie w pustce — tak jak głos brzmi inaczej w małej łazience, a inaczej w wielkiej hali. „Włącz" włącza lub wyłącza ten efekt dla całej sceny. „Wet" to ile tego pogłosu słychać (więcej = bardziej „jaskiniowo"). „Rozmiar" symuluje wielkość pomieszczenia — im większa wartość, tym dłużej dźwięk „donosi się echem", jakby scena działa się w większej przestrzeni. „Tłumienie" ustawia, jak szybko to echo gaśnie — twarde powierzchnie (beton, kamień) dają długie, wyraźne echo, miękkie (trawa, tkaniny) szybko je wygaszają.</p>
-    <h3>Panel „Eksport" — zapisywanie gotowej sceny na dysk</h3>
+    <h3 class="sal-modal-h3">Panel „Eksport" — zapisywanie gotowej sceny na dysk</h3>
     <p>Po wypełnieniu numeru i nazwy sceny (przydatne, jeśli robisz ich więcej i chcesz je łatwo rozróżnić w plikach), czasu trwania nagrania oraz daty, przycisk „Eksportuj scenę" pobiera na dysk komplet 5 plików o tej samej nazwie:</p>
     <p>— <strong>plik „BINAURAL"</strong> — gotowe nagranie do odsłuchu na zwykłych słuchawkach, dokładnie tak, jak scena brzmi w aplikacji. To jest plik, którego prawdopodobnie potrzebujesz najczęściej.</p>
     <p>— <strong>plik „AMBIX"</strong> — wersja tej samej sceny w formacie do dalszej, profesjonalnej obróbki w innych programach do dźwięku przestrzennego albo w aplikacjach VR/360°. Zwykły odtwarzacz nie odtworzy go poprawnie — pomiń ten plik, jeśli go nie potrzebujesz.</p>
     <p>— <strong>plik „MAPA"</strong> — obrazek z widokiem sceny z góry (rozmieszczenie dźwięków i słuchacza), przydatny do dokumentacji albo sprawozdania.</p>
     <p>— <strong>plik „META"</strong> — plik tekstowy ze wszystkimi ustawieniami sceny (pozycje, głośności, autorzy dźwięków) — też do dokumentacji, żeby nie trzeba było niczego odtwarzać ze słuchu.</p>
     <p>— <strong>plik „SCENA"</strong> — ten sam opis sceny, ale w formacie do odczytu maszynowego (JSON). Jeśli wrzucisz go razem z plikiem „AMBIX" do <strong>Sfery</strong>, na kuli zapalą się nazwane punkty w miejscach Twoich dźwięków — pulsujące w rytm głośności każdego z nich, z podpisem, gdy dany dźwięk jest przed Tobą. Do niczego innego nie jest potrzebny.</p>
-    <h3>Sterowanie klawiaturą</h3>
+    <h3 class="sal-modal-h3">Sterowanie klawiaturą</h3>
     <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> (albo strzałki) — chodzenie po scenie w trybie Eksploracja · <kbd>Q</kbd><kbd>E</kbd> — obracanie się · <kbd>Space</kbd> — odtwórz/zatrzymaj zaznaczony dźwięk · <kbd>Shift</kbd>+klik — dodaj punkt trasy, gdy dźwięk ma tryb ruchu „Ścieżka"</p>
   </div>
   <div id="helpGlossary" class="help-panel" style="display:none" role="tabpanel">
-    <h3>Skąd wziąć dźwięki</h3>
+    <h3 class="sal-modal-h3">Skąd wziąć dźwięki</h3>
     <p>Scena nie ma własnej biblioteki nagrań — dźwięki wczytujesz z dysku. Poniżej banki, z których można legalnie pobierać materiał. <strong>Zawsze sprawdzaj licencję konkretnego pliku</strong>: w tych samych serwisach obok siebie leżą nagrania na CC0 i takie, które wymagają podania autora. Stan opisów: sierpień 2026.</p>
 
-    <h3>Freesound</h3>
+    <h3 class="sal-modal-h3">Freesound</h3>
     <p><a href="https://freesound.org" target="_blank" rel="noopener">freesound.org</a> — największy i najbardziej różnorodny zbiór. Prowadzony przez Uniwersytet Pompeu Fabra w Barcelonie, wypełniany przez społeczność od 2005 roku. Znajdziesz tu praktycznie wszystko: pojedyncze efekty, długie nagrania terenowe, dźwięki miast, maszyn, zwierząt, pogody.</p>
     <p><strong>Licencje:</strong> każdy plik ma własną — najczęściej CC0 (bez żadnych warunków), CC BY (trzeba podać autora) albo CC BY-NC (bez zastosowań komercyjnych). <strong>Licencja jest przy każdym pliku osobno i trzeba ją przeczytać przed pobraniem.</strong> Wymaga darmowego konta.</p>
     <p><strong>Do czego się nadaje:</strong> gdy szukasz czegoś konkretnego i nietypowego. Jakość bywa różna — od nagrań studyjnych po telefon w kieszeni — więc warto odsłuchać przed użyciem.</p>
 
-    <h3>radio aporee ::: maps</h3>
+    <h3 class="sal-modal-h3">radio aporee ::: maps</h3>
     <p><a href="https://aporee.org/maps/" target="_blank" rel="noopener">aporee.org/maps</a> — mapa świata pokryta nagraniami terenowymi, przypiętymi do miejsc, w których powstały. Projekt Udo Noll, prowadzony od 2006 roku. To nie jest bank efektów, tylko archiwum <em>miejsc</em>.</p>
     <p><strong>Licencje:</strong> autor każdego nagrania wybiera przy wgrywaniu jedną z licencji Creative Commons albo domenę publiczną — trzeba więc sprawdzić przy konkretnym pliku.</p>
     <p><strong>Do czego się nadaje:</strong> tło i atmosfera całej sceny. Regulamin serwisu wprost wyklucza krótkie efekty i miksy — są tam wyłącznie nagrania z prawdziwych miejsc, minimum minuta, w stereo, bez obróbki. Dokładnie ten materiał, z którego buduje się przekonującą scenografię dźwiękową.</p>
 
-    <h3>Pixabay</h3>
+    <h3 class="sal-modal-h3">Pixabay</h3>
     <p><a href="https://pixabay.com/sound-effects/" target="_blank" rel="noopener">pixabay.com/sound-effects</a> — duży zbiór efektów i muzyki na jednej, wspólnej licencji.</p>
     <p><strong>Licencja:</strong> własna licencja Pixabay — użycie komercyjne dozwolone, podanie autora nie jest wymagane. Nie wolno natomiast odsprzedawać samych plików ani udostępniać ich jako własnej kolekcji dźwięków.</p>
     <p><strong>Do czego się nadaje:</strong> gdy potrzebujesz czegoś szybko i bez zastanawiania się nad warunkami. Zbiór jest mniej „terenowy" niż Freesound, za to jednolicie opisany.</p>
 
-    <h3>Mixkit</h3>
+    <h3 class="sal-modal-h3">Mixkit</h3>
     <p><a href="https://mixkit.co/free-sound-effects/" target="_blank" rel="noopener">mixkit.co/free-sound-effects</a> — starannie wyselekcjonowany, niewielki zbiór efektów i muzyki.</p>
     <p><strong>Licencja:</strong> Mixkit Free License — użycie komercyjne dozwolone, podanie autora niewymagane. Nie wolno odsprzedawać ani udostępniać plików w niezmienionej postaci jako osobnego produktu.</p>
     <p><strong>Do czego się nadaje:</strong> czyste, gotowe efekty o przewidywalnej jakości. Mało tu nagrań terenowych, dużo dźwięków „użytkowych".</p>
 
-    <h3>BBC Sound Effects</h3>
+    <h3 class="sal-modal-h3">BBC Sound Effects</h3>
     <p><a href="https://sound-effects.bbcrewind.co.uk" target="_blank" rel="noopener">sound-effects.bbcrewind.co.uk</a> — ponad 30 tysięcy nagrań z archiwum BBC, część sięga lat trzydziestych. Nagrania historyczne, maszyny, transport, zwierzęta, atmosfery miejsc.</p>
     <p><strong>Licencja:</strong> RemArc License — <strong>tylko do celów osobistych, edukacyjnych i badawczych</strong>. Do użycia komercyjnego trzeba wykupić osobną licencję. Przy pracy stypendialnej i pokazach niekomercyjnych warunki zwykle są spełnione, ale <strong>przed publikacją komercyjną sprawdź warunki na stronie</strong>.</p>
     <p><strong>Do czego się nadaje:</strong> materiał archiwalny i dźwięki, których dziś już się nie nagra.</p>
 
-    <h3>Jak używać pobranego pliku w Scenie</h3>
+    <h3 class="sal-modal-h3">Jak używać pobranego pliku w Scenie</h3>
     <p>Panel <strong>01 Dodaj dźwięki</strong> po prawej — kliknij albo przeciągnij na niego pliki z dysku. Obsługiwane są wszystkie formaty, które umie odtworzyć przeglądarka: WAV, MP3, OGG, Opus, FLAC, M4A. Każdy plik ląduje w losowym miejscu sceny; potem przeciągasz go myszą tam, gdzie ma być.</p>
     <p>Po wczytaniu nazwa jest sprzątana automatycznie — rozszerzenie, numer i podkreślenia znikają. Możesz ją zmienić w panelu <strong>03 Wybrany</strong>. Ta nazwa pojawi się na liście, na eksportowanej mapie i jako podpis punktu w Sferze, więc warto, żeby była krótka i mówiła, co to za dźwięk.</p>
 
-    <h3>Prawa autorskie — o czym trzeba pamiętać</h3>
+    <h3 class="sal-modal-h3">Prawa autorskie — o czym trzeba pamiętać</h3>
     <p>„Darmowe" nie znaczy „bez warunków". Trzy najczęstsze przypadki:</p>
     <p><strong>CC0 / domena publiczna</strong> — możesz wszystko, autor zrzekł się praw. Podanie źródła nie jest wymagane, ale jest w dobrym tonie.</p>
     <p><strong>CC BY</strong> — możesz wszystko, <em>pod warunkiem że podasz autora</em>. Jeśli nie podasz, łamiesz licencję. Właśnie po to w panelu <strong>03 Wybrany</strong> jest sekcja <strong>Autor i licencja</strong>: wpisz tam autora, licencję i link, a wszystko trafi do pliku META i do pliku JSON razem z gotową sceną.</p>
     <p><strong>CC BY-NC oraz licencje typu RemArc</strong> — użycie niekomercyjne. Prezentacja w ramach stypendium czy pokaz w galerii zwykle się mieści, sprzedaż nagrania już nie.</p>
     <p>Zapisuj autora i licencję <em>od razu przy wczytaniu pliku</em>, a nie na końcu pracy. Po tygodniu nikt już nie pamięta, skąd pochodził dwudziesty dźwięk w scenie.</p>
 
-    <h3>Scena i Sfera — jak współpracują</h3>
+    <h3 class="sal-modal-h3">Scena i Sfera — jak współpracują</h3>
     <p>To dwie aplikacje, które robią dwie różne rzeczy z tym samym materiałem.</p>
     <p><strong>Scena</strong> (ta aplikacja) to warsztat: układasz w niej dźwięki wokół słuchacza, ustawiasz ich odległość, wysokość, szerokość i pogłos, a na końcu eksportujesz gotową scenę do pięciu plików.</p>
     <p><strong>Sfera</strong> to odsłuch: wczytujesz do niej wyeksportowany plik <strong>AMBIX</strong> i możesz obracać całym polem dźwiękowym wokół nieruchomej głowy — sprawdzić, jak scena brzmi, gdy się w niej odwrócisz. Jeśli wrzucisz razem z nagraniem plik <strong>SCENA.json</strong>, na kuli zapalą się nazwane punkty w miejscach Twoich dźwięków, pulsujące w rytm głośności każdego z nich, a w rogu pojawi się opis sceny, autor i licencja.</p>
     <p><strong>Który plik do czego:</strong> <em>BINAURAL</em> to gotowe nagranie na słuchawki — brzmi dokładnie tak, jak scena w tej aplikacji, i to jego zwykle chcesz komuś wysłać. <em>AMBIX</em> to wersja do dalszej obróbki i do Sfery; da się nią obracać, ale jest z natury nieco mniej ostra kierunkowo, bo cała kula jest w niej opisana czterema kanałami. <em>MAPA</em>, <em>META</em> i <em>SCENA.json</em> to dokumentacja: obrazek, opis dla człowieka i opis dla maszyny.</p>
   </div>
   <div id="helpEco" class="help-panel" style="display:none" role="tabpanel">
-    <h3>Gdzie jesteś</h3>
+    <h3 class="sal-modal-h3">Gdzie jesteś</h3>
     <p><strong>Scena</strong> to warsztat: układasz dźwięki wokół słuchacza i eksportujesz gotowy materiał. <strong>Sfera</strong> to odsłuch: obracasz w niej polem ambisonicznym i widzisz nazwane punkty źródeł. Obie aplikacje wychodzą z jednego miejsca — z <a href="/" target="_blank" rel="noopener">Spatial Audio Lab</a>, i obie działają w przeglądarce, bez wysyłania czegokolwiek na serwer.</p>
 
-    <h3>Droga od sceny do odsłuchu</h3>
+    <h3 class="sal-modal-h3">Droga od sceny do odsłuchu</h3>
     <p>1. Ułóż dźwięki w Scenie i ustaw czas trwania nagrania w panelu «Eksport».</p>
     <p>2. Kliknij «Eksportuj scenę». Na dysk trafia <strong>pięć plików o wspólnej nazwie</strong>: BINAURAL, AMBIX, MAPA, META i SCENA.</p>
     <p>3. Otwórz <strong>Sferę</strong> i przeciągnij do niej plik <strong>AMBIX</strong>. To ten czterokanałowy — Sfera rozpozna go po nagłówku i włączy obracanie polem.</p>
     <p>4. Dorzuć do Sfery plik <strong>SCENA</strong> (rozszerzenie .json). Dopiero on sprawia, że na kuli zapalają się <em>nazwane</em> punkty w miejscach Twoich dźwięków — świecące w rytm głośności każdego z nich, z promieniem pokazującym odległość źródła.</p>
     <p>Kolejność wrzucania nie ma znaczenia, ale bez pliku AMBIX Sfera nie ma czego odtwarzać, a bez pliku SCENA pokaże samo pole bez podpisów.</p>
 
-    <h3>Który plik do czego</h3>
+    <h3 class="sal-modal-h3">Który plik do czego</h3>
     <p><strong>BINAURAL</strong> — to jest plik do słuchania i do wysłania komuś. Gra na każdych zwykłych słuchawkach i w każdym odtwarzaczu.</p>
     <p><strong>AMBIX</strong> — materiał do dalszej pracy: Sfera, programy do dźwięku przestrzennego, wideo 360°. W zwykłym odtwarzaczu zabrzmi źle, bo to nie jest nagranie do bezpośredniego odsłuchu, tylko zapis całego pola dźwiękowego.</p>
     <p><strong>MAPA</strong> i <strong>META</strong> — dokumentacja: obrazek sceny z góry i spis wszystkich ustawień wraz z autorami dźwięków. Do sprawozdania albo do przypomnienia sobie po miesiącu, co się właściwie zrobiło.</p>
     <p><strong>SCENA</strong> — opis sceny dla maszyny. Potrzebny wyłącznie Sferze.</p>
 
-    <h3>Co ruch źródeł robi z plikami</h3>
+    <h3 class="sal-modal-h3">Co ruch źródeł robi z plikami</h3>
     <p>Jeśli któryś dźwięk ma włączony ruch (Orbita, Random, Ścieżka), zaznacz «Utrwal ruch w eksporcie» — wtedy trasa zostaje zapisana w obu plikach audio i w pliku SCENA, więc w Sferze punkt naprawdę jedzie tam, gdzie słychać dźwięk. Tryb Random ma zapisane ziarno losowania: powtórny eksport tej samej sceny da dokładnie ten sam plik.</p>
     <p>Pozycja <strong>słuchacza</strong> zostaje natomiast zamrożona na moment eksportu — jest układem odniesienia całego nagrania. Chodzenie po scenie jest wejściem na żywo i nie da się go odtworzyć z pliku.</p>
 
-    <h3>Słuchawki</h3>
+    <h3 class="sal-modal-h3">Słuchawki</h3>
     <p>Wszystko, co robi Scena, opiera się na filtracji HRTF, czyli symulacji tego, jak dźwięk zmienia się po drodze do lewego i prawego ucha. Na głośnikach ten efekt nie zadziała — oba kanały wymieszają się w powietrzu, zanim dotrą do uszu. Do pracy i do odsłuchu efektu potrzebne są słuchawki.</p>
   </div>
-  <button class="help-close-btn" id="helpClose">Zamknij</button>
-</div></div>
+  </div>
+</div>
 
 <script>
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1380,27 +1466,60 @@ $('helpTabBasic').addEventListener('click', ()=>setHelpTab('basic'));
 $('helpTabAdvanced').addEventListener('click', ()=>setHelpTab('advanced'));
 $('helpTabGlossary').addEventListener('click', ()=>setHelpTab('glossary'));
 $('helpTabEco').addEventListener('click', ()=>setHelpTab('eco'));
-$('helpBtn').addEventListener('click', ()=>{ setHelpTab('basic'); ustawNakladke('aboutOverlay',false); ustawNakladke('helpOverlay',true); });
-$('helpClose').addEventListener('click', ()=>ustawNakladke('helpOverlay',false));
-$('helpOverlay').addEventListener('click', e=>{ if(e.target===$('helpOverlay')) $('helpOverlay').classList.remove('open'); });
 
-// O PROJEKCIE — ostatnia zakladka paska. Dwa nakladki nigdy nie stoja otwarte naraz,
-// bo obie przykrywaja caly ekran i druga bylaby niewidoczna pod pierwsza.
-function ustawNakladke(id, otwarta){
-  $(id).classList.toggle('open', otwarta);
-  const przycisk = id==='aboutOverlay' ? 'aboutBtn' : 'helpBtn';
-  $(przycisk).classList.toggle('is-open', otwarta);
+// --- PASEK MARKI v3.1: zakladki, modale, burger ---------------------------------------
+// Wzorzec i zachowanie 1:1 z implementacja referencyjna (sekwencer, src/js/header.js):
+// zakladka z atrybutem data-modal otwiera okno, zamyka je krzyzyk, klik w tlo i Escape,
+// a fokus wraca na zakladke, z ktorej okno otwarto.
+let ostatniaZakladka = null;
+function otworzModal(modal, zrodlo){
+  if(!modal) return;
+  ostatniaZakladka = zrodlo || document.activeElement;
+  modal.classList.add('is-open');
+  modal.setAttribute('aria-hidden','false');
+  const x = modal.querySelector('[data-close-modal]');
+  if(x) x.focus();
 }
-$('aboutBtn').addEventListener('click', ()=>{ ustawNakladke('helpOverlay',false); ustawNakladke('aboutOverlay',true); });
-$('aboutClose').addEventListener('click', ()=>ustawNakladke('aboutOverlay',false));
-$('aboutOverlay').addEventListener('click', e=>{ if(e.target===$('aboutOverlay')) ustawNakladke('aboutOverlay',false); });
-// Escape zamyka to, co akurat jest na wierzchu — bez tego z nakladki wychodzi sie
-// wylacznie mysza, co przy klawiaturowej obsludze reszty apki bylo niekonsekwencja.
-document.addEventListener('keydown', e=>{
-  if(e.key!=='Escape') return;
-  const naWierzchu=nakladkaOtwarta();
-  if(naWierzchu){ ustawNakladke(naWierzchu,false); e.preventDefault(); }
-});
+function zamknijModal(modal){
+  if(!modal || !modal.classList.contains('is-open')) return;
+  modal.classList.remove('is-open');
+  modal.setAttribute('aria-hidden','true');
+  if(ostatniaZakladka && typeof ostatniaZakladka.focus === 'function') ostatniaZakladka.focus();
+}
+function zamknijWszystkieModale(){
+  document.querySelectorAll('.sal-modal-overlay.is-open').forEach(zamknijModal);
+}
+function nakladkaOtwarta(){
+  return document.querySelector('.sal-modal-overlay.is-open') ? true : false;
+}
+(function wepnijPasek(){
+  const burger = $('salBurger'), menu = $('salMobileMenu');
+  if(burger && menu){
+    burger.addEventListener('click', ()=>{
+      const otwarte = menu.classList.toggle('is-open');
+      burger.setAttribute('aria-expanded', otwarte ? 'true' : 'false');
+    });
+  }
+  document.querySelectorAll('[data-tab]').forEach(el=>{
+    el.addEventListener('click', e=>{
+      const id = el.getAttribute('data-modal');
+      if(id){ e.preventDefault(); setHelpTab('basic'); otworzModal($(id), el); }
+      // Pozycja bez wlasnego okna dziala jak przycisk apki. W menu mobilnym to tylko
+      // powtorzenie zakladki z paska, wiec przekazuje klikniecie oryginalowi.
+      const proxy = el.getAttribute('data-proxy');
+      if(proxy && $(proxy)) $(proxy).click();
+      if(menu) menu.classList.remove('is-open');
+      if(burger) burger.setAttribute('aria-expanded','false');
+    });
+  });
+  document.querySelectorAll('.sal-modal-overlay').forEach(ov=>{
+    ov.addEventListener('click', e=>{ if(e.target===ov) zamknijModal(ov); });
+    ov.querySelectorAll('[data-close-modal]').forEach(b=>b.addEventListener('click', ()=>zamknijModal(ov)));
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape' && nakladkaOtwarta()){ zamknijWszystkieModale(); e.preventDefault(); }
+  });
+})();
 
 // KEYBOARD
 // Skroty klawiszowe milkna, gdy uzytkownik pisze. Wczesniej sprawdzany byl tylko
@@ -1412,13 +1531,9 @@ function pisze(t){
   return tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||t.isContentEditable;
 }
 // Nakladka na wierzchu przejmuje klawiature: bez tego Spacja czytana w tle uruchamiala
-// dzwiek pod otwarta pomoca, a WASD chodzilo po niewidocznej scenie. Escape obsluzony
-// przy wpieciu nakladek, nizej.
-function nakladkaOtwarta(){
-  if($('aboutOverlay').classList.contains('open')) return 'aboutOverlay';
-  if($('helpOverlay').classList.contains('open')) return 'helpOverlay';
-  return null;
-}
+// dzwiek pod otwarta pomoca, a WASD chodzilo po niewidocznej scenie.
+// nakladkaOtwarta() jest zadeklarowana raz, przy obsludze paska — druga deklaracja tej
+// samej nazwy wygralaby po cichu przez hoisting.
 document.addEventListener('keydown', e=>{ if(nakladkaOtwarta()) return; if(pisze(e.target)) return; S.keys[e.code]=true; if(e.code==='Space'){ e.preventDefault(); if(S.selectedSource){ S.selectedSource.playing?stopSource(S.selectedSource):playSource(S.selectedSource); } } });
 document.addEventListener('keyup', e=>{ S.keys[e.code]=false; });
 
@@ -2207,20 +2322,21 @@ async function exportScene(){
 updateListener();
 loadLibrary();
 requestAnimationFrame(loop);
-// --- SAL Manifest par.08: status Audio Context w naglowku narzedzia ---
+// --- par.08 v3.1: stan dzwieku niesie DIODA, nie napis --------------------------------
+// Do v3.0 pasek pokazywal "Audio Context: Idle/Running". Wzorzec v3.1 tego napisu nie ma:
+// dioda pulsuje i rozchodzi sie pierscieniem, gdy dzwiek gra, a przycisk transportu i tak
+// mowi to slowami. Trzeci raz ta sama informacja tylko zabierala miejsce nazwie apki.
 (function(){
-  // Klasa siedzi na calym pasku, nie na samym napisie: dioda przy nazwie i napis po
-  // prawej pokazuja ten sam stan, a na waskim ekranie napis znika i zostaje sama dioda.
-  var bar = document.querySelector('.nav');
-  var txt = document.getElementById('ctxStatusText');
-  if(!bar || !txt) return;
+  var bar = document.getElementById('salBar');
+  var dot = document.getElementById('salStatusDot');
+  if(!bar || !dot) return;
   function refresh(){
-    var running = audioCtx.state === 'running';
-    bar.classList.toggle('running', running);
-    txt.textContent = running ? 'Audio Context: Running' : 'Audio Context: Idle';
+    var gra = audioCtx.state === 'running' && S.sources.some(function(z){ return z.playing; });
+    dot.classList.toggle('is-playing', gra);
+    bar.classList.toggle('is-playing', gra);
   }
   audioCtx.addEventListener('statechange', refresh);
-  setInterval(refresh, 1000);
+  setInterval(refresh, 300);
   refresh();
 })();
 // --- SAL Manifest par.12: zamkniecie ostrzezenia o sluchawkach ---
