@@ -111,9 +111,19 @@ https://spatial-audio-lab.github.io/
 
 ---
 
-## Informacja o finansowaniu
-Projekt jest realizowany w ramach programu stypendialnego **Krajowego Planu Odbudowy i Zwiększania Odporności (KPO)**.
-
-* **Program:** Inwestycja A2.5.1: Program wspierania działalności podmiotów sektora kultury i przemysłów kreatywnych na rzecz stymulowania ich rozwoju.
-* **Instytucja Wspierająca:** Narodowy Instytut Muzyki i Tańca (NIMiT).
-* **Wartość dofinansowania z Unii Europejskiej (NextGenerationEU):** 36 000,00 zł brutto
+<table>
+  <tr>
+    <td width="220" align="center">
+      <img src="asseets/kpo/NGEUkol.jpg" alt="Sfinansowane przez Unię Europejską - NextGenerationEU" width="200">
+    </td>
+    <td>
+      <h3>Informacja o finansowaniu</h3>
+      <p>Projekt jest realizowany w ramach programu stypendialnego Krajowego Planu Odbudowy i Zwiększania Odporności (KPO).</p>
+      <ul>
+        <li><b>Program:</b> Inwestycja A2.5.1: Program wspierania działalności podmiotów sektora kultury i przemysłów kreatywnych na rzecz stymulowania ich rozwoju.</li>
+        <li><b>Instytucja Wspierająca:</b> Narodowy Instytut Muzyki i Tańca (NIMiT).</li>
+        <li><b>Wartość dofinansowania z Unii Europejskiej (NextGenerationEU):</b> 36 000,00 zł brutto.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
