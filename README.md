@@ -99,13 +99,15 @@ Repozytorium zawiera `index.html` i `library.json` w katalogu głównym — wyst
 GitHub Pages w Settings → Pages → Source: wybrana gałąź. Dźwięki z biblioteki są
 streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią repozytorium.
 
+
 ---
 
-## O projekcie
+
+# O projekcie
 
 [![Baner SAL](https://raw.githubusercontent.com/spatial-audio-lab/spatial-audio-lab.github.io/main/assets/brand/SAL_logo-wordmark.png)](https://spatial-audio-lab.github.io/)
 
-# Spatial Audio Lab: archiwum VR dla edukacji teatralnej
+## Spatial Audio Lab: archiwum VR dla edukacji teatralnej
 „Spatial Audio Lab” to projekt stypendialny skupiony na tworzeniu profesjonalnego archiwum dźwięku przestrzennego. W ramach działań powstaje baza nagrań w technologii Virtual Reality (VR), która łączy nowoczesną inżynierię dźwięku z edukacją teatralną i technikami uważności (mindfulness).
 
 [https://spatial-audio-lab.github.io/](https://spatial-audio-lab.github.io/)
