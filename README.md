@@ -98,3 +98,29 @@ python -m http.server 8080
 Repozytorium zawiera `index.html` i `library.json` w katalogu głównym — wystarczy włączyć
 GitHub Pages w Settings → Pages → Source: wybrana gałąź. Dźwięki z biblioteki są
 streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią repozytorium.
+
+---
+
+## 8. O projekcie
+
+[![Baner SAL](https://raw.githubusercontent.com/spatial-audio-lab/spatial-audio-lab.github.io/main/assets/brand/SAL_logo-wordmark.png)](https://spatial-audio-lab.github.io/)
+
+# Spatial Audio Lab: archiwum VR dla edukacji teatralnej
+„Spatial Audio Lab” to projekt stypendialny skupiony na tworzeniu profesjonalnego archiwum dźwięku przestrzennego. W ramach działań powstaje baza nagrań w technologii Virtual Reality (VR), która łączy nowoczesną inżynierię dźwięku z edukacją teatralną i technikami uważności (mindfulness).
+
+[https://spatial-audio-lab.github.io/](https://spatial-audio-lab.github.io/)
+
+---
+
+## 9. Finansowanie
+
+![Zestawienie logotypów KPO, RP i UE](https://raw.githubusercontent.com/spatial-audio-lab/spatial-audio-lab.github.io/main/KPO.jpg)
+
+## Informacja o finansowaniu
+
+Projekt jest realizowany w ramach programu stypendialnego Krajowego Planu Odbudowy i Zwiększania Odporności (KPO).
+
+- **Program:** Inwestycja A2.5.1: Program wspierania działalności podmiotów sektora kultury i przemysłów kreatywnych na rzecz stymulowania ich rozwoju.
+- **Instytucja Wspierająca:** Narodowy Instytut Muzyki i Tańca (NIMiT).
+- **Wartość dofinansowania z Unii Europejskiej (NextGenerationEU):** 36 000,00 zł brutto.
+- Umowa nr **143/KPO.STYPENDIA/NIMIT/2025**.
