@@ -1,7 +1,6 @@
 import { $, S, selName, selAuthor, selLicense, selUrl, attrState, volSlider, volVal, heightSlider, heightVal, widthSlider, widthVal, angleSlider, angleVal, stereoInd, spatialSection, routingToggle, motionModeRow, motionSpeed, motionSpeedVal, orbitRadiusEl, orbitRadiusVal, randomRangeEl, randomRangeVal, pathLoopEl, pathLoopVal, orbitParams, randomParams, pathParams, toastEl } from './dom-state.js';
 import { audioCtx, masterGain, reverbOutput, reverbState, updateReverb, updateReverbSend, setRouting, updPanners } from './audio-engine.js';
 import { playSource, stopSource, renderSources, updateCounters } from './sources.js';
-import { showToast, openSourcePropertiesPanel } from './ui.js';
 
 function showToast(m, d=2500){ toastEl.textContent=m; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'),d); }
 
@@ -154,29 +153,7 @@ export function initUIBase(){
     h.addEventListener('click', () => toggleAccHead(h));
     h.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleAccHead(h); } });
   });
-
-  // ZADANIE 3.1: Zwiń lewy panel (Biblioteka) domyślnie po uruchomieniu aplikacji
-  if (libPanel) {
-    const libHead = libPanel.querySelector('.acc-head');
-    if (libHead && !libHead.classList.contains('collapsed')) {
-      toggleAccHead(libHead);
-    }
-  }
 }
-
-// ZADANIE 3.2: Automatyczne otwieranie panelu źródła
-export function openSourcePropertiesPanel() {
-  // Szukamy nagłówka akordeonu, w którym znajduje się suwak głośności (volSlider to pewniak z prawego panelu)
-  const accContent = volSlider.closest('.acc-content');
-  if (accContent) {
-    const propsHead = accContent.previousElementSibling;
-    if (propsHead && propsHead.classList.contains('acc-head') && propsHead.classList.contains('collapsed')) {
-        toggleAccHead(propsHead);
-    }
-  }
-}
-
 export function initControls(){}
 
-// UWAGA: Dodano openSourcePropertiesPanel do listy eksportów!
-export { showToast, askConfirm, toggleAccHead, syncSubStates, syncAttrState, setReverbEnabled, scheduleReverbUpdate, openSourcePropertiesPanel };
+export { showToast, askConfirm, toggleAccHead, syncSubStates, syncAttrState, setReverbEnabled, scheduleReverbUpdate };

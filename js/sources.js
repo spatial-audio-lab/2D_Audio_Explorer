@@ -1,6 +1,6 @@
 import { $, S, fileInput, fileDrop, sourcesList, selName, selAuthor, selLicense, selUrl, attrState, volSlider, volVal, heightSlider, heightVal, selDist, selAbsorb, widthSlider, widthVal, angleSlider, angleVal, stereoInd, spatialSection, routingToggle, motionModeRow, motionSpeed, motionSpeedVal, orbitRadiusEl, orbitRadiusVal, randomRangeEl, randomRangeVal, pathLoopEl, pathLoopVal, orbitParams, randomParams, pathParams, hudSrc } from './dom-state.js';
 import { audioCtx, buildSrc, setRouting, updPanners } from './audio-engine.js';
-import { showToast, askConfirm, syncSubStates, syncAttrState, openSourcePropertiesPanel } from './ui.js';
+import { showToast, askConfirm, syncSubStates, syncAttrState } from './ui.js';
 import { updateLibBtns } from './library.js';
 
 // Nazwa pliku z dysku bywa dluga i techniczna ("freesound_512345__autor__pociag-nocny.wav").
@@ -19,10 +19,6 @@ function createFromBuffer(decoded, name, x, y, libId=null, vol=0.7){
   S.buffers[id]=decoded;
   const s=buildSrc(id, name, x, y, vol, libId);
   S.sources.push(s); renderSources(); return s;
-  // -- ZADANIE 3.2: Zaznacz nowy dźwięk i otwórz panel --
-  selectSource(s); 
-  openSourcePropertiesPanel(); 
-  // ------------------------------------------------------
 }
 async function createFromStream(url, name, x, y, libId=null, vol=0.7){
   const id='s'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
@@ -31,10 +27,6 @@ async function createFromStream(url, name, x, y, libId=null, vol=0.7){
   const ms=audioCtx.createMediaElementSource(a);
   const s=buildSrc(id, name, x, y, vol, libId); s.isStream=true; s.audioElement=a; s.mediaSource=ms; ms.connect(s.gain);
   S.sources.push(s); renderSources(); return s;
-  // -- ZADANIE 3.2: Zaznacz nowy dźwięk i otwórz panel --
-  selectSource(s); 
-  openSourcePropertiesPanel(); 
-  // ------------------------------------------------------
 }
 
 // FILES
