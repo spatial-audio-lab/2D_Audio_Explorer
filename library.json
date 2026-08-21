@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated": "2026-03-16T19:47:49.207494",
+  "generated": "2026-08-21T18:32:32.794Z",
   "total_sounds": 75,
   "stats": {
     "local_only": 0,
@@ -20,7 +20,7 @@
           "sounds": [
             {
               "id": "sound_191360",
-              "label": "Small rocks in a creek",
+              "label": "Kamienisty potok",
               "file": "audio/191360__hitrison__small-rocks-in-a-creek.flac",
               "preview_url": "https://cdn.freesound.org/previews/191/191360_2549002-hq.mp3",
               "freesound_id": 191360,
@@ -29,7 +29,7 @@
               "duration": 206.4,
               "channels": 2,
               "type": "flac",
-              "samplerate": 96000.0,
+              "samplerate": 96000,
               "tags": [
                 "ambience",
                 "calm",
@@ -56,16 +56,16 @@
             },
             {
               "id": "sound_231536",
-              "label": "Creek 06 (loop)",
+              "label": "Strumień (loop)",
               "file": "audio/231536__vkproduktion__creek-06-loop.wav",
               "preview_url": "https://cdn.freesound.org/previews/231/231536_4034520-hq.mp3",
               "freesound_id": 231536,
               "freesound_url": "https://freesound.org/s/231536/",
               "author": "VKProduktion",
-              "duration": 36.0,
+              "duration": 36,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "babbling",
                 "brook",
@@ -91,7 +91,7 @@
             },
             {
               "id": "sound_243777",
-              "label": "Distant rain and thunder",
+              "label": "Odległa burza",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/243/243777_997601-hq.mp3",
               "freesound_id": 243777,
@@ -100,7 +100,7 @@
               "duration": 105.6,
               "channels": 2,
               "type": "mp3",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "distant",
                 "extreme",
@@ -127,7 +127,7 @@
             },
             {
               "id": "sound_162116",
-              "label": "Water dripping (large echo)",
+              "label": "Kapiąca woda (echo)",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/162/162116_2155835-hq.mp3",
               "freesound_id": 162116,
@@ -136,7 +136,7 @@
               "duration": 64.1,
               "channels": 2,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "ambiance",
                 "cave",
@@ -160,7 +160,7 @@
             },
             {
               "id": "sound_202637",
-              "label": "Ext hardrainonporch",
+              "label": "Deszcz pod dachem",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/202/202637_46004-hq.mp3",
               "freesound_id": 202637,
@@ -169,7 +169,7 @@
               "duration": 51.2,
               "channels": 2,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "ambient",
                 "exterior",
@@ -195,7 +195,7 @@
             },
             {
               "id": "sound_264811",
-              "label": "Water sizzling on hot stove",
+              "label": "Woda na gorących kamieniach",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/264/264811_3452716-hq.mp3",
               "freesound_id": 264811,
@@ -204,7 +204,7 @@
               "duration": 43.8,
               "channels": 2,
               "type": "wav",
-              "samplerate": 96000.0,
+              "samplerate": 96000,
               "tags": [
                 "boiling",
                 "fire",
@@ -230,7 +230,7 @@
             },
             {
               "id": "sound_137262",
-              "label": "Water sizzle 1",
+              "label": "Syczenie wody",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/137/137262_2515465-hq.mp3",
               "freesound_id": 137262,
@@ -239,7 +239,7 @@
               "duration": 156.4,
               "channels": 2,
               "type": "wav",
-              "samplerate": 96000.0,
+              "samplerate": 96000,
               "tags": [
                 "heat",
                 "hiss",
@@ -261,7 +261,7 @@
             },
             {
               "id": "sound_571622",
-              "label": "Steam, sauna",
+              "label": "Sauna",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/571/571622_97550-hq.mp3",
               "freesound_id": 571622,
@@ -270,7 +270,7 @@
               "duration": 66.4,
               "channels": 2,
               "type": "flac",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "hiss",
                 "hot",
@@ -292,7 +292,7 @@
             },
             {
               "id": "sound_34072",
-              "label": "Ambient rain spilling",
+              "label": "Clapiący deszcz",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/34/34072_28216-hq.mp3",
               "freesound_id": 34072,
@@ -301,7 +301,7 @@
               "duration": 18.6,
               "channels": 2,
               "type": "mp3",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "clean",
                 "clear",
@@ -328,7 +328,7 @@
             },
             {
               "id": "sound_161975",
-              "label": "20120717 04am thunder1",
+              "label": "Burza",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/161/161975_2580450-hq.mp3",
               "freesound_id": 161975,
@@ -337,7 +337,7 @@
               "duration": 156.3,
               "channels": 1,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "early-morning",
                 "night",
@@ -358,88 +358,17 @@
               "has_stream": true
             },
             {
-              "id": "sound_493075",
-              "label": "underwater, dive deep",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/493/493075_1929421-hq.mp3",
-              "freesound_id": 493075,
-              "freesound_url": "https://freesound.org/s/493075/",
-              "author": "hisoul",
-              "duration": 30.0,
-              "channels": 2,
-              "type": "wav",
-              "samplerate": 96000.0,
-              "tags": [
-                "ambience",
-                "deep",
-                "diver",
-                "ocean",
-                "pool",
-                "scuba",
-                "sea",
-                "underwater",
-                "water"
-              ],
-              "license": {
-                "short": "CC0",
-                "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_water",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_365659",
-              "label": "Dive deep preview",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/365/365659_1929421-hq.mp3",
-              "freesound_id": 365659,
-              "freesound_url": "https://freesound.org/s/365659/",
-              "author": "hisoul",
-              "duration": 109.5,
-              "channels": 2,
-              "type": "mp3",
-              "samplerate": 48000.0,
-              "tags": [
-                "ambience",
-                "atmosphere",
-                "bass",
-                "bottom",
-                "bubbles",
-                "deep",
-                "fish",
-                "flow",
-                "hydrophone",
-                "lake"
-              ],
-              "license": {
-                "short": "CC BY 4.0",
-                "commercial": true,
-                "attribution": true,
-                "url": "https://creativecommons.org/licenses/by/4.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_water",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
               "id": "sound_58569",
-              "label": "Deerchaser",
+              "label": "Japońska huśtawka wodna",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/58/58569_27178-hq.mp3",
               "freesound_id": 58569,
               "freesound_url": "https://freesound.org/s/58569/",
               "author": "morgantj",
-              "duration": 17.0,
+              "duration": 17,
               "channels": 2,
               "type": "mp3",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "bamboo",
                 "chaser",
@@ -465,7 +394,7 @@
             },
             {
               "id": "sound_454147",
-              "label": "Rain trickle onto leaves sharp",
+              "label": "Deszcz na liściach 1",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/454/454147_612689-hq.mp3",
               "freesound_id": 454147,
@@ -474,7 +403,7 @@
               "duration": 56.5,
               "channels": 2,
               "type": "flac",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "leaves",
                 "onto",
@@ -497,7 +426,7 @@
             },
             {
               "id": "sound_680402",
-              "label": "Rain on leaves",
+              "label": "Deszcz na liściach 2",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/680/680402_12172648-hq.mp3",
               "freesound_id": 680402,
@@ -506,7 +435,7 @@
               "duration": 68.6,
               "channels": 2,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "ambience",
                 "autumn",
@@ -533,7 +462,7 @@
             },
             {
               "id": "sound_452297",
-              "label": "Rain drips on wet leaves",
+              "label": "Deszcz na liściach 3",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/452/452297_612689-hq.mp3",
               "freesound_id": 452297,
@@ -542,7 +471,7 @@
               "duration": 91.9,
               "channels": 2,
               "type": "flac",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "drips",
                 "leaves",
@@ -563,7 +492,7 @@
             },
             {
               "id": "sound_451153",
-              "label": "Rain medium",
+              "label": "Sredni deszcz",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/451/451153_612689-hq.mp3",
               "freesound_id": 451153,
@@ -572,7 +501,7 @@
               "duration": 147.1,
               "channels": 2,
               "type": "flac",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "campground",
                 "leaves",
@@ -595,7 +524,7 @@
             },
             {
               "id": "sound_637831",
-              "label": "Stream gentle nearby",
+              "label": "Strumyk",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/637/637831_612689-hq.mp3",
               "freesound_id": 637831,
@@ -604,7 +533,7 @@
               "duration": 86.1,
               "channels": 2,
               "type": "flac",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "gentle",
                 "nearby",
@@ -624,7 +553,7 @@
             },
             {
               "id": "sound_637830",
-              "label": "Stream gentle close wet detail",
+              "label": "Strumyk ciepły",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/637/637830_612689-hq.mp3",
               "freesound_id": 637830,
@@ -633,7 +562,7 @@
               "duration": 87.8,
               "channels": 2,
               "type": "flac",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "close",
                 "detail",
@@ -662,7 +591,7 @@
           "sounds": [
             {
               "id": "sound_371781",
-              "label": "G10 fireplace",
+              "label": "Ognisko",
               "file": "audio/371781__iamgiorgio__g10_fireplace.mp3",
               "preview_url": "https://cdn.freesound.org/previews/371/371781_5302340-hq.mp3",
               "freesound_id": 371781,
@@ -671,7 +600,7 @@
               "duration": 9.9,
               "channels": 2,
               "type": "mp3",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "burning",
                 "fireplace",
@@ -691,16 +620,16 @@
             },
             {
               "id": "sound_721739",
-              "label": "Fireplace bellow",
+              "label": "Ognisko 2",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/721/721739_262-hq.mp3",
               "freesound_id": 721739,
               "freesound_url": "https://freesound.org/s/721739/",
               "author": "alexarje",
-              "duration": 6.0,
+              "duration": 6,
               "channels": 1,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "bellow",
                 "fireplace",
@@ -727,7 +656,7 @@
           "sounds": [
             {
               "id": "sound_437337",
-              "label": "Wind chimes 1",
+              "label": "Dzwonki wiatrowe",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/437/437337_1738686-hq.mp3",
               "freesound_id": 437337,
@@ -736,7 +665,7 @@
               "duration": 89.1,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "background",
                 "chime",
@@ -763,7 +692,7 @@
             },
             {
               "id": "sound_398495",
-              "label": "Wind chimes rough",
+              "label": "Dzwonki wiatrowe 2",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/398/398495_5923045-hq.mp3",
               "freesound_id": 398495,
@@ -772,7 +701,7 @@
               "duration": 26.2,
               "channels": 2,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "chime",
                 "chimes",
@@ -796,39 +725,6 @@
               "source": "freesound",
               "has_local": false,
               "has_stream": true
-            },
-            {
-              "id": "sound_175388",
-              "label": "Messing with paper",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/175/175388_828209-hq.mp3",
-              "freesound_id": 175388,
-              "freesound_url": "https://freesound.org/s/175388/",
-              "author": "vedas",
-              "duration": 80.5,
-              "channels": 2,
-              "type": "wav",
-              "samplerate": 44100.0,
-              "tags": [
-                "pages",
-                "paper",
-                "reading",
-                "rustling",
-                "studying",
-                "turning",
-                "working"
-              ],
-              "license": {
-                "short": "CC BY 3.0",
-                "commercial": true,
-                "attribution": true,
-                "url": "http://creativecommons.org/licenses/by/3.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_wind",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
             }
           ]
         },
@@ -839,7 +735,7 @@
           "sounds": [
             {
               "id": "sound_661909",
-              "label": "Blackbird in the roof of a well",
+              "label": "Ptaszek na dachu",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/661/661909_14502819-hq.mp3",
               "freesound_id": 661909,
@@ -848,7 +744,7 @@
               "duration": 14.5,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "Birdsong",
                 "Blackbird",
@@ -868,7 +764,7 @@
             },
             {
               "id": "sound_725046",
-              "label": "Blackbird song",
+              "label": "Pieśń kosa",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/725/725046_14889307-hq.mp3",
               "freesound_id": 725046,
@@ -877,7 +773,7 @@
               "duration": 115.9,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "bird",
                 "birdsong",
@@ -905,7 +801,7 @@
           "sounds": [
             {
               "id": "sound_484033",
-              "label": "Cricket, close recording: dante",
+              "label": "Pojedynczy świerszcz",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/484/484033_1661766-hq.mp3",
               "freesound_id": 484033,
@@ -914,7 +810,7 @@
               "duration": 51.2,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "blume",
                 "cecrea",
@@ -941,7 +837,7 @@
             },
             {
               "id": "sound_805466",
-              "label": "Night crickets 02",
+              "label": "Nocne cykady",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/805/805466_13973196-hq.mp3",
               "freesound_id": 805466,
@@ -950,7 +846,7 @@
               "duration": 61.1,
               "channels": 1,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "ambiance",
                 "ambience",
@@ -984,7 +880,7 @@
           "sounds": [
             {
               "id": "sound_148873",
-              "label": "Voice elephant",
+              "label": "Słoń",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/148/148873_2378499-hq.mp3",
               "freesound_id": 148873,
@@ -993,7 +889,7 @@
               "duration": 7.4,
               "channels": 2,
               "type": "mp3",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "bell",
                 "brass",
@@ -1020,7 +916,7 @@
             },
             {
               "id": "sound_586396",
-              "label": "Tails of the dying elephants",
+              "label": "Krzyczący słoń",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/586/586396_9341034-hq.mp3",
               "freesound_id": 586396,
@@ -1029,7 +925,7 @@
               "duration": 11.4,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "Africa",
                 "bush",
@@ -1052,7 +948,7 @@
             },
             {
               "id": "sound_214864",
-              "label": "Two cats eating food in stereo",
+              "label": "Dwa kotki jedzą (stereo)",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/214/214864_2297996-hq.mp3",
               "freesound_id": 214864,
@@ -1061,7 +957,7 @@
               "duration": 61.9,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "bite",
                 "Cats",
@@ -1088,16 +984,16 @@
             },
             {
               "id": "sound_380156",
-              "label": "Howl echo",
+              "label": "Wycie wilka",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/380/380156_2940947-hq.mp3",
               "freesound_id": 380156,
               "freesound_url": "https://freesound.org/s/380156/",
               "author": "taure",
-              "duration": 28.0,
+              "duration": 28,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "animal",
                 "beast",
@@ -1122,7 +1018,7 @@
             },
             {
               "id": "sound_378334",
-              "label": "Howling wolves",
+              "label": "Wycie wilka 2",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/378/378334_4804147-hq.mp3",
               "freesound_id": 378334,
@@ -1131,7 +1027,7 @@
               "duration": 7.9,
               "channels": 2,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "coyote",
                 "dog",
@@ -1154,7 +1050,7 @@
             },
             {
               "id": "sound_684188",
-              "label": "Whale song",
+              "label": "Wieloryb",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/684/684188_10105416-hq.mp3",
               "freesound_id": 684188,
@@ -1163,7 +1059,7 @@
               "duration": 10.2,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "ambiance",
                 "ambient",
@@ -1191,164 +1087,6 @@
           "icon": "🌲",
           "sounds": [
             {
-              "id": "sound_676220",
-              "label": "Ventilador",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/676/676220_14577615-hq.mp3",
-              "freesound_id": 676220,
-              "freesound_url": "https://freesound.org/s/676220/",
-              "author": "laboratoriosonoridades2022",
-              "duration": 32.3,
-              "channels": 2,
-              "type": "mp3",
-              "samplerate": 48000.0,
-              "tags": [
-                "Laboratory",
-                "listening",
-                "soundmap"
-              ],
-              "license": {
-                "short": "CC0",
-                "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_forest",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_386246",
-              "label": "Pneumatic cutter 4",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/386/386246_1655965-hq.mp3",
-              "freesound_id": 386246,
-              "freesound_url": "https://freesound.org/s/386246/",
-              "author": "ldezem",
-              "duration": 12.0,
-              "channels": 2,
-              "type": "wav",
-              "samplerate": 96000.0,
-              "tags": [
-                "4bar",
-                "80bpm",
-                "air-pressure",
-                "crafts",
-                "cutter",
-                "desoutter",
-                "labor",
-                "metalwork",
-                "motor",
-                "pneumatic"
-              ],
-              "license": {
-                "short": "CC0",
-                "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_forest",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_520072",
-              "label": "Steam trap medium burst",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/520/520072_10345385-hq.mp3",
-              "freesound_id": 520072,
-              "freesound_url": "https://freesound.org/s/520072/",
-              "author": "Engineer_815",
-              "duration": 34.9,
-              "channels": 2,
-              "type": "wav",
-              "samplerate": 44100.0,
-              "tags": [
-                "field-recording",
-                "industrial-sounds",
-                "medium-burst",
-                "samsung-S9",
-                "steam-trap",
-                "stereo"
-              ],
-              "license": {
-                "short": "CC0",
-                "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_forest",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_332821",
-              "label": "Heartbeat 60bpm",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/332/332821_5859881-hq.mp3",
-              "freesound_id": 332821,
-              "freesound_url": "https://freesound.org/s/332821/",
-              "author": "loudernoises",
-              "duration": 30.0,
-              "channels": 1,
-              "type": "wav",
-              "samplerate": 44100.0,
-              "tags": [
-                "body",
-                "heart",
-                "heart-beat",
-                "heartbeat",
-                "human",
-                "synthesised"
-              ],
-              "license": {
-                "short": "CC0",
-                "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_forest",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_174416",
-              "label": "2000hz",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/174/174416_2019317-hq.mp3",
-              "freesound_id": 174416,
-              "freesound_url": "https://freesound.org/s/174416/",
-              "author": "mjscox",
-              "duration": 10.0,
-              "channels": 1,
-              "type": "wav",
-              "samplerate": 48000.0,
-              "tags": [
-                "hearing-test",
-                "sine-wave",
-                "tone"
-              ],
-              "license": {
-                "short": "CC0",
-                "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_forest",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
               "id": "sound_369144",
               "label": "Glitch noise 2",
               "file": null,
@@ -1359,7 +1097,7 @@
               "duration": 14.4,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "Disturbed",
                 "Electrical",
@@ -1371,145 +1109,6 @@
                 "Noises",
                 "Noisy",
                 "Perturbation"
-              ],
-              "license": {
-                "short": "CC0",
-                "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_forest",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_176227",
-              "label": "Clank2",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/176/176227_409133-hq.mp3",
-              "freesound_id": 176227,
-              "freesound_url": "https://freesound.org/s/176227/",
-              "author": "markgia",
-              "duration": 20.4,
-              "channels": 1,
-              "type": "wav",
-              "samplerate": 48000.0,
-              "tags": [
-                "anvil",
-                "clank",
-                "clink",
-                "hammer",
-                "percussion"
-              ],
-              "license": {
-                "short": "CC0",
-                "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_forest",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_417044",
-              "label": "Abstract spaceship, flyby, descending",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/417/417044_5121236-hq.mp3",
-              "freesound_id": 417044,
-              "freesound_url": "https://freesound.org/s/417044/",
-              "author": "InspectorJ",
-              "duration": 9.2,
-              "channels": 2,
-              "type": "wav",
-              "samplerate": 44100.0,
-              "tags": [
-                "abstract",
-                "Abstract",
-                "descending",
-                "Descending",
-                "flyby",
-                "Flyby",
-                "futuristic",
-                "Futuristic",
-                "sci-fi",
-                "Scifi"
-              ],
-              "license": {
-                "short": "CC BY 4.0",
-                "commercial": true,
-                "attribution": true,
-                "url": "https://creativecommons.org/licenses/by/4.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_forest",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_417045",
-              "label": "Abstract spaceship, flyby, ascending",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/417/417045_5121236-hq.mp3",
-              "freesound_id": 417045,
-              "freesound_url": "https://freesound.org/s/417045/",
-              "author": "InspectorJ",
-              "duration": 10.4,
-              "channels": 2,
-              "type": "wav",
-              "samplerate": 44100.0,
-              "tags": [
-                "abstract",
-                "Abstract",
-                "ascending",
-                "Ascending",
-                "flyby",
-                "Flyby",
-                "futuristic",
-                "Futuristic",
-                "sci-fi",
-                "Scifi"
-              ],
-              "license": {
-                "short": "CC BY 4.0",
-                "commercial": true,
-                "attribution": true,
-                "url": "https://creativecommons.org/licenses/by/4.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "nature_forest",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_272229",
-              "label": "Pestle and mortar",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/272/272229_220835-hq.mp3",
-              "freesound_id": 272229,
-              "freesound_url": "https://freesound.org/s/272229/",
-              "author": "spanrucker",
-              "duration": 53.2,
-              "channels": 2,
-              "type": "aiff",
-              "samplerate": 48000.0,
-              "tags": [
-                "ceramic",
-                "china",
-                "ching",
-                "cup",
-                "empty",
-                "grain",
-                "mortar",
-                "pestle",
-                "ping",
-                "shwing"
               ],
               "license": {
                 "short": "CC0",
@@ -1538,101 +1137,70 @@
           "icon": "🚗",
           "sounds": [
             {
-              "id": "sound_457294",
-              "label": "Air = pressure release",
+              "id": "sound_417044",
+              "label": "Abstract spaceship, flyby, descending",
               "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/457/457294_300738-hq.mp3",
-              "freesound_id": 457294,
-              "freesound_url": "https://freesound.org/s/457294/",
-              "author": "brunoboselli",
-              "duration": 17.8,
-              "channels": 1,
-              "type": "wav",
-              "samplerate": 44100.0,
-              "tags": [
-                "air",
-                "air-pressure",
-                "air-release",
-                "brake",
-                "cooker",
-                "deflate",
-                "evaporation",
-                "hiss",
-                "piston",
-                "poison"
-              ],
-              "license": {
-                "short": "CC0",
-                "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "urban_traffic",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_35077",
-              "label": "Hydrolic flower 120 carab 1",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/35/35077_336422-hq.mp3",
-              "freesound_id": 35077,
-              "freesound_url": "https://freesound.org/s/35077/",
-              "author": "ducksingel",
-              "duration": 70.0,
-              "channels": 1,
-              "type": "aiff",
-              "samplerate": 22050.0,
-              "tags": [
-                "city",
-                "fx",
-                "music",
-                "radio",
-                "urban"
-              ],
-              "license": {
-                "short": "CC0",
-                "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "urban_traffic",
-              "source": "freesound",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "sound_179118",
-              "label": "Radio dial tuning.aif",
-              "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/179/179118_2596329-hq.mp3",
-              "freesound_id": 179118,
-              "freesound_url": "https://freesound.org/s/179118/",
-              "author": "jc144940",
-              "duration": 40.6,
+              "preview_url": "https://cdn.freesound.org/previews/417/417044_5121236-hq.mp3",
+              "freesound_id": 417044,
+              "freesound_url": "https://freesound.org/s/417044/",
+              "author": "InspectorJ",
+              "duration": 9.2,
               "channels": 2,
-              "type": "aiff",
-              "samplerate": 44100.0,
+              "type": "wav",
+              "samplerate": 44100,
               "tags": [
-                "Car",
-                "Channels",
-                "Dial",
-                "Driving",
-                "Field-Recording",
-                "Flipping",
-                "FM",
-                "Interior",
-                "Listen",
-                "Music"
+                "abstract",
+                "Abstract",
+                "descending",
+                "Descending",
+                "flyby",
+                "Flyby",
+                "futuristic",
+                "Futuristic",
+                "sci-fi",
+                "Scifi"
               ],
               "license": {
-                "short": "CC0",
+                "short": "CC BY 4.0",
                 "commercial": true,
-                "attribution": false,
-                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_traffic",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_417045",
+              "label": "Abstract spaceship, flyby, ascending",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/417/417045_5121236-hq.mp3",
+              "freesound_id": 417045,
+              "freesound_url": "https://freesound.org/s/417045/",
+              "author": "InspectorJ",
+              "duration": 10.4,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100,
+              "tags": [
+                "abstract",
+                "Abstract",
+                "ascending",
+                "Ascending",
+                "flyby",
+                "Flyby",
+                "futuristic",
+                "Futuristic",
+                "sci-fi",
+                "Scifi"
+              ],
+              "license": {
+                "short": "CC BY 4.0",
+                "commercial": true,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by/4.0/"
               },
               "defaultVolume": 0.7,
               "category": "urban_traffic",
@@ -1648,10 +1216,10 @@
               "freesound_id": 464988,
               "freesound_url": "https://freesound.org/s/464988/",
               "author": "Zabuhailo",
-              "duration": 16.0,
+              "duration": 16,
               "channels": 2,
               "type": "flac",
-              "samplerate": 96000.0,
+              "samplerate": 96000,
               "tags": [
                 "cars",
                 "city",
@@ -1693,7 +1261,7 @@
               "duration": 9.6,
               "channels": 2,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "ambient",
                 "field-recording",
@@ -1716,6 +1284,147 @@
               "source": "freesound",
               "has_local": false,
               "has_stream": true
+            }
+          ]
+        },
+        {
+          "id": "urban_indoor",
+          "label": "Wnętrza",
+          "icon": "🏠",
+          "sounds": [
+            {
+              "id": "sound_175388",
+              "label": "Zabawa papierem",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/175/175388_828209-hq.mp3",
+              "freesound_id": 175388,
+              "freesound_url": "https://freesound.org/s/175388/",
+              "author": "vedas",
+              "duration": 80.5,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100,
+              "tags": [
+                "pages",
+                "paper",
+                "reading",
+                "rustling",
+                "studying",
+                "turning",
+                "working"
+              ],
+              "license": {
+                "short": "CC BY 3.0",
+                "commercial": true,
+                "attribution": true,
+                "url": "http://creativecommons.org/licenses/by/3.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_indoor",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_676220",
+              "label": "Wentylator",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/676/676220_14577615-hq.mp3",
+              "freesound_id": 676220,
+              "freesound_url": "https://freesound.org/s/676220/",
+              "author": "laboratoriosonoridades2022",
+              "duration": 32.3,
+              "channels": 2,
+              "type": "mp3",
+              "samplerate": 48000,
+              "tags": [
+                "Laboratory",
+                "listening",
+                "soundmap"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_indoor",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_272229",
+              "label": "Pestle and mortar",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/272/272229_220835-hq.mp3",
+              "freesound_id": 272229,
+              "freesound_url": "https://freesound.org/s/272229/",
+              "author": "spanrucker",
+              "duration": 53.2,
+              "channels": 2,
+              "type": "aiff",
+              "samplerate": 48000,
+              "tags": [
+                "ceramic",
+                "china",
+                "ching",
+                "cup",
+                "empty",
+                "grain",
+                "mortar",
+                "pestle",
+                "ping",
+                "shwing"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_indoor",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_179118",
+              "label": "Radio dial tuning.aif",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/179/179118_2596329-hq.mp3",
+              "freesound_id": 179118,
+              "freesound_url": "https://freesound.org/s/179118/",
+              "author": "jc144940",
+              "duration": 40.6,
+              "channels": 2,
+              "type": "aiff",
+              "samplerate": 44100,
+              "tags": [
+                "Car",
+                "Channels",
+                "Dial",
+                "Driving",
+                "Field-Recording",
+                "Flipping",
+                "FM",
+                "Interior",
+                "Listen",
+                "Music"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_indoor",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
             },
             {
               "id": "sound_536704",
@@ -1728,7 +1437,7 @@
               "duration": 12.5,
               "channels": 1,
               "type": "wav",
-              "samplerate": 96000.0,
+              "samplerate": 96000,
               "tags": [
                 "coffee",
                 "field-recording",
@@ -1748,30 +1457,23 @@
                 "url": "https://creativecommons.org/licenses/by/4.0/"
               },
               "defaultVolume": 0.7,
-              "category": "urban_crowd",
+              "category": "urban_indoor",
               "source": "freesound",
               "has_local": false,
               "has_stream": true
-            }
-          ]
-        },
-        {
-          "id": "urban_indoor",
-          "label": "Wnętrza",
-          "icon": "🏠",
-          "sounds": [
+            },
             {
               "id": "sound_577457",
-              "label": "Sec mixdown",
+              "label": "zegar",
               "file": null,
               "preview_url": "https://cdn.freesound.org/previews/577/577457_3562198-hq.mp3",
               "freesound_id": 577457,
               "freesound_url": "https://freesound.org/s/577457/",
               "author": "gecop",
-              "duration": 30.0,
+              "duration": 30,
               "channels": 2,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "alarm",
                 "clock",
@@ -1795,6 +1497,36 @@
               "source": "freesound",
               "has_local": false,
               "has_stream": true
+            },
+            {
+              "id": "sound_732809",
+              "label": "Mortar and pestle",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/732/732809_3629550-hq.mp3",
+              "freesound_id": 732809,
+              "freesound_url": "https://freesound.org/s/732809/",
+              "author": "Cello2WC",
+              "duration": 131.5,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100,
+              "tags": [
+                "clinking",
+                "cracking",
+                "grinding",
+                "mortar"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_indoor",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
             }
           ]
         },
@@ -1803,6 +1535,172 @@
           "label": "Przemysł",
           "icon": "⚙️",
           "sounds": [
+            {
+              "id": "sound_386246",
+              "label": "Wiertarka",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/386/386246_1655965-hq.mp3",
+              "freesound_id": 386246,
+              "freesound_url": "https://freesound.org/s/386246/",
+              "author": "ldezem",
+              "duration": 12,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 96000,
+              "tags": [
+                "4bar",
+                "80bpm",
+                "air-pressure",
+                "crafts",
+                "cutter",
+                "desoutter",
+                "labor",
+                "metalwork",
+                "motor",
+                "pneumatic"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_industrial",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_520072",
+              "label": "Steam trap medium burst",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/520/520072_10345385-hq.mp3",
+              "freesound_id": 520072,
+              "freesound_url": "https://freesound.org/s/520072/",
+              "author": "Engineer_815",
+              "duration": 34.9,
+              "channels": 2,
+              "type": "wav",
+              "samplerate": 44100,
+              "tags": [
+                "field-recording",
+                "industrial-sounds",
+                "medium-burst",
+                "samsung-S9",
+                "steam-trap",
+                "stereo"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_industrial",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_176227",
+              "label": "Clank2",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/176/176227_409133-hq.mp3",
+              "freesound_id": 176227,
+              "freesound_url": "https://freesound.org/s/176227/",
+              "author": "markgia",
+              "duration": 20.4,
+              "channels": 1,
+              "type": "wav",
+              "samplerate": 48000,
+              "tags": [
+                "anvil",
+                "clank",
+                "clink",
+                "hammer",
+                "percussion"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_industrial",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_457294",
+              "label": "Air = pressure release",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/457/457294_300738-hq.mp3",
+              "freesound_id": 457294,
+              "freesound_url": "https://freesound.org/s/457294/",
+              "author": "brunoboselli",
+              "duration": 17.8,
+              "channels": 1,
+              "type": "wav",
+              "samplerate": 44100,
+              "tags": [
+                "air",
+                "air-pressure",
+                "air-release",
+                "brake",
+                "cooker",
+                "deflate",
+                "evaporation",
+                "hiss",
+                "piston",
+                "poison"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_industrial",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "sound_35077",
+              "label": "Hydrolic flower 120 carab 1",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/35/35077_336422-hq.mp3",
+              "freesound_id": 35077,
+              "freesound_url": "https://freesound.org/s/35077/",
+              "author": "ducksingel",
+              "duration": 70,
+              "channels": 1,
+              "type": "aiff",
+              "samplerate": 22050,
+              "tags": [
+                "city",
+                "fx",
+                "music",
+                "radio",
+                "urban"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "urban_industrial",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
             {
               "id": "sound_455783",
               "label": "factory presses steam release",
@@ -1814,7 +1712,7 @@
               "duration": 90.9,
               "channels": 2,
               "type": "flac",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "ambience",
                 "factory",
@@ -1847,7 +1745,7 @@
               "duration": 42.8,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "ambience",
                 "ambient",
@@ -1883,7 +1781,7 @@
               "duration": 19.6,
               "channels": 2,
               "type": "wav",
-              "samplerate": 96000.0,
+              "samplerate": 96000,
               "tags": [
                 "anvil",
                 "blacksmith",
@@ -1919,7 +1817,7 @@
               "duration": 20.7,
               "channels": 2,
               "type": "mp3",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "can",
                 "coins",
@@ -1959,6 +1857,35 @@
           "icon": "😰",
           "sounds": [
             {
+              "id": "sound_174416",
+              "label": "Głośne 2000hz",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/174/174416_2019317-hq.mp3",
+              "freesound_id": 174416,
+              "freesound_url": "https://freesound.org/s/174416/",
+              "author": "mjscox",
+              "duration": 10,
+              "channels": 1,
+              "type": "wav",
+              "samplerate": 48000,
+              "tags": [
+                "hearing-test",
+                "sine-wave",
+                "tone"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "mood_tension",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
               "id": "sound_195137",
               "label": "Cavernous drone",
               "file": null,
@@ -1969,7 +1896,7 @@
               "duration": 12.2,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "Cave",
                 "Cavern",
@@ -2002,7 +1929,7 @@
               "duration": 89.8,
               "channels": 2,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "ambiance",
                 "ambient",
@@ -2038,7 +1965,7 @@
               "duration": 111.1,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "Creak",
                 "Eerie",
@@ -2074,7 +2001,7 @@
               "duration": 21.9,
               "channels": 2,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "field-recording",
                 "flicker",
@@ -2107,6 +2034,38 @@
           "icon": "😌",
           "sounds": [
             {
+              "id": "sound_332821",
+              "label": "Serce 60bpm",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/332/332821_5859881-hq.mp3",
+              "freesound_id": 332821,
+              "freesound_url": "https://freesound.org/s/332821/",
+              "author": "loudernoises",
+              "duration": 30,
+              "channels": 1,
+              "type": "wav",
+              "samplerate": 44100,
+              "tags": [
+                "body",
+                "heart",
+                "heart-beat",
+                "heartbeat",
+                "human",
+                "synthesised"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "http://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "mood_calm",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
               "id": "sound_133677",
               "label": "Singing bowl wood02",
               "file": "audio/133677__lectronice__singing-bowl-wood02.wav",
@@ -2117,7 +2076,7 @@
               "duration": 107.4,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "bowl",
                 "drone",
@@ -2150,7 +2109,7 @@
               "duration": 46.1,
               "channels": 2,
               "type": "m4a",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "Bell",
                 "bowl-bell",
@@ -2182,7 +2141,7 @@
               "duration": 13.4,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "bowl",
                 "field-recording",
@@ -2213,7 +2172,7 @@
               "duration": 10.8,
               "channels": 2,
               "type": "wav",
-              "samplerate": 96000.0,
+              "samplerate": 96000,
               "tags": [
                 "bell",
                 "bowl",
@@ -2249,7 +2208,7 @@
               "duration": 19.4,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "bell",
                 "bowl",
@@ -2285,7 +2244,7 @@
               "duration": 23.1,
               "channels": 2,
               "type": "wav",
-              "samplerate": 96000.0,
+              "samplerate": 96000,
               "tags": [
                 "gong",
                 "klankschaal",
@@ -2314,7 +2273,7 @@
               "duration": 28.6,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "breath",
                 "Breathing",
@@ -2348,24 +2307,35 @@
           "id": "exotic_arctic",
           "label": "Arktyk",
           "icon": "🧊",
+          "sounds": []
+        },
+        {
+          "id": "exotic_underwater",
+          "label": "Podwodny",
+          "icon": "🌊",
           "sounds": [
             {
-              "id": "sound_732809",
-              "label": "Mortar and pestle",
+              "id": "sound_493075",
+              "label": "Nurkowanie 1",
               "file": null,
-              "preview_url": "https://cdn.freesound.org/previews/732/732809_3629550-hq.mp3",
-              "freesound_id": 732809,
-              "freesound_url": "https://freesound.org/s/732809/",
-              "author": "Cello2WC",
-              "duration": 131.5,
+              "preview_url": "https://cdn.freesound.org/previews/493/493075_1929421-hq.mp3",
+              "freesound_id": 493075,
+              "freesound_url": "https://freesound.org/s/493075/",
+              "author": "hisoul",
+              "duration": 30,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 96000,
               "tags": [
-                "clinking",
-                "cracking",
-                "grinding",
-                "mortar"
+                "ambience",
+                "deep",
+                "diver",
+                "ocean",
+                "pool",
+                "scuba",
+                "sea",
+                "underwater",
+                "water"
               ],
               "license": {
                 "short": "CC0",
@@ -2374,18 +2344,47 @@
                 "url": "http://creativecommons.org/publicdomain/zero/1.0/"
               },
               "defaultVolume": 0.7,
-              "category": "exotic_arctic",
+              "category": "exotic_underwater",
               "source": "freesound",
               "has_local": false,
               "has_stream": true
-            }
-          ]
-        },
-        {
-          "id": "exotic_underwater",
-          "label": "Podwodny",
-          "icon": "🌊",
-          "sounds": [
+            },
+            {
+              "id": "sound_365659",
+              "label": "Nurkowanie 2",
+              "file": null,
+              "preview_url": "https://cdn.freesound.org/previews/365/365659_1929421-hq.mp3",
+              "freesound_id": 365659,
+              "freesound_url": "https://freesound.org/s/365659/",
+              "author": "hisoul",
+              "duration": 109.5,
+              "channels": 2,
+              "type": "mp3",
+              "samplerate": 48000,
+              "tags": [
+                "ambience",
+                "atmosphere",
+                "bass",
+                "bottom",
+                "bubbles",
+                "deep",
+                "fish",
+                "flow",
+                "hydrophone",
+                "lake"
+              ],
+              "license": {
+                "short": "CC BY 4.0",
+                "commercial": true,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "exotic_underwater",
+              "source": "freesound",
+              "has_local": false,
+              "has_stream": true
+            },
             {
               "id": "sound_493070",
               "label": "01 bubbles, underwater, dive deep",
@@ -2394,10 +2393,10 @@
               "freesound_id": 493070,
               "freesound_url": "https://freesound.org/s/493070/",
               "author": "hisoul",
-              "duration": 30.0,
+              "duration": 30,
               "channels": 2,
               "type": "wav",
-              "samplerate": 96000.0,
+              "samplerate": 96000,
               "tags": [
                 "ambience",
                 "deep",
@@ -2432,7 +2431,7 @@
               "duration": 77.7,
               "channels": 2,
               "type": "mp3",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "ambience",
                 "ambient",
@@ -2468,7 +2467,7 @@
               "duration": 12.2,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "abyss",
                 "ambience",
@@ -2504,7 +2503,7 @@
               "duration": 7.7,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "abyss",
                 "ambience",
@@ -2540,7 +2539,7 @@
               "duration": 5.5,
               "channels": 1,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "blowing",
                 "boiling",
@@ -2576,7 +2575,7 @@
               "duration": 6.5,
               "channels": 1,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "boiling",
                 "bubble",
@@ -2611,7 +2610,7 @@
               "duration": 30.5,
               "channels": 2,
               "type": "wav",
-              "samplerate": 48000.0,
+              "samplerate": 48000,
               "tags": [
                 "aquatic",
                 "deep-sea",
@@ -2647,7 +2646,7 @@
               "duration": 103.1,
               "channels": 2,
               "type": "wav",
-              "samplerate": 44100.0,
+              "samplerate": 44100,
               "tags": [
                 "ping",
                 "sonar",
