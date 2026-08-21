@@ -113,8 +113,8 @@ https://spatial-audio-lab.github.io/
 
 <table>
   <tr>
-    <td width="220" align="center">
-      <img src="assets/kpo/NGEUkol.jpg" alt="Sfinansowane przez Unię Europejską - NextGenerationEU" width="200">
+    <td width="300" align="center">
+      <img src="assets/kpo/NGEUkol.jpg" alt="Sfinansowane przez Unię Europejską - NextGenerationEU" width="300">
     </td>
     <td>
       <h3>Informacja o finansowaniu</h3>
