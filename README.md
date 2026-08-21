@@ -101,3 +101,19 @@ streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią r
 
 ---
 ![Zestawienie logotypów KPO, RP i UE](assets/kpo/KPO.jpg)
+
+# Spatial Audio Lab: archiwum VR dla edukacji teatralnej
+
+### O projekcie
+„Spatial Audio Lab” to projekt stypendialny skupiony na tworzeniu profesjonalnego archiwum dźwięku przestrzennego. W ramach działań powstaje baza nagrań w technologii Virtual Reality (VR), która łączy nowoczesną inżynierię dźwięku z edukacją teatralną i technikami uważności (mindfulness).
+
+https://spatial-audio-lab.github.io/
+
+---
+
+## Informacja o finansowaniu
+Projekt jest realizowany w ramach programu stypendialnego **Krajowego Planu Odbudowy i Zwiększania Odporności (KPO)**.
+
+* **Program:** Inwestycja A2.5.1: Program wspierania działalności podmiotów sektora kultury i przemysłów kreatywnych na rzecz stymulowania ich rozwoju.
+* **Instytucja Wspierająca:** Narodowy Instytut Muzyki i Tańca (NIMiT).
+* **Wartość dofinansowania z Unii Europejskiej (NextGenerationEU):** 36 000,00 zł brutto
