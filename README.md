@@ -100,6 +100,4 @@ GitHub Pages w Settings → Pages → Source: wybrana gałąź. Dźwięki z bibl
 streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią repozytorium.
 
 ---
-<p align="center">
-  <img src="assets/kpo/KPO.jpg" alt="Baner" width="600">
-</p>
+![Zestawienie logotypów KPO, RP i UE](assets/kpo/KPO.jpg)
