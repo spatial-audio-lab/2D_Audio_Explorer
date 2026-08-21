@@ -98,3 +98,8 @@ python -m http.server 8080
 Repozytorium zawiera `index.html` i `library.json` w katalogu głównym — wystarczy włączyć
 GitHub Pages w Settings → Pages → Source: wybrana gałąź. Dźwięki z biblioteki są
 streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią repozytorium.
+
+---
+<p align="center">
+  <img src="KPO.jpg" alt="Baner" width="600">
+</p>
