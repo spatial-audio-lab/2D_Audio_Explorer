@@ -1,0 +1,24 @@
+Refaktoryzacja app.js — mapa odpowiedzialności i zależności
+
+Stan współdzielony:
+- S: model sceny (tryb, listener, źródła, bufory, wybór, klawisze, wymiary i prędkości).
+- audioCtx/masterGain/reverb*: graf Web Audio i globalny reverb.
+- DOM/canvas: wspólne referencje elementów oraz kontekstów canvas.
+
+Granice wynikające z kodu:
+- audio-engine.js: graf Web Audio, węzły źródeł, pozycjonowanie HRTF, absorpcja i listener.
+- sources.js: tworzenie źródeł z bufora/strumienia/pliku, odtwarzanie, wybór i lista źródeł.
+- library.js: pobranie library.json, drzewo kategorii, wyszukiwanie i dodawanie bibliotecznych dźwięków.
+- scene.js: rozmiar płócien, zmiana trybu, współrzędne, wskaźnik, wejście pointer/klawiatura, pętla i rysowanie.
+- motion.js: ruch w czasie rzeczywistym, trajektorie deterministyczne i data sceny.
+- ui.js: toast, bezpieczne potwierdzenie, akordeony i kontrolki źródła/reverbu.
+- modal.js: pomoc, pasek marki, burger i obsługa modali.
+- export.js: kodowanie WAV, obwiednie, eksport pięciu plików.
+- dom-state.js: model S i współdzielone referencje DOM.
+- main.js: punkt wejścia oraz kolejność inicjalizacji zachowana względem app.js.
+
+Najważniejsze zależności:
+- sources korzysta z audio-engine, ui i library (odświeżanie przycisków biblioteki).
+- library korzysta z sources (tworzenie dźwięków) i audio-engine (dekodowanie).
+- scene korzysta z audio-engine, sources, modal i motion.
+- export korzysta z audio-engine, motion, ui i S.
