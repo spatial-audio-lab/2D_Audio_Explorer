@@ -27,10 +27,10 @@ function renderLibTree(){
         const attr=s.license?.attribution?`<div class="lib-sound-attr">© <a href="${s.freesound_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${s.author}</a></div>`:'';
         return `<div class="lib-sound"><div><div class="lib-sound-name" title="${s.label}">${s.label}</div><div class="lib-sound-meta">${dur?'<span>'+dur+'</span>':''}<span class="lib-badge ${licCls}">${lic}</span>${isStream?'<span class="lib-badge stream">Stream</span>':''}</div>${attr}<div class="lib-sound-status">⏳ Pobieranie…</div></div><button class="lib-add-btn" data-add="${s.id}">+</button></div>`;
       }).join('');
-      subs.push(`<div><div class="lib-sub-head" data-tsub="${sub.id}" role="button" tabindex="0" aria-expanded="true"><i class="ico">${subIcons[sub.id]||'·'}</i><span>${sub.label}</span><span class="cnt">${sounds.length}</span><span class="arrow">▾</span></div><div class="lib-sub-body" id="sub-${sub.id}">${sh}</div></div>`);
+      subs.push(`<div><div class="lib-sub-head collapsed" data-tsub="${sub.id}" role="button" tabindex="0" aria-expanded="false"><i class="ico">${subIcons[sub.id]||'·'}</i><span>${sub.label}</span><span class="cnt">${sounds.length}</span><span class="arrow">▾</span></div><div class="lib-sub-body" id="sub-${sub.id}" style="display:none">${sh}</div></div>`);
     }
     if(!subs.length) continue;
-    html+=`<div class="lib-cat"><div class="lib-cat-head" data-tcat="${cat.id}" role="button" tabindex="0" aria-expanded="true"><i class="ico">${catIcons[cat.id]||'◈'}</i><span class="label">${cat.label}</span><span class="cnt">${subs.length}</span><span class="arrow">▾</span></div><div class="lib-cat-body" id="cat-${cat.id}">${subs.join('')}</div></div>`;
+    html+=`<div class="lib-cat"><div class="lib-cat-head collapsed" data-tcat="${cat.id}" role="button" tabindex="0" aria-expanded="false"><i class="ico">${catIcons[cat.id]||'◈'}</i><span class="label">${cat.label}</span><span class="cnt">${subs.length}</span><span class="arrow">▾</span></div><div class="lib-cat-body" id="cat-${cat.id}" style="display:none">${subs.join('')}</div></div>`;
   }
   if(!html){ libTree.innerHTML='<div class="lib-empty-msg">Brak wyników</div>'; return; }
   libTree.innerHTML=html;
