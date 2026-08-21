@@ -101,7 +101,7 @@ streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią r
 
 ---
 
-## 8. O projekcie
+## O projekcie
 
 [![Baner SAL](https://raw.githubusercontent.com/spatial-audio-lab/spatial-audio-lab.github.io/main/assets/brand/SAL_logo-wordmark.png)](https://spatial-audio-lab.github.io/)
 
@@ -112,7 +112,7 @@ streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią r
 
 ---
 
-## 9. Finansowanie
+## Finansowanie
 
 ![Zestawienie logotypów KPO, RP i UE](https://raw.githubusercontent.com/spatial-audio-lab/spatial-audio-lab.github.io/main/KPO.jpg)
 
