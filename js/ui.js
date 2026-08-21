@@ -164,7 +164,8 @@ export function initUIBase(){
 }
 
 // ZADANIE 3.2: Automatyczne otwieranie panelu źródła
-function openSourcePropertiesPanel() {
+export function openSourcePropertiesPanel() {
+  // Szukamy nagłówka akordeonu, w którym znajduje się suwak głośności (volSlider to pewniak z prawego panelu)
   const accContent = volSlider.closest('.acc-content');
   if (accContent) {
     const propsHead = accContent.previousElementSibling;
@@ -176,4 +177,5 @@ function openSourcePropertiesPanel() {
 
 export function initControls(){}
 
+// UWAGA: Dodano openSourcePropertiesPanel do listy eksportów!
 export { showToast, askConfirm, toggleAccHead, syncSubStates, syncAttrState, setReverbEnabled, scheduleReverbUpdate, openSourcePropertiesPanel };
