@@ -30,7 +30,7 @@ function renderLibTree(){
       subs.push(`<div><div class="lib-sub-head" data-tsub="${sub.id}" role="button" tabindex="0" aria-expanded="true"><i class="ico">${subIcons[sub.id]||'·'}</i><span>${sub.label}</span><span class="cnt">${sounds.length}</span><span class="arrow">▾</span></div><div class="lib-sub-body" id="sub-${sub.id}">${sh}</div></div>`);
     }
     if(!subs.length) continue;
-    html+=`<div class="lib-cat"><div class="lib-cat-head collapsed" data-tcat="${cat.id}" role="button" tabindex="0" aria-expanded="false"><i class="ico">${catIcons[cat.id]||'◈'}</i><span class="label">${cat.label}</span><span class="cnt">${subs.length}</span><span class="arrow">▾</span></div><div class="lib-sub-body" id="sub-${sub.id}" style="display:none">${sh}</div></div>`;
+    html+=`<div class="lib-cat"><div class="lib-cat-head" data-tcat="${cat.id}" role="button" tabindex="0" aria-expanded="true"><i class="ico">${catIcons[cat.id]||'◈'}</i><span class="label">${cat.label}</span><span class="cnt">${subs.length}</span><span class="arrow">▾</span></div><div class="lib-cat-body" id="cat-${cat.id}">${subs.join('')}</div></div>`;
   }
   if(!html){ libTree.innerHTML='<div class="lib-empty-msg">Brak wyników</div>'; return; }
   libTree.innerHTML=html;
