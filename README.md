@@ -101,5 +101,5 @@ streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią r
 
 ---
 <p align="center">
-  <img src="KPO.jpg" alt="Baner" width="600">
+  <img src="assets/kpo/KPO.jpg" alt="Baner" width="600">
 </p>
