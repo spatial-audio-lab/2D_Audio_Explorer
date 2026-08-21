@@ -1,6 +1,7 @@
-import { $, S, selName, selAuthor, selLicense, selUrl, attrState, volSlider, volVal, heightSlider, heightVal, widthSlider, widthVal, angleSlider, angleVal, stereoInd, spatialSection, routingToggle, motionModeRow, motionSpeed, motionSpeedVal, orbitRadiusEl, orbitRadiusVal, randomRangeEl, randomRangeVal, pathLoopEl, pathLoopVal, orbitParams, randomParams, pathParams, toastEl, libPanel } from './dom-state.js';
+import { $, S, selName, selAuthor, selLicense, selUrl, attrState, volSlider, volVal, heightSlider, heightVal, widthSlider, widthVal, angleSlider, angleVal, stereoInd, spatialSection, routingToggle, motionModeRow, motionSpeed, motionSpeedVal, orbitRadiusEl, orbitRadiusVal, randomRangeEl, randomRangeVal, pathLoopEl, pathLoopVal, orbitParams, randomParams, pathParams, toastEl } from './dom-state.js';
 import { audioCtx, masterGain, reverbOutput, reverbState, updateReverb, updateReverbSend, setRouting, updPanners } from './audio-engine.js';
 import { playSource, stopSource, renderSources, updateCounters } from './sources.js';
+import { showToast, openSourcePropertiesPanel } from './ui.js';
 
 function showToast(m, d=2500){ toastEl.textContent=m; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'),d); }
 
