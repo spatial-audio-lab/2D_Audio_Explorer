@@ -2,8 +2,8 @@
 
 Warsztat do budowania scen dźwięku przestrzennego w przeglądarce: rozstawiasz dźwięki
 wokół słuchacza na płaszczyźnie 2D, chodzisz po scenie na słuchawkach i eksportujesz
-gotowy materiał do pięciu plików. Całość działa jako pojedynczy plik `index.html` —
-bez instalacji, bez backendu, bez konta. Część zestawu narzędzi **Spatial Audio Lab**.
+gotowy materiał do pięciu plików. Statyczne pliki, żadnego kroku budowania — bez
+instalacji, bez backendu, bez konta. Część zestawu narzędzi **Spatial Audio Lab**.
 
 **Na żywo:** https://spatial-audio-lab.github.io/2D_Audio_Explorer/
 
@@ -85,13 +85,70 @@ a przycisk zatrzymania dostaje ramkę crimson, która po zatrzymaniu gaśnie do 
 
 ## Uruchomienie lokalnie
 
-Build ani serwer nie są potrzebne — wystarczy otworzyć `index.html` w przeglądarce.
-Ikona SAL w pasku ładuje się ze ścieżki od roota, więc przy otwarciu z dysku zobaczysz
-w jej miejscu pustkę; wszystko inne działa. Dla pewności można odpalić serwer statyczny:
+Build nie jest potrzebny. Otwarcie `index.html` prosto z dysku wczytuje style i cały kod
+— arkusz i skrypty idą przez zwykłe znaczniki `<link>` i `<script src>`, które protokół
+`file://` obsługuje. **Nie zadziała wtedy tylko lewy panel Biblioteki**: czyta
+`library.json` przez `fetch`, a tego przeglądarka na `file://` blokuje polityką CORS.
+Własne pliki z dysku wczytuje się normalnie, panelem 01.
+
+Żeby mieć również Bibliotekę, wystarczy dowolny serwer statyczny:
 
 ```
 python -m http.server 8080
 ```
+
+### Struktura źródeł
+
+Kod jest rozłożony na klasyczne skrypty — bez modułów ES, bo te nie działają z `file://`,
+i bez kroku składania. Przestrzeń nazw pozostaje globalna, tak jak przed rozbiciem, więc
+harness pomiarowy sięga po `S`, `exportScene` i `createFromBuffer` bez żadnej warstwy
+pośredniej.
+
+| Plik | Co trzyma |
+|---|---|
+| `css/sal.css` | cały arkusz stylów |
+| `js/00-audio.js` | kontekst audio, szyna master, pogłos konwolucyjny |
+| `js/10-stan.js` | stan sceny `S` i uchwyty do elementów DOM |
+| `js/20-ui.js` | toast, okno potwierdzenia, akordeon |
+| `js/30-widok.js` | skalowanie płócien, przełącznik Edycja / Eksploracja |
+| `js/40-biblioteka.js` | lewy panel: drzewo `library.json`, szukanie, wstawianie |
+| `js/50-zrodlo.js` | model źródła i jego graf węzłów, routing, słuchacz |
+| `js/60-panel.js` | prawy panel: **rejestr kontrolek**, lista źródeł, liczniki |
+| `js/70-pasek.js` | pasek marki, modale Pomoc / O projekcie, klawiatura |
+| `js/80-ruch.js` | mysz i dotyk, ruch źródeł, symulacja trajektorii |
+| `js/85-rysowanie.js` | pętla klatek, scena i mapa w rogu |
+| `js/90-eksport.js` | kodowanie WAV, obwiednia głośności, `exportScene()` |
+| `js/99-init.js` | start aplikacji — **musi zostać ostatni** |
+
+**Kolejność wczytywania jest kontraktem.** Prefiksy numeryczne odpowiadają kolejności
+znaczników `<script>` na końcu `index.html`: plik może korzystać z tego, co zadeklarowały
+pliki przed nim, ale nie odwrotnie. Nowy plik wstawia się z numerem pasującym do miejsca
+w tej kolejności.
+
+### Jak dodać kontrolkę do prawego panelu
+
+Kontrolka jest opisana **w jednym miejscu** — w tablicy `KONTROLKI` na górze
+`js/60-panel.js`. Z jednego opisu wynika wartość początkowa, format podpisu, zapis do
+modelu, reset przy braku zaznaczenia i wygaszanie. Nasłuchy są delegowane z całego panelu,
+więc nowa kontrolka nie potrzebuje własnego `addEventListener`.
+
+Nowy suwak to jeden wiersz HTML w sekcji panelu i jeden obiekt:
+
+```js
+{ nazwa:'wysokosc', typ:'suwak', wej:'heightSlider', pole:'heightVal', zasieg:'zrodlo',
+  skala:0.1, pusta:0, format:v=>v.toFixed(1)+'m',
+  czyta:s=>s.height||0,
+  pisze:(s,v)=>{ s.height=v; updPanners(s); } }
+```
+
+`zasieg` rozstrzyga, czego kontrolka dotyczy: `'zrodlo'` — wybranego dźwięku (wtedy
+`czyta`/`pisze` dostają źródło, a `pusta` mówi, co pokazać, gdy nic nie jest zaznaczone);
+`'scena'` — całej sceny, jak master i pogłos. `skala` przelicza surową wartość suwaka na
+jednostki modelu. Obok są dwie mniejsze tablice: `WIDOCZNOSC` (kiedy sekcja się otwiera
+albo gaśnie) i `WSKAZNIKI` (podpisy stanu w nagłówkach podsekcji).
+
+Po zmianie uruchom `harness-panel.js` — sprawdza między innymi, czy **każdy** suwak
+w panelu ma swój opis w rejestrze.
 
 
 ---
@@ -123,6 +180,7 @@ Projekt jest realizowany w ramach programu stypendialnego Krajowego Planu Odbudo
 
 ## Publikacja na GitHub Pages
 
-Repozytorium zawiera `index.html` i `library.json` w katalogu głównym — wystarczy włączyć
+Repozytorium zawiera `index.html`, `library.json` oraz katalogi `css/`, `js/` i
+`assets/` — wystarczy włączyć
 GitHub Pages w Settings → Pages → Source: wybrana gałąź. Dźwięki z biblioteki są
 streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią repozytorium.
