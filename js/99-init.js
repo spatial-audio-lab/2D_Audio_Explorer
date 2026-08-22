@@ -4,8 +4,9 @@
 // patrz lista <script> na koncu index.html.
 
 // INIT
+// Biblioteka NIE laduje sie przy starcie — panel jest zwiniety, a library.json pobiera
+// sie dopiero przy pierwszym otwarciu (patrz ustawBiblioteke w 40-biblioteka.js).
 updateListener();
-loadLibrary();
 requestAnimationFrame(loop);
 // --- par.08 v3.1: stan dzwieku niesie DIODA, nie napis --------------------------------
 // Do v3.0 pasek pokazywal "Audio Context: Idle/Running". Wzorzec v3.1 tego napisu nie ma:

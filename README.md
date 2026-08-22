@@ -87,9 +87,10 @@ a przycisk zatrzymania dostaje ramkę crimson, która po zatrzymaniu gaśnie do 
 
 Build nie jest potrzebny. Otwarcie `index.html` prosto z dysku wczytuje style i cały kod
 — arkusz i skrypty idą przez zwykłe znaczniki `<link>` i `<script src>`, które protokół
-`file://` obsługuje. **Nie zadziała wtedy tylko lewy panel Biblioteki**: czyta
-`library.json` przez `fetch`, a tego przeglądarka na `file://` blokuje polityką CORS.
-Własne pliki z dysku wczytuje się normalnie, panelem 01.
+`file://` obsługuje. **Nie zadziała wtedy tylko Biblioteka SAL**: czyta `library.json`
+przez `fetch`, a tego przeglądarka na `file://` blokuje polityką CORS. To świadomie
+zostawione tak, jak jest — Biblioteka jest funkcją wersji na GitHub Pages. Własne pliki
+z dysku wczytuje się normalnie, przyciskiem «Twój komputer» w panelu 01.
 
 Żeby mieć również Bibliotekę, wystarczy dowolny serwer statyczny:
 
@@ -111,7 +112,7 @@ pośredniej.
 | `js/10-stan.js` | stan sceny `S` i uchwyty do elementów DOM |
 | `js/20-ui.js` | toast, okno potwierdzenia, akordeon |
 | `js/30-widok.js` | skalowanie płócien, przełącznik Edycja / Eksploracja |
-| `js/40-biblioteka.js` | lewy panel: drzewo `library.json`, szukanie, wstawianie |
+| `js/40-biblioteka.js` | Biblioteka SAL: lewy panel, drzewo `library.json`, szukanie, wstawianie |
 | `js/50-zrodlo.js` | model źródła i jego graf węzłów, routing, słuchacz |
 | `js/60-panel.js` | prawy panel: **rejestr kontrolek**, lista źródeł, liczniki |
 | `js/70-pasek.js` | pasek marki, modale Pomoc / O projekcie, klawiatura |

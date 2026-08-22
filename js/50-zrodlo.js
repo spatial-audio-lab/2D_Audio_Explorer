@@ -164,6 +164,7 @@ async function createFromStream(url, name, x, y, libId=null, vol=0.7){
 }
 
 // FILES
+$('pickFiles').addEventListener('click', ()=>fileInput.click());
 fileDrop.addEventListener('click', ()=>fileInput.click());
 fileDrop.addEventListener('dragover', e=>{ e.preventDefault(); fileDrop.classList.add('dragover'); });
 fileDrop.addEventListener('dragleave', ()=>fileDrop.classList.remove('dragover'));

@@ -34,7 +34,6 @@
       </span>
     </div>
     <nav class="sal-tabs" id="salTabs" aria-label="Nawigacja narzędzia">
-      <button type="button" class="sal-tab" data-tab="biblioteka" id="libToggle">Biblioteka</button>
       <button type="button" class="sal-tab" data-tab="pomoc" data-modal="modalPomoc">Pomoc</button>
       <button type="button" class="sal-tab" data-tab="o-projekcie" data-modal="modalOProjekcie">O projekcie</button>
     </nav>
@@ -42,7 +41,6 @@
       <span></span><span></span><span></span>
     </button>
     <nav class="sal-mobile-menu" id="salMobileMenu" aria-label="Nawigacja narzędzia (mobile)">
-      <button type="button" class="sal-tab" data-tab="biblioteka" data-proxy="libToggle">Biblioteka</button>
       <button type="button" class="sal-tab" data-tab="pomoc" data-modal="modalPomoc">Pomoc</button>
       <button type="button" class="sal-tab" data-tab="o-projekcie" data-modal="modalOProjekcie">O projekcie</button>
     </nav>
@@ -50,7 +48,7 @@
 
   <div class="hp-warn" id="hpWarn"><span class="hp-ico">&#9834;</span><span class="hp-txt">Załóż słuchawki — bez nich efekt przestrzenny (HRTF) nie zadziała poprawnie.</span><button class="hp-close" id="hpWarnClose" aria-label="Zamknij ostrzeżenie">&times;</button></div>
 
-  <aside class="library-panel" id="libraryPanel">
+  <aside class="library-panel collapsed" id="libraryPanel">
     <div class="lib-header"><div class="lib-header-row"><span class="lib-title">Biblioteka</span><span class="lib-count-badge" id="libCountBadge">—</span></div><input class="lib-search" id="libSearch" type="text" placeholder="Szukaj dźwięków…"></div>
     <div class="lib-tree" id="libTree"><div class="lib-empty-msg">Ładowanie…</div></div>
   </aside>
@@ -71,7 +69,16 @@
   </div>
 
   <aside class="sidebar" id="sidebar">
-    <div class="acc-panel"><div class="acc-head" data-acc="add" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">1</span><span class="acc-title">Dodaj dźwięki</span></div><span class="acc-arrow">▾</span></div><div class="acc-body"><div class="file-drop" id="fileDrop"><div style="font-size:18px;margin-bottom:4px;color:var(--cyan)">+</div><div>Kliknij lub upuść pliki audio</div></div><input type="file" class="hidden-input" id="fileInput" accept="audio/*" multiple></div></div>
+    <div class="acc-panel"><div class="acc-head" data-acc="add" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">1</span><span class="acc-title">Dodaj dźwięki</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
+      <!-- Dwa zrodla dzwieku obok siebie. Wczesniej biblioteka byla zakladka w gornym pasku,
+           wiec nie wygladala na czesc kroku "dodaj dzwieki" i latwo bylo jej nie zauwazyc. -->
+      <div class="src-picker">
+        <button type="button" class="pick-btn" id="pickLibrary" aria-controls="libraryPanel" aria-expanded="false"><span class="pick-ico">◈</span><span>Biblioteka SAL</span></button>
+        <button type="button" class="pick-btn" id="pickFiles"><span class="pick-ico">⇧</span><span>Twój komputer</span></button>
+      </div>
+      <div class="file-drop" id="fileDrop">albo przeciągnij pliki audio tutaj</div>
+      <input type="file" class="hidden-input" id="fileInput" accept="audio/*" multiple>
+    </div></div>
 
     <div class="acc-panel"><div class="acc-head" data-acc="sources" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">2</span><span class="acc-title">Źródła</span></div><span class="acc-count" id="accSrcCount">0</span><span class="acc-arrow">▾</span></div><div class="acc-body" id="accSources"><div class="src-actions-row"><button class="btn-sm" id="playAllBtn">▶ Wszystkie</button><button class="btn-sm" id="stopAllBtn">◼ Stop</button></div><div id="sourcesList"><div class="sources-empty">Brak źródeł dźwięku</div></div></div></div>
 
@@ -253,7 +260,7 @@
   </div>
   <div id="helpBasic" class="help-panel" role="tabpanel">
     <h3 class="sal-modal-h3">Zacznij tutaj</h3>
-    <p>1. Dodaj dźwięk — przeciągnij plik audio do panelu «Dodaj dźwięki» po prawej, albo wybierz gotowy dźwięk z biblioteki po lewej.</p>
+    <p>1. Dodaj dźwięk — w panelu «01 Dodaj dźwięki» po prawej masz dwa przyciski. «Biblioteka SAL» otwiera po lewej spis gotowych, darmowych nagrań. «Twój komputer» wybiera plik z dysku; pliki można też po prostu przeciągnąć na to pole.</p>
     <p>2. Kliknij i przeciągnij kropkę na środkowym obrazie — tak ustawiasz, skąd w przestrzeni ma być słychać dany dźwięk.</p>
     <p>3. U góry przełącz się z «Edycja» na «Eksploracja» i porusz się po scenie klawiszami <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> (albo strzałkami) — dźwięk będzie się zmieniał zależnie od tego, gdzie jesteś i w którą stronę patrzysz.</p>
     <p>4. Załóż słuchawki — bez nich efekt przestrzenny nie zadziała.</p>
@@ -261,7 +268,7 @@
   </div>
   <div id="helpAdvanced" class="help-panel" style="display:none" role="tabpanel">
     <h3 class="sal-modal-h3">Biblioteka dźwięków</h3>
-    <p>Po lewej stronie masz gotowe, darmowe dźwięki pobrane z serwisu Freesound.org, poukładane w kategorie (Natura, Nastrój...). Wpisz coś w polu wyszukiwania, żeby szybciej znaleźć konkretny dźwięk — np. „woda" albo „ptaki". Kliknięcie „+" od razu wstawia dźwięk na scenę w losowym miejscu; potem przeciągnij go tam, gdzie ma być słychać. Niektóre dźwięki wymagają podania autora — jeśli tak, jego nazwisko z linkiem pojawi się pod nazwą dźwięku w bibliotece; warto go zachować, jeśli scena ma być gdzieś publikowana.</p>
+    <p>Przycisk «Biblioteka SAL» w panelu «01 Dodaj dźwięki» otwiera po lewej spis gotowych, darmowych dźwięków pobranych z serwisu Freesound.org, poukładanych w kategorie (Natura, Nastrój...). Działy otwierają się zwinięte — widać wtedy cały spis naraz; kliknięcie w dział rozwija jego nagrania. Wpisz coś w polu wyszukiwania, żeby szybciej znaleźć konkretny dźwięk — np. „woda" albo „ptaki". Kliknięcie „+" od razu wstawia dźwięk na scenę w losowym miejscu; potem przeciągnij go tam, gdzie ma być słychać. Niektóre dźwięki wymagają podania autora — jeśli tak, jego nazwisko z linkiem pojawi się pod nazwą dźwięku w bibliotece; warto go zachować, jeśli scena ma być gdzieś publikowana.</p>
     <h3 class="sal-modal-h3">Panel „Wybrany" — ustawienia dźwięku, który właśnie kliknąłeś</h3>
     <p><strong>Tryb: W przestrzeni / Bezpośrednio.</strong> To najważniejszy przełącznik dla danego dźwięku. „W przestrzeni" sprawia, że dźwięk brzmi tak, jakby naprawdę dochodził z konkretnego punktu na mapie — im dalej się od niego oddalisz albo im bardziej się od niego odwrócisz, tym ciszej i inaczej będzie brzmiał, dokładnie jak w prawdziwym świecie. „Bezpośrednio" wyłącza ten efekt — dźwięk gra jednakowo, niezależnie gdzie jesteś i w którą stronę patrzysz. Używaj „Bezpośrednio" dla rzeczy, które mają być zawsze wyraźnie słyszalne i nie są częścią sceny — np. narracja lektora, muzyka w tle, albo gdy dźwięk sam już został nagrany jako gotowe nagranie „na słuchawki" i nie chcesz, żeby program dodatkowo go przetwarzał.</p>
     <p><strong>Vol (głośność).</strong> Głośność tego jednego, wybranego dźwięku — niezależna od głośności innych dźwięków i od suwaka „Master" w panelu Przestrzeń.</p>
@@ -312,7 +319,7 @@
     <p><strong>Do czego się nadaje:</strong> materiał archiwalny i dźwięki, których dziś już się nie nagra.</p>
 
     <h3 class="sal-modal-h3">Jak używać pobranego pliku w Scenie</h3>
-    <p>Panel <strong>01 Dodaj dźwięki</strong> po prawej — kliknij albo przeciągnij na niego pliki z dysku. Obsługiwane są wszystkie formaty, które umie odtworzyć przeglądarka: WAV, MP3, OGG, Opus, FLAC, M4A. Każdy plik ląduje w losowym miejscu sceny; potem przeciągasz go myszą tam, gdzie ma być.</p>
+    <p>Panel <strong>01 Dodaj dźwięki</strong> po prawej — przycisk «Twój komputer» albo przeciągnięcie plików na pole pod przyciskami. Obsługiwane są wszystkie formaty, które umie odtworzyć przeglądarka: WAV, MP3, OGG, Opus, FLAC, M4A. Każdy plik ląduje w losowym miejscu sceny; potem przeciągasz go myszą tam, gdzie ma być.</p>
     <p>Po wczytaniu nazwa jest sprzątana automatycznie — rozszerzenie, numer i podkreślenia znikają. Możesz ją zmienić w panelu <strong>03 Wybrany</strong>. Ta nazwa pojawi się na liście, na eksportowanej mapie i jako podpis punktu w Sferze, więc warto, żeby była krótka i mówiła, co to za dźwięk.</p>
 
     <h3 class="sal-modal-h3">Prawa autorskie — o czym trzeba pamiętać</h3>
