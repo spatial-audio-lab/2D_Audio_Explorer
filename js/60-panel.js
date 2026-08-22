@@ -72,10 +72,16 @@ const KONTROLKI = [
     pusta:'static', czyta:s=>s.motion.mode,
     pisze:(s,v)=>{
       const mo=s.motion;
-      if((v==='orbit'||v==='random') && mo.mode!==v){
+      if(v==='orbit' && mo.mode!==v){
+        // Srodek ODSUWA sie od dzwieku o promien, zamiast ladowac pod nim. Dzieki temu
+        // dzwiek zostaje dokladnie tam, gdzie go postawiono, i od razu lezy na okregu
+        // pod katem z suwaka Start — a nie skacze o caly promien przy pierwszej klatce.
+        mo.originX=s.x-Math.cos(mo.orbitAngle)*mo.orbitRadius;
+        mo.originY=s.y-Math.sin(mo.orbitAngle)*mo.orbitRadius;
+      }
+      if(v==='random' && mo.mode!==v){
         mo.originX=s.x; mo.originY=s.y;
-        if(v==='orbit') mo.orbitAngle=0;
-        if(v==='random'){ mo.randomTX=s.x; mo.randomTY=s.y; mo.randomTimer=0; }
+        mo.randomTX=s.x; mo.randomTY=s.y; mo.randomTimer=0;
       }
       mo.mode=v;
       showToast('Ruch: '+(MOTION_TOAST[v]||v));
@@ -88,7 +94,23 @@ const KONTROLKI = [
 
   { nazwa:'promien', typ:'suwak', wej:'orbitRadius', pole:'orbitRadiusVal', zasieg:'zrodlo',
     skala:0.1, pusta:5, format:v=>v.toFixed(1)+'m',
-    czyta:s=>s.motion.orbitRadius, pisze:(s,v)=>{ s.motion.orbitRadius=v; } },
+    czyta:s=>s.motion.orbitRadius,
+    // Okrag rosnie wokol swojego srodka, a dzwiek zostaje na jego brzegu.
+    pisze:(s,v)=>{ s.motion.orbitRadius=v; if(s.motion.mode==='orbit') ustawNaOrbicie(s); },
+    odswiezListe:true },
+
+  // Start liczony od POLNOCY, bo tam patrzy sluchacz. Suwak czyta biezacy kat, wiec po
+  // odsluchu pokazuje, gdzie dzwiek naprawde stoi — a to jest zarazem punkt, od ktorego
+  // zacznie sie nagranie.
+  { nazwa:'start', typ:'suwak', wej:'orbitStart', pole:'orbitStartVal', zasieg:'zrodlo',
+    skala:1, pusta:0, format:v=>Math.round(v)+'°',
+    czyta:s=>katStartu(s.motion),
+    pisze:(s,v)=>{ ustawKatOrbity(s, v); },
+    odswiezListe:true },
+
+  { nazwa:'obieg', typ:'suwak', wej:'orbitPeriod', pole:'orbitPeriodVal', zasieg:'zrodlo',
+    skala:0.5, pusta:10, format:v=>v.toFixed(1)+' s',
+    czyta:s=>s.motion.orbitPeriod||10, pisze:(s,v)=>{ s.motion.orbitPeriod=v; } },
 
   { nazwa:'bladzenie', typ:'suwak', wej:'randomRange', pole:'randomRangeVal', zasieg:'zrodlo',
     skala:0.1, pusta:8, format:v=>v.toFixed(1)+'m',
@@ -123,7 +145,7 @@ const KONTROLKI = [
 // Sekcje, ktore otwieraja sie albo gasna zaleznie od stanu wybranego zrodla.
 // Jeden wiersz = jedna regula widocznosci.
 const WIDOCZNOSC = [
-  { el:'speedParams',    klasa:'open',     gdy:s=>!!s && s.motion.mode!=='static' },
+  { el:'speedParams',    klasa:'open',     gdy:s=>!!s && (s.motion.mode==='random'||s.motion.mode==='path') },
   { el:'orbitParams',    klasa:'open',     gdy:s=>!!s && s.motion.mode==='orbit'  },
   { el:'randomParams',   klasa:'open',     gdy:s=>!!s && s.motion.mode==='random' },
   { el:'pathParams',     klasa:'open',     gdy:s=>!!s && s.motion.mode==='path'   },

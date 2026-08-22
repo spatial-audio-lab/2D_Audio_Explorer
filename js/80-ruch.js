@@ -68,7 +68,7 @@ function ptrUp(cx,cy){ if(S.mode==='explore'&&!pMoved&&pDown){ const{x,y,rect}=g
 // to stan ruchu, nie parametry. `rnd` to zrodlo losowosci: na ekranie Math.random,
 // w eksporcie generator z ziarnem, zeby ten sam eksport dwa razy dal ten sam plik.
 function stepMotion(mo,pos,dt,m,rnd){
-  if(mo.mode==='orbit'){ const angSpeed=mo.speed/Math.max(mo.orbitRadius,0.5); mo.orbitAngle+=angSpeed*dt; pos.x=mo.originX+Math.cos(mo.orbitAngle)*mo.orbitRadius; pos.y=mo.originY+Math.sin(mo.orbitAngle)*mo.orbitRadius; }
+  if(mo.mode==='orbit'){ const angSpeed=2*Math.PI/Math.max(0.5, mo.orbitPeriod||10); mo.orbitAngle+=angSpeed*dt; pos.x=mo.originX+Math.cos(mo.orbitAngle)*mo.orbitRadius; pos.y=mo.originY+Math.sin(mo.orbitAngle)*mo.orbitRadius; }
   else if(mo.mode==='random'){ mo.randomTimer-=dt; if(mo.randomTimer<=0){ const a=rnd()*Math.PI*2, r=rnd()*mo.randomRange; mo.randomTX=mo.originX+Math.cos(a)*r; mo.randomTY=mo.originY+Math.sin(a)*r; mo.randomTimer=1.5+rnd()*4; }
     const dx=mo.randomTX-pos.x, dy=mo.randomTY-pos.y, dist=Math.hypot(dx,dy); if(dist>0.1){ const step=Math.min(mo.speed*dt,dist); pos.x+=(dx/dist)*step; pos.y+=(dy/dist)*step; } }
   else if(mo.mode==='path'&&mo.waypoints.length>=2){ const wp=mo.waypoints; let ni=mo.pathIndex+mo.pathDir;
@@ -77,6 +77,28 @@ function stepMotion(mo,pos,dt,m,rnd){
     if(ni>=0&&ni<wp.length){ const target=wp[ni]; const dx=target.x-pos.x, dy=target.y-pos.y, dist=Math.hypot(dx,dy); if(dist<0.2){pos.x=target.x;pos.y=target.y;mo.pathIndex=ni;} else{const step=Math.min(mo.speed*dt,dist);pos.x+=(dx/dist)*step;pos.y+=(dy/dist)*step;} } }
   pos.x=Math.max(-m,Math.min(m,pos.x)); pos.y=Math.max(-m,Math.min(m,pos.y));
 }
+// KAT NA ORBICIE — dwie konwencje i jedno przejscie miedzy nimi.
+// W modelu: orbitAngle w radianach, 0 = wschod, rosnie zgodnie z ruchem wskazowek.
+// Na suwaku: stopnie, 0 = polnoc (przed sluchaczem), ujemne w LEWO, dodatnie w PRAWO.
+// Wzor jest jeden i tylko tutaj, zeby te dwie konwencje nie zaczely zyc osobno.
+function katStartu(mo){
+  let st=(mo.orbitAngle||0)*180/Math.PI+90;
+  return Math.round(((st+180)%360+360)%360-180);
+}
+// Sadza zrodlo na jego wlasnym okregu. Bez tego dzwiek stoi OBOK orbity az do
+// pierwszej klatki ruchu, a wtedy przeskakuje o caly promien.
+function ustawNaOrbicie(s){
+  const mo=s.motion, m=S.worldSize-1;
+  s.x=Math.max(-m,Math.min(m, mo.originX+Math.cos(mo.orbitAngle)*mo.orbitRadius));
+  s.y=Math.max(-m,Math.min(m, mo.originY+Math.sin(mo.orbitAngle)*mo.orbitRadius));
+  updPanners(s); updateReverbSend(s);
+}
+// Suwak Start przesuwa DZWIEK po okregu; srodek zostaje tam, gdzie byl.
+function ustawKatOrbity(s, stopnie){
+  s.motion.orbitAngle=(stopnie-90)*Math.PI/180;
+  ustawNaOrbicie(s);
+}
+
 function updateMotion(dt){
   const m=S.worldSize-1;
   for(const s of S.sources){

@@ -51,7 +51,13 @@ function buildSrc(id, name, x, y, vol, libId){
     gain, airFilter, splitter, pannerL, pannerR, reverbSend,
     libraryId:libId||null, isStream:false, audioElement:null, mediaSource:null,
     attrAuthor:null, attrLicense:null, attrUrl:null,
-    motion:{ mode:'static', speed:2, orbitRadius:5, orbitAngle:0, originX:x, originY:y,
+    // orbitAngle to kat na okregu w konwencji parametrycznej (0 = wschod, rosnie zgodnie
+    // z ruchem wskazowek na ekranie). Domyslne -PI/2 stawia dzwiek na POLNOCY, czyli
+    // przed sluchaczem — to samo, co 0 na suwaku Start.
+    // orbitPeriod to czas PELNEGO obiegu w sekundach. Wczesniej okres wynikal z dzielenia
+    // predkosci przez promien i przy domyslnych ustawieniach wychodzil 15,71 s — liczba,
+    // ktorej nikt nie wybral. `speed` zostaje dla trybow random i sciezka.
+    motion:{ mode:'static', speed:2, orbitRadius:5, orbitAngle:-Math.PI/2, orbitPeriod:10, originX:x, originY:y,
       randomRange:8, randomTX:x, randomTY:y, randomTimer:0,
       // Ziarno generatora dla trybu Random. Ruch NA EKRANIE zostaje losowy (Math.random
       // w updateMotion), ale symulacja na potrzeby eksportu idzie z tego ziarna — dzieki

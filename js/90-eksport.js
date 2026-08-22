@@ -446,6 +446,8 @@ async function exportScene(){
               xs[i]=+k.rgt.toFixed(2); ys[i]=+k.fwd.toFixed(2);
             }
             objMeta.motion={ mode:s.motion.mode, speed:+s.motion.speed.toFixed(2), seed:s.motion.seed>>>0 };
+            // Orbita nie jedzie z predkosci liniowej, tylko z czasu pelnego obiegu.
+            if(s.motion.mode==='orbit') objMeta.motion.period=+(s.motion.orbitPeriod||10).toFixed(2);
             // `frame` nazywa uklad, w ktorym sa te liczby. Az/el tez byly w ukladzie
             // sluchacza, tylko nikt tego nie zapisal — za pol roku nikt nie bylby pewien.
             objMeta.path={ hz:PATH_HZ, frame:'listener', x:xs, y:ys, h:+(h||0).toFixed(2) };
@@ -535,7 +537,10 @@ async function exportScene(){
         }
         if(src.motion.mode!=='static'){
           const utrwalony=!!trajektorie[src.id];
-          txt+=`    Ruch: ${src.motion.mode} (prędkość: ${src.motion.speed.toFixed(1)} m/s) — ${utrwalony?'utrwalony w plikach, '+LEVEL_HZ+' kl./s':'NIE utrwalony (pozycja zamrożona)'}\n`;
+          const jakSzybko = src.motion.mode==='orbit'
+            ? 'obieg: '+(src.motion.orbitPeriod||10).toFixed(1)+' s, promień: '+src.motion.orbitRadius.toFixed(1)+' m'
+            : 'prędkość: '+src.motion.speed.toFixed(1)+' m/s';
+          txt+=`    Ruch: ${src.motion.mode} (${jakSzybko}) — ${utrwalony?'utrwalony w plikach, '+LEVEL_HZ+' kl./s':'NIE utrwalony (pozycja zamrożona)'}\n`;
           if(utrwalony&&src.motion.mode==='random') txt+=`    Ziarno ruchu losowego: ${src.motion.seed>>>0}\n`;
         }
         if(src.attrAuthor) txt+=`    Autor: ${src.attrAuthor}\n`;
