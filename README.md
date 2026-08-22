@@ -41,9 +41,14 @@ instalacji, bez backendu, bez konta. Część zestawu narzędzi **Spatial Audio 
 |---|---|
 | `…_BINAURAL.wav` | zwykły odsłuch na słuchawkach, najostrzejszy kierunkowo |
 | `…_AMBIX.wav` | 4-kanałowy format ambisoniczny do dalszej obróbki i do **Sfery** |
-| `…_MAPA.jpg` | mapa sceny jako obraz, do dokumentacji i sprawozdań |
+| `…_MAPA.jpg` | mapa sceny jako obraz — **czarno-biała, do druku**; źródła w ruchu mają narysowaną trasę ze strzałkami kierunku |
 | `…_META.txt` | pełne metadane tekstem, z autorami i licencjami wszystkich dźwięków |
 | `…_SCENA.json` | nazwy, pozycje (az/el) i obwiednie głośności — czyta to **Sfera** |
+
+**Pozycja w mapie, w META i w polach `az/el/dist` JSON-a to POCZĄTEK NAGRANIA**, czyli
+pierwsza klatka trajektorii — a nie miejsce, w którym stało źródło w chwili kliknięcia
+„Eksportuj". Dla źródła w ruchu to dwie różne rzeczy: jeśli scena grała podczas eksportu,
+punkt na ekranie jedzie dalej po orbicie, a nagranie i tak zaczyna się od suwaka **Start**.
 
 Numer sceny jest opcjonalny: wyłączony, znika z nazw plików, z nagłówka mapy,
 z metadanych i z JSON-a.

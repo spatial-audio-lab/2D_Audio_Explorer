@@ -149,6 +149,45 @@ function exportStep(msg, status='active'){
   const el=document.createElement('div'); el.className='kpo-step '+(status==='done'?'done':status==='error'?'error':''); el.textContent=msg; $('kpoSteps').appendChild(el); return el;
 }
 
+// TRASA RUCHU NA MAPIE
+// -------------------------------------------------------------------------------------------
+// Mapa do sierpnia 2026 rysowala jedna kropke w miejscu, w ktorym zywa scena akurat stala.
+// Dla zrodla w ruchu nie mowila ani gdzie zaczyna sie nagranie, ani ktoredy dzwiek leci.
+// Ta funkcja bierze DOKLADNIE te trajektorie, ktora poszla do plikow audio i do pola `path`
+// w _SCENA.json — nie liczy drogi drugi raz, wiec obrazek nie moze pokazac innego ruchu
+// niz nagranie. `sc` to skala swiat->piksele, uklad jest juz przesuniety na srodek plotna.
+//
+// Sam ksztalt trasy nie mowi o kierunku: orbita w prawo i w lewo rysuje ten sam okrag.
+// Stad groty strzalek — cztery, rozlozone rowno po drodze, zwrocone tam, gdzie plynie czas.
+function rysujTraseNaMapie(ctx,tr,sc){
+  if(!tr||tr.frames<2) return;
+  // Do 600 odcinkow wystarczy: przy plotnie 1200 px kolejne klatki 50 Hz i tak trafiaja
+  // w ten sam piksel, a linia z 6000 punktow tylko puchnie w JPEG.
+  const krok=Math.max(1,Math.round(tr.frames/600));
+  ctx.strokeStyle='rgba(0,0,0,0.40)'; ctx.lineWidth=1.2; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(tr.xs[0]*sc,tr.ys[0]*sc);
+  for(let i=krok;i<tr.frames;i+=krok) ctx.lineTo(tr.xs[i]*sc,tr.ys[i]*sc);
+  ctx.lineTo(tr.xs[tr.frames-1]*sc,tr.ys[tr.frames-1]*sc);
+  ctx.stroke();
+  // Kierunek liczony z pary klatek odleglych o ~1/200 trasy, nie z dwoch sasiednich:
+  // przy ruchu losowym sasiednie klatki potrafia stac w miejscu i grot wyszedlby losowo.
+  const odstep=Math.max(1,Math.round(tr.frames/200)), dlG=8, szer=4;
+  ctx.strokeStyle='rgba(0,0,0,0.75)'; ctx.lineWidth=1.4;
+  for(let k=1;k<=4;k++){
+    const i=Math.min(tr.frames-2,Math.round(tr.frames*k/5));
+    const j=Math.min(tr.frames-1,i+odstep);
+    const ax=tr.xs[i]*sc, ay=tr.ys[i]*sc;
+    const dx=tr.xs[j]*sc-ax, dy=tr.ys[j]*sc-ay, dl=Math.sqrt(dx*dx+dy*dy);
+    if(dl<0.5) continue;                                   // zrodlo stoi — nie ma czego wskazac
+    const ux=dx/dl, uy=dy/dl;
+    ctx.beginPath();
+    ctx.moveTo(ax-ux*dlG-uy*szer, ay-uy*dlG+ux*szer);
+    ctx.lineTo(ax,ay);
+    ctx.lineTo(ax-ux*dlG+uy*szer, ay-uy*dlG-ux*szer);
+    ctx.stroke();
+  }
+}
+
 async function exportScene(){
   const btn=$('generateExport');
   const numerOn=$('sceneNumberOn').checked;
@@ -208,6 +247,17 @@ async function exportScene(){
       nRuchome++;
     }
   }
+  // POZYCJA, KTORA NAPRAWDE TRAFILA DO PLIKOW. Dla zrodla w ruchu jest to PIERWSZA KLATKA
+  // trajektorii, a nie punkt, w ktorym zywa scena akurat stoi. Roznica nie jest teoretyczna:
+  // gdy uzytkownik sluchal sceny w chwili eksportu, `s.x/s.y` jedzie dalej po orbicie przez
+  // caly czas trwania eksportu. Zmierzone na realnym pliku (Chodzacy_zegar, obieg 60 s):
+  // nagranie zaczynalo sie od azymutu 0,6 st., SCENA.json pisal 104,8 st. (chwila budowy
+  // grafu AmbiX), a META 94,6 st. (chwila pozniej, po renderze) — trzy roznie klamiace
+  // liczby z trzech momentow tego samego eksportu. Mapa rysowala czwarty.
+  // Zrodla statyczne i eksport z wylaczonym utrwalaniem ruchu nie maja trajektorii,
+  // wiec dostaja swoja zywa pozycje — i tak wlasnie stoja w plikach.
+  const pozStartowa=s=>{ const tr=trajektorie[s.id]; return tr?{x:tr.xs[0],y:tr.ys[0]}:{x:s.x,y:s.y}; };
+
   // Sluchacz zostaje nieruchomy: jego pozycja to uklad odniesienia pliku, a chodzenie po
   // scenie jest wejsciem od uzytkownika w czasie rzeczywistym, wiec nie da sie go odtworzyc
   // offline bez wczesniejszego nagrania spaceru. To osobny temat.
@@ -418,7 +468,10 @@ async function exportScene(){
           const halfW=s.width/2, srad=(s.spreadAngle||0)*Math.PI/180;
           const ddx=halfW*Math.cos(srad), ddy=halfW*Math.sin(srad);
           // Kierunek SRODKA zrodla (nie punktow L/R szerokosci) — to on trafia na kule.
-          const kMid=kierunekFOA(s.x,s.y,h);
+          // Liczony z PIERWSZEJ KLATKI trajektorii, nie z zywej pozycji: te trzy liczby maja
+          // opisywac poczatek nagrania, a `s.x/s.y` w trakcie eksportu wciaz sie rusza.
+          const pStart=pozStartowa(s);
+          const kMid=kierunekFOA(pStart.x,pStart.y,h);
           objMeta.az=+(kMid.az*180/Math.PI).toFixed(2);
           objMeta.el=+(kMid.el*180/Math.PI).toFixed(2);
           objMeta.dist=+kMid.dist3d.toFixed(2);
@@ -484,39 +537,53 @@ async function exportScene(){
     try {
       const snap=document.createElement('canvas'); snap.width=1200; snap.height=900;
       const sc2=snap.getContext('2d'), sc=Math.min(snap.width,snap.height)/(S.worldSize*2), cxM=snap.width/2, cyM=snap.height/2;
-      sc2.fillStyle='#0A0C08'; sc2.fillRect(0,0,snap.width,snap.height);
-      sc2.fillStyle='#9C9890'; sc2.font="bold 14px 'Azeret Mono',monospace"; sc2.fillText(numerOn?`SAL SCENA ${nr} — ${nm.replace(/_/g,' ')}`:`SAL — ${nm.replace(/_/g,' ')}`,20,28);
-      sc2.fillStyle='#9C9890'; sc2.font="11px 'Azeret Mono',monospace";
+      // MAPA JEST DO DRUKU: biale tlo, czarne obiekty, zero koloru. Ekran ma swoja ciemna
+      // palete w 85-rysowanie.js — ten obrazek celowo jej NIE dziedziczy, bo idzie na papier,
+      // gdzie cyan na czerni jest kalorza tuszu i nieczytelnym szarym plackiem. Rozroznienie
+      // niesie ksztalt i grubosc kreski, nie barwa: kolo = zrodlo przestrzenne, romb =
+      // Bezposrednio, kolo z kropka i kreska = sluchacz.
+      const TUSZ='#000000', SIATKA='rgba(0,0,0,0.10)', RAMKA='rgba(0,0,0,0.30)',
+            OSIE='rgba(0,0,0,0.20)', PODPIS='#333333', DROBNE='#555555';
+      sc2.fillStyle='#FFFFFF'; sc2.fillRect(0,0,snap.width,snap.height);
+      sc2.fillStyle=TUSZ; sc2.font="bold 14px 'Azeret Mono',monospace"; sc2.fillText(numerOn?`SAL SCENA ${nr} — ${nm.replace(/_/g,' ')}`:`SAL — ${nm.replace(/_/g,' ')}`,20,28);
+      sc2.fillStyle=PODPIS; sc2.font="11px 'Azeret Mono',monospace";
       // Data na obrazku jest opcjonalna — komplet danych i tak siedzi w META i w JSON.
       sc2.fillText(`Czas: ${dur}s · Źródeł: ${srcs.length}`+($('mapDateOn').checked?` · ${window._getDate()}`:''),20,48);
       sc2.save(); sc2.translate(cxM,cyM);
-      sc2.strokeStyle='rgba(0,229,204,0.06)';sc2.lineWidth=1;
+      sc2.strokeStyle=SIATKA;sc2.lineWidth=1;
       for(let i=-S.worldSize;i<=S.worldSize;i+=5){sc2.beginPath();sc2.moveTo(i*sc,-S.worldSize*sc);sc2.lineTo(i*sc,S.worldSize*sc);sc2.stroke();sc2.beginPath();sc2.moveTo(-S.worldSize*sc,i*sc);sc2.lineTo(S.worldSize*sc,i*sc);sc2.stroke();}
-      sc2.strokeStyle='rgba(0,229,204,0.2)'; sc2.strokeRect(-S.worldSize*sc,-S.worldSize*sc,S.worldSize*2*sc,S.worldSize*2*sc);
-      sc2.strokeStyle='rgba(0,229,204,0.15)';sc2.lineWidth=1;sc2.setLineDash([4,4]);sc2.beginPath();sc2.moveTo(-S.worldSize*sc,0);sc2.lineTo(S.worldSize*sc,0);sc2.stroke();sc2.beginPath();sc2.moveTo(0,-S.worldSize*sc);sc2.lineTo(0,S.worldSize*sc);sc2.stroke();sc2.setLineDash([]);
+      sc2.strokeStyle=RAMKA; sc2.strokeRect(-S.worldSize*sc,-S.worldSize*sc,S.worldSize*2*sc,S.worldSize*2*sc);
+      sc2.strokeStyle=OSIE;sc2.lineWidth=1;sc2.setLineDash([4,4]);sc2.beginPath();sc2.moveTo(-S.worldSize*sc,0);sc2.lineTo(S.worldSize*sc,0);sc2.stroke();sc2.beginPath();sc2.moveTo(0,-S.worldSize*sc);sc2.lineTo(0,S.worldSize*sc);sc2.stroke();sc2.setLineDash([]);
       S.sources.forEach((src,idx)=>{
-        const sxM=src.x*sc,syM=src.y*sc, isDirect=src.routing==='direct';
-        const dist=Math.sqrt((src.x-S.listener.x)**2+(src.y-S.listener.y)**2+(src.height||0)**2);
-        const cHex=isDirect?'#FFAB00':'#00E5CC';
-        sc2.strokeStyle='rgba(0,229,204,0.2)';sc2.lineWidth=0.8;sc2.setLineDash([4,4]);sc2.beginPath();sc2.moveTo(S.listener.x*sc,S.listener.y*sc);sc2.lineTo(sxM,syM);sc2.stroke();sc2.setLineDash([]);
-        const grd=sc2.createRadialGradient(sxM,syM,0,sxM,syM,28);grd.addColorStop(0,'rgba(0,229,204,0.18)');grd.addColorStop(1,'rgba(0,229,204,0)');sc2.fillStyle=grd;sc2.beginPath();sc2.arc(sxM,syM,28,0,Math.PI*2);sc2.fill();
+        // Znacznik stoi w miejscu, od ktorego zaczyna sie NAGRANIE, a nie tam, gdzie zywa
+        // scena akurat dojechala. Bez tego mapa i pliki audio pokazywaly dwa rozne miejsca.
+        const p0=pozStartowa(src);
+        const sxM=p0.x*sc,syM=p0.y*sc, isDirect=src.routing==='direct';
+        const dist=Math.sqrt((p0.x-S.listener.x)**2+(p0.y-S.listener.y)**2+(src.height||0)**2);
+        // Trasa idzie POD znacznikiem, zeby numer zrodla zostal czytelny.
+        rysujTraseNaMapie(sc2,trajektorie[src.id],sc);
+        sc2.strokeStyle=OSIE;sc2.lineWidth=0.8;sc2.setLineDash([4,4]);sc2.beginPath();sc2.moveTo(S.listener.x*sc,S.listener.y*sc);sc2.lineTo(sxM,syM);sc2.stroke();sc2.setLineDash([]);
+        // Poswiaty z ekranu tu nie ma: na bialym tle radialny gradient drukuje sie jako
+        // brudna plama, a nie jako swiatlo.
         // Stereo width line on map
-        if(src.width>0.05&&!isDirect){const hw=src.width/2,sr2=(src.spreadAngle||0)*Math.PI/180,ddx=hw*Math.cos(sr2)*sc,ddy=hw*Math.sin(sr2)*sc;sc2.strokeStyle='rgba(0,229,204,0.5)';sc2.lineWidth=2;sc2.beginPath();sc2.moveTo(sxM-ddx,syM-ddy);sc2.lineTo(sxM+ddx,syM+ddy);sc2.stroke();}
-        sc2.strokeStyle=cHex;sc2.lineWidth=1.5;
-        if(isDirect){sc2.beginPath();sc2.moveTo(sxM,syM-10);sc2.lineTo(sxM+10,syM);sc2.lineTo(sxM,syM+10);sc2.lineTo(sxM-10,syM);sc2.closePath();sc2.stroke();sc2.fillStyle='rgba(255,171,0,0.12)';sc2.fill();}
-        else{sc2.beginPath();sc2.arc(sxM,syM,10,0,Math.PI*2);sc2.stroke();sc2.fillStyle='rgba(0,229,204,0.12)';sc2.beginPath();sc2.arc(sxM,syM,10,0,Math.PI*2);sc2.fill();}
-        sc2.fillStyle=cHex;sc2.font="bold 10px 'Azeret Mono',monospace";sc2.textAlign='center';sc2.textBaseline='middle';sc2.fillText(String(idx+1).padStart(2,'0'),sxM,syM);
-        sc2.fillStyle='#9C9890';sc2.font="9px 'Azeret Mono',monospace";sc2.textAlign='center';sc2.textBaseline='top';
+        if(src.width>0.05&&!isDirect){const hw=src.width/2,sr2=(src.spreadAngle||0)*Math.PI/180,ddx=hw*Math.cos(sr2)*sc,ddy=hw*Math.sin(sr2)*sc;sc2.strokeStyle=TUSZ;sc2.lineWidth=2;sc2.beginPath();sc2.moveTo(sxM-ddx,syM-ddy);sc2.lineTo(sxM+ddx,syM+ddy);sc2.stroke();}
+        sc2.strokeStyle=TUSZ;sc2.lineWidth=1.5;
+        // Zrodlo Bezposrednio bylo odrozniane KOLOREM (bursztyn wobec cyanu). Na wydruku
+        // koloru nie ma, wiec zostaje sam romb, obrys przerywany i dopisek DIRECT nizej.
+        if(isDirect){sc2.setLineDash([3,3]);sc2.beginPath();sc2.moveTo(sxM,syM-10);sc2.lineTo(sxM+10,syM);sc2.lineTo(sxM,syM+10);sc2.lineTo(sxM-10,syM);sc2.closePath();sc2.stroke();sc2.setLineDash([]);sc2.fillStyle='rgba(0,0,0,0.05)';sc2.fill();}
+        else{sc2.beginPath();sc2.arc(sxM,syM,10,0,Math.PI*2);sc2.stroke();sc2.fillStyle='rgba(0,0,0,0.05)';sc2.beginPath();sc2.arc(sxM,syM,10,0,Math.PI*2);sc2.fill();}
+        sc2.fillStyle=TUSZ;sc2.font="bold 10px 'Azeret Mono',monospace";sc2.textAlign='center';sc2.textBaseline='middle';sc2.fillText(String(idx+1).padStart(2,'0'),sxM,syM);
+        sc2.fillStyle=PODPIS;sc2.font="9px 'Azeret Mono',monospace";sc2.textAlign='center';sc2.textBaseline='top';
         let lbl=src.name.length>20?src.name.slice(0,17)+'…':src.name; sc2.fillText(lbl,sxM,syM+14);
-        sc2.fillStyle='#9C9890';sc2.font="8px 'Azeret Mono',monospace";
+        sc2.fillStyle=DROBNE;sc2.font="8px 'Azeret Mono',monospace";
         let meta=`${dist.toFixed(1)}m · ${Math.round(src.volume*100)}%`;
         if(isDirect) meta+=' · DIRECT';
         if(Math.abs(src.height||0)>0.2) meta+=' · '+(src.height>0?'↑':'↓')+Math.abs(src.height).toFixed(1)+'m';
         sc2.fillText(meta,sxM,syM+25);
       });
       const lxM=S.listener.x*sc,lyM=S.listener.y*sc,lrM=S.listener.angle*Math.PI/180;
-      sc2.strokeStyle='#FFAB00';sc2.lineWidth=2;sc2.beginPath();sc2.arc(lxM,lyM,12,0,Math.PI*2);sc2.stroke();sc2.fillStyle='#FFAB00';sc2.beginPath();sc2.arc(lxM,lyM,4,0,Math.PI*2);sc2.fill();
-      sc2.strokeStyle='#FFAB00';sc2.lineWidth=2;sc2.beginPath();sc2.moveTo(lxM,lyM);sc2.lineTo(lxM+Math.sin(lrM)*25,lyM-Math.cos(lrM)*25);sc2.stroke();
+      sc2.strokeStyle=TUSZ;sc2.lineWidth=2;sc2.beginPath();sc2.arc(lxM,lyM,12,0,Math.PI*2);sc2.stroke();sc2.fillStyle=TUSZ;sc2.beginPath();sc2.arc(lxM,lyM,4,0,Math.PI*2);sc2.fill();
+      sc2.strokeStyle=TUSZ;sc2.lineWidth=2;sc2.beginPath();sc2.moveTo(lxM,lyM);sc2.lineTo(lxM+Math.sin(lrM)*25,lyM-Math.cos(lrM)*25);sc2.stroke();
       sc2.restore();
       mapBlob=await new Promise(r=>snap.toBlob(r,'image/jpeg',0.92));
       s3.textContent='✓ 3/5 Mapa JPG — OK'; s3.className='kpo-step done';
@@ -528,8 +595,10 @@ async function exportScene(){
     try {
       let txt=`SAL — Spatial Audio Lab\n${'═'.repeat(40)}\nScena: ${numerOn?nr+' — ':''}${nm.replace(/_/g,' ')}\n${autorSceny?'Autor sceny: '+autorSceny+'\n':''}${licencjaSceny?'Licencja sceny: '+licencjaSceny+'\n':''}${opisSceny?'\nOpis:\n'+opisSceny+'\n':''}\nData: ${window._getDateFull()}\nCzas trwania: ${dur}s\nSample rate: ${sr} Hz\nReverb: ${includeReverb&&reverbState.enabled?'Tak (rozmiar:'+reverbState.roomSize.toFixed(2)+', tłumienie:'+reverbState.damping.toFixed(2)+', wet:'+Math.round(reverbState.wet*100)+'%)':'Nie'}\n\nListener: x=${S.listener.x.toFixed(2)}, y=${S.listener.y.toFixed(2)}, angle=${Math.round(S.listener.angle)}°\n\nŹródła (${srcs.length}):\n${'─'.repeat(40)}\n`;
       srcs.forEach((src,i)=>{
-        const dist=Math.sqrt((src.x-S.listener.x)**2+(src.y-S.listener.y)**2+(src.height||0)**2);
-        txt+=`\n${String(i+1).padStart(2,'0')}. ${src.name}\n    Routing: ${src.routing}\n    Pozycja: x=${src.x.toFixed(2)}, y=${src.y.toFixed(2)}${(src.height||0)>0.1?', h='+src.height.toFixed(2)+'m':''}\n    Dystans: ${dist.toFixed(2)}m\n    Głośność: ${Math.round(src.volume*100)}%\n`;
+        // Pozycja z POCZATKU nagrania, nie z chwili, w ktorej ta petla akurat sie wykonuje.
+        const p0=pozStartowa(src);
+        const dist=Math.sqrt((p0.x-S.listener.x)**2+(p0.y-S.listener.y)**2+(src.height||0)**2);
+        txt+=`\n${String(i+1).padStart(2,'0')}. ${src.name}\n    Routing: ${src.routing}\n    Pozycja: x=${p0.x.toFixed(2)}, y=${p0.y.toFixed(2)}${(src.height||0)>0.1?', h='+src.height.toFixed(2)+'m':''}\n    Dystans: ${dist.toFixed(2)}m\n    Głośność: ${Math.round(src.volume*100)}%\n`;
         if(src.routing==='spatial'){
           const cutoff=Math.max(400,20000*Math.exp(-dist*0.06));
           txt+=`    Absorpcja: ${Math.round(cutoff)} Hz\n`;
