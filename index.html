@@ -90,8 +90,8 @@
              placeholder="— brak wyboru —" aria-label="Nazwa wybranego dźwięku" />
 
       <!-- Atrybucja nad przełącznikiem trybu: to metryczka dźwięku, a nie parametr brzmienia. -->
-      <details class="sub-box" id="attrBox">
-        <summary class="sub-summary"><span class="sub-key">Atrybucja</span><span class="sub-state" id="attrState">—</span></summary>
+      <div class="sub-box" id="attrBox">
+        <div class="sub-summary" role="button" tabindex="0" aria-expanded="false"><span class="sub-key">Atrybucja</span><span class="sub-state" id="attrState">—</span></div>
         <div class="sub-body">
           <label class="field-label" for="selAuthor">Autor nagrania</label>
           <input class="export-input" id="selAuthor" type="text" maxlength="80" disabled placeholder="kto nagrał ten dźwięk">
@@ -100,87 +100,56 @@
           <label class="field-label" for="selUrl">Link do źródła</label>
           <input class="export-input" id="selUrl" type="url" maxlength="300" disabled placeholder="https://…">
         </div>
-      </details>
+      </div>
 
       <div class="routing-toggle" id="routingToggle"><button class="routing-btn active" data-route="spatial">◎ Spatial</button><button class="routing-btn" data-route="direct">♫ Direct Stereo</button></div>
       <div class="param-row"><label>Vol</label><input type="range" id="volSlider" min="0" max="100" value="70"><span class="param-val" id="volVal">70%</span></div>
       <div class="param-row"><label>Wys</label><input type="range" id="heightSlider" min="-100" max="100" value="0"><span class="param-val" id="heightVal">0.0m</span></div>
 
       <div id="spatialSection">
-        <details class="sub-box">
-          <summary class="sub-summary"><span class="sub-num">3.1</span><span class="sub-key">Szerokość stereo</span><span class="sub-state stereo-indicator" id="stereoInd">Punkt</span></summary>
+        <div class="sub-box">
+          <div class="sub-summary" role="button" tabindex="0" aria-expanded="false"><span class="sub-num">3.1</span><span class="sub-key">Szerokość stereo</span><span class="sub-state stereo-indicator" id="stereoInd">Punkt</span></div>
           <div class="sub-body">
             <div class="param-row"><label>Szer.</label><input type="range" id="widthSlider" min="0" max="200" value="0" step="1"><span class="param-val" id="widthVal">0.0m</span></div>
             <div class="param-row"><label>Kąt</label><input type="range" id="angleSlider" min="-180" max="180" value="0" step="1"><span class="param-val" id="angleVal">0°</span></div>
           </div>
-        </details>
+        </div>
       </div>
 
-      <details class="sub-box">
-        <summary class="sub-summary"><span class="sub-num">3.2</span><span class="sub-key">Ruch</span><span class="sub-state" id="motionState">Statyczny</span></summary>
+      <div class="sub-box">
+        <div class="sub-summary" role="button" tabindex="0" aria-expanded="false"><span class="sub-num">3.2</span><span class="sub-key">Ruch</span><span class="sub-state" id="motionState">Statyczny</span></div>
         <div class="sub-body">
           <div class="motion-mode-row" id="motionModeRow"><button class="motion-mode-btn active" data-motion="static">Statyczny</button><button class="motion-mode-btn" data-motion="orbit">Orbita</button><button class="motion-mode-btn" data-motion="random">Random</button><button class="motion-mode-btn" data-motion="path">Ścieżka</button></div>
-          <div class="param-row"><label>Prędk.</label><input type="range" id="motionSpeed" min="1" max="100" value="20" step="1"><span class="param-val" id="motionSpeedVal">2.0</span></div>
+          <div class="motion-params" id="speedParams"><div class="param-row"><label>Prędk.</label><input type="range" id="motionSpeed" min="1" max="100" value="20" step="1"><span class="param-val" id="motionSpeedVal">2.0</span></div></div>
           <div class="motion-params" id="orbitParams"><div class="param-row"><label>Promień</label><input type="range" id="orbitRadius" min="5" max="200" value="50" step="1"><span class="param-val" id="orbitRadiusVal">5.0m</span></div></div>
           <div class="motion-params" id="randomParams"><div class="param-row"><label>Zasięg</label><input type="range" id="randomRange" min="10" max="200" value="80" step="1"><span class="param-val" id="randomRangeVal">8.0m</span></div></div>
           <div class="motion-params" id="pathParams"><div class="path-actions"><button class="btn-sm" id="clearPathBtn">✕ Wyczyść</button></div><div class="path-hint"><kbd>Shift</kbd>+klik na canvas = dodaj punkt ścieżki</div><div class="param-row" style="margin-top:4px"><label>Pętla</label><input type="range" id="pathLoop" min="0" max="1" value="1" step="1"><span class="param-val" id="pathLoopVal">Tak</span></div></div>
         </div>
-      </details>
+      </div>
     </div></div>
 
     <div class="acc-panel"><div class="acc-head" data-acc="room" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">4</span><span class="acc-title">Przestrzeń</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
       <div class="param-row"><label>Master</label><input type="range" id="masterVolSlider" min="0" max="100" value="100"><span class="param-val" id="masterVolVal">100%</span></div>
-      <details class="sub-box">
-        <summary class="sub-summary"><span class="sub-num">4.1</span><span class="sub-key">Reverb</span><span class="sub-state" id="reverbState2">Włączony</span></summary>
+      <div class="sub-box">
+        <div class="sub-summary" role="button" tabindex="0" aria-expanded="false"><span class="sub-num">4.1</span><span class="sub-key">Reverb</span><span class="sub-state" id="reverbState2">Włączony</span></div>
         <div class="sub-body">
           <div class="param-row"><label>Stan</label><button class="btn-toggle active" id="reverbEnableBtn" aria-pressed="true">Włączony</button></div>
           <div class="param-row"><label>Wet</label><input type="range" id="reverbWet" min="0" max="100" value="35"><span class="param-val" id="reverbWetVal">35%</span></div>
           <div class="param-row"><label>Rozmiar</label><input type="range" id="reverbSize" min="0" max="100" value="60"><span class="param-val" id="reverbSizeVal">0.60</span></div>
           <div class="param-row"><label>Tłum.</label><input type="range" id="reverbDamp" min="0" max="100" value="50"><span class="param-val" id="reverbDampVal">0.50</span></div>
         </div>
-      </details>
-    </div></div>
-
-    <div class="acc-panel"><div class="acc-head" data-acc="export" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">5</span><span class="acc-title">Eksport</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
-      <div class="kpo-field">
-        <div class="export-label row-between"><span>Numer sceny</span><label class="opt-check"><input type="checkbox" id="sceneNumberOn" checked> numeruj</label></div>
-        <input class="export-input" id="sceneNumber" type="text" value="001" placeholder="np. 001">
       </div>
-      <div class="kpo-field"><div class="export-label">Nazwa sceny / lokalizacji</div><input class="export-input" id="sceneName" type="text" placeholder="np. Las_Deszczowy"></div>
-      <div class="kpo-field"><div class="export-label">Czas trwania (s)</div><input class="export-input" id="kpoDuration" type="number" value="30" min="1" max="600"></div>
-
-      <details class="sub-box">
-        <summary class="sub-summary"><span class="sub-num">5.1</span><span class="sub-key">Opis i autorstwo</span><span class="sub-state" id="sceneAttrState">nie podano</span></summary>
-        <div class="sub-body">
-          <div class="export-label row-between"><span>Opis sceny</span><button class="q-btn" type="button" data-hint="hintDesc" aria-label="Do czego służy opis sceny">?</button></div>
-          <div class="q-hint hidden" id="hintDesc">Pokaże się w rogu wizualizacji w Sferze, gdy wrzucisz tam plik SCENA.json razem z nagraniem.</div>
-          <textarea class="export-input export-area" id="sceneDesc" rows="3" maxlength="400" placeholder="Co to za miejsce, kiedy nagrane, czego słuchacz ma szukać…"></textarea>
-
-          <label class="field-label" for="sceneAuthor">Autor sceny</label>
-          <input class="export-input" id="sceneAuthor" type="text" maxlength="80" placeholder="imię i nazwisko albo pseudonim">
-
-          <div class="export-label row-between"><span>Licencja sceny</span><button class="q-btn" type="button" data-hint="hintLic" aria-label="Gdzie trafia licencja">?</button></div>
-          <div class="q-hint hidden" id="hintLic">Trafia do pliku META i do SCENA.json, razem z autorami i licencjami poszczególnych dźwięków.</div>
-          <input class="export-input" id="sceneLicense" type="text" maxlength="80" list="licenseList" placeholder="np. CC BY 4.0">
-          <datalist id="licenseList"><option value="CC0 1.0 (domena publiczna)"><option value="CC BY 4.0"><option value="CC BY-SA 4.0"><option value="CC BY-NC 4.0"><option value="Wszystkie prawa zastrzeżone"></datalist>
-        </div>
-      </details>
-
-      <details class="sub-box">
-        <summary class="sub-summary"><span class="sub-num">5.2</span><span class="sub-key">Opcje pliku</span><span class="sub-state" id="fileOptState">pogłos, z ruchem, bez daty</span></summary>
-        <div class="sub-body">
-          <div class="export-label row-between"><span>Data utworzenia</span><label class="opt-check"><input type="checkbox" id="kpoDateManual"> ręcznie</label></div>
-          <input class="export-input" id="kpoDate" type="date" style="color-scheme:dark" disabled>
-          <div id="kpoDateAuto" class="kpo-hint">auto</div>
-          <div class="export-label row-between" style="margin-top:10px"><span>Data na mapie JPG</span><label class="opt-check"><input type="checkbox" id="mapDateOn"> pokaż</label></div>
-          <div class="export-label row-between" style="margin-top:10px"><span>Pogłos w eksporcie</span><label class="opt-check"><input type="checkbox" id="exportReverb" checked> włącz</label></div>
-          <div class="export-label row-between" style="margin-top:10px"><span>Ruch źródeł</span><label class="opt-check"><input type="checkbox" id="exportMotion" checked> utrwal</label></div>
-        </div>
-      </details>
-
-      <button class="btn-kpo" id="generateExport">⬇ Eksportuj scenę (5 plików)</button>
-      <div id="kpoSteps" style="margin-top:10px"></div>
     </div></div>
+
+    <!-- Eksport nie miesci sie juz w kolumnie 420 px: pol tuzina pol tekstowych, opis sceny
+         i lista opcji. Naglowek sekcji otwiera dlatego pelnoekranowe okno, a panel zostaje
+         przy tym, do czego sluzy — przy ukladaniu dzwiekow. -->
+    <div class="acc-panel">
+      <div class="acc-head acc-head--akcja" id="openExport" role="button" tabindex="0" aria-haspopup="dialog">
+        <div class="acc-head-left"><span class="acc-num">5</span><span class="acc-title">Eksport</span></div>
+        <span class="acc-arrow acc-arrow--okno">&#8599;</span>
+      </div>
+    </div>
   </aside>
 
   <div class="transport">
@@ -210,6 +179,61 @@
 </div>
 
 <!-- par.13: oznakowanie KPO/UE ma byc w kazdej aplikacji laboratorium, nie tylko w Hubie -->
+<div class="sal-modal-overlay" id="modalEksport" aria-hidden="true">
+  <div class="sal-modal sal-modal--eksport" role="dialog" aria-modal="true" aria-labelledby="modalEksportTitle">
+    <button type="button" class="sal-modal-close" data-close-modal aria-label="Zamknij">&#10005;</button>
+    <h2 id="modalEksportTitle" class="sal-modal-h2">Eksport sceny</h2>
+    <p class="eks-wstep">Scena zapisuje się jako <strong>jedno archiwum .zip</strong> bez kompresji.
+      W środku jest pięć plików: nagranie binauralne, ambisoniczne, mapa, opis dla człowieka
+      i opis dla maszyny. Sferę karmi się tym archiwum wprost — sama wybiera z niego, czego potrzebuje.</p>
+    <div class="eks-siatka">
+      <div class="eks-kolumna">
+<div class="kpo-field">
+        <div class="export-label row-between"><span>Numer sceny</span><label class="opt-check"><input type="checkbox" id="sceneNumberOn" checked> numeruj</label></div>
+        <input class="export-input" id="sceneNumber" type="text" value="001" placeholder="np. 001">
+      </div>
+      <div class="kpo-field"><div class="export-label">Nazwa sceny / lokalizacji</div><input class="export-input" id="sceneName" type="text" placeholder="np. Las_Deszczowy"></div>
+      <div class="kpo-field"><div class="export-label">Czas trwania (s)</div><input class="export-input" id="kpoDuration" type="number" value="30" min="1" max="600"></div>
+      </div>
+      <div class="eks-kolumna">
+<div class="sub-box open">
+        <div class="sub-summary" role="button" tabindex="0" aria-expanded="true"><span class="sub-num">5.1</span><span class="sub-key">Opis i autorstwo</span><span class="sub-state" id="sceneAttrState">nie podano</span></div>
+        <div class="sub-body">
+          <div class="export-label row-between"><span>Opis sceny</span><button class="q-btn" type="button" data-hint="hintDesc" aria-label="Do czego służy opis sceny">?</button></div>
+          <div class="q-hint hidden" id="hintDesc">Pokaże się w rogu wizualizacji w Sferze, gdy wrzucisz tam plik SCENA.json razem z nagraniem.</div>
+          <textarea class="export-input export-area" id="sceneDesc" rows="3" maxlength="400" placeholder="Co to za miejsce, kiedy nagrane, czego słuchacz ma szukać…"></textarea>
+
+          <label class="field-label" for="sceneAuthor">Autor sceny</label>
+          <input class="export-input" id="sceneAuthor" type="text" maxlength="80" placeholder="imię i nazwisko albo pseudonim">
+
+          <div class="export-label row-between"><span>Licencja sceny</span><button class="q-btn" type="button" data-hint="hintLic" aria-label="Gdzie trafia licencja">?</button></div>
+          <div class="q-hint hidden" id="hintLic">Trafia do pliku META i do SCENA.json, razem z autorami i licencjami poszczególnych dźwięków.</div>
+          <input class="export-input" id="sceneLicense" type="text" maxlength="80" list="licenseList" placeholder="np. CC BY 4.0">
+          <datalist id="licenseList"><option value="CC0 1.0 (domena publiczna)"><option value="CC BY 4.0"><option value="CC BY-SA 4.0"><option value="CC BY-NC 4.0"><option value="Wszystkie prawa zastrzeżone"></datalist>
+        </div>
+      </div>
+
+      <div class="sub-box open">
+        <div class="sub-summary" role="button" tabindex="0" aria-expanded="true"><span class="sub-num">5.2</span><span class="sub-key">Opcje pliku</span><span class="sub-state" id="fileOptState">pogłos, z ruchem, bez daty</span></div>
+        <div class="sub-body">
+          <div class="export-label row-between"><span>Data utworzenia</span><label class="opt-check"><input type="checkbox" id="kpoDateManual"> ręcznie</label></div>
+          <input class="export-input" id="kpoDate" type="date" style="color-scheme:dark" disabled>
+          <div id="kpoDateAuto" class="kpo-hint">auto</div>
+          <div class="export-label row-between" style="margin-top:10px"><span>Data na mapie JPG</span><label class="opt-check"><input type="checkbox" id="mapDateOn"> pokaż</label></div>
+          <div class="export-label row-between" style="margin-top:10px"><span>Pogłos w eksporcie</span><label class="opt-check"><input type="checkbox" id="exportReverb" checked> włącz</label></div>
+          <div class="export-label row-between" style="margin-top:10px"><span>Ruch źródeł</span><label class="opt-check"><input type="checkbox" id="exportMotion" checked> utrwal</label></div>
+        </div>
+      </div>
+
+      </div>
+    </div>
+    <div class="eks-stopka">
+      <button class="btn-kpo" id="generateExport">&#11015; Eksportuj scenę (archiwum .zip)</button>
+      <div id="kpoSteps"></div>
+    </div>
+  </div>
+</div>
+
 <div class="sal-modal-overlay" id="modalOProjekcie" aria-hidden="true">
   <div class="sal-modal" role="dialog" aria-modal="true" aria-labelledby="modalOProjekcieTitle">
     <button type="button" class="sal-modal-close" data-close-modal aria-label="Zamknij">&#10005;</button>
@@ -280,7 +304,7 @@
     <p><strong>Master.</strong> Ogólna głośność wszystkiego naraz — przydatna, gdy chcesz np. na chwilę wszystko przyciszyć bez zmieniania głośności każdego dźwięku z osobna.</p>
     <p><strong>Pogłos (reverb).</strong> Dodaje wrażenie, że wszystkie dźwięki dzieją się w jakimś konkretnym, fizycznym miejscu, a nie w pustce — tak jak głos brzmi inaczej w małej łazience, a inaczej w wielkiej hali. „Włącz" włącza lub wyłącza ten efekt dla całej sceny. „Wet" to ile tego pogłosu słychać (więcej = bardziej „jaskiniowo"). „Rozmiar" symuluje wielkość pomieszczenia — im większa wartość, tym dłużej dźwięk „donosi się echem", jakby scena działa się w większej przestrzeni. „Tłumienie" ustawia, jak szybko to echo gaśnie — twarde powierzchnie (beton, kamień) dają długie, wyraźne echo, miękkie (trawa, tkaniny) szybko je wygaszają.</p>
     <h3 class="sal-modal-h3">Panel „Eksport" — zapisywanie gotowej sceny na dysk</h3>
-    <p>Po wypełnieniu numeru i nazwy sceny (przydatne, jeśli robisz ich więcej i chcesz je łatwo rozróżnić w plikach), czasu trwania nagrania oraz daty, przycisk „Eksportuj scenę" pobiera na dysk komplet 5 plików o tej samej nazwie:</p>
+    <p>Kliknięcie w nagłówek panelu <strong>05 Eksport</strong> otwiera osobne okno na środku ekranu — tam wpisujesz numer i nazwę sceny (przydatne, jeśli robisz ich więcej), czas trwania nagrania, opis i autorstwo. Przycisk „Eksportuj scenę" pobiera <strong>jedno archiwum .zip</strong>, a w nim komplet 5 plików o wspólnej nazwie. Archiwum jest nieskompresowane — pliki w środku leżą bez zmian, więc otwiera je każdy program i nic na tym nie traci jakość dźwięku.</p>
     <p>— <strong>plik „BINAURAL"</strong> — gotowe nagranie do odsłuchu na zwykłych słuchawkach, dokładnie tak, jak scena brzmi w aplikacji. To jest plik, którego prawdopodobnie potrzebujesz najczęściej.</p>
     <p>— <strong>plik „AMBIX"</strong> — wersja tej samej sceny w formacie do dalszej, profesjonalnej obróbki w innych programach do dźwięku przestrzennego albo w aplikacjach VR/360°. Zwykły odtwarzacz nie odtworzy go poprawnie — pomiń ten plik, jeśli go nie potrzebujesz.</p>
     <p>— <strong>plik „MAPA"</strong> — obrazek z widokiem sceny z góry (rozmieszczenie dźwięków i słuchacza), przydatny do dokumentacji albo sprawozdania.</p>
@@ -341,10 +365,10 @@
 
     <h3 class="sal-modal-h3">Droga od sceny do odsłuchu</h3>
     <p>1. Ułóż dźwięki w Scenie i ustaw czas trwania nagrania w panelu «Eksport».</p>
-    <p>2. Kliknij «Eksportuj scenę». Na dysk trafia <strong>pięć plików o wspólnej nazwie</strong>: BINAURAL, AMBIX, MAPA, META i SCENA.</p>
-    <p>3. Otwórz <strong>Sferę</strong> i przeciągnij do niej plik <strong>AMBIX</strong>. To ten czterokanałowy — Sfera rozpozna go po nagłówku i włączy obracanie polem.</p>
-    <p>4. Dorzuć do Sfery plik <strong>SCENA</strong> (rozszerzenie .json). Dopiero on sprawia, że na kuli zapalają się <em>nazwane</em> punkty w miejscach Twoich dźwięków — świecące w rytm głośności każdego z nich, z promieniem pokazującym odległość źródła.</p>
-    <p>Kolejność wrzucania nie ma znaczenia, ale bez pliku AMBIX Sfera nie ma czego odtwarzać, a bez pliku SCENA pokaże samo pole bez podpisów.</p>
+    <p>2. Kliknij «Eksportuj scenę». Na dysk trafia <strong>jedno archiwum .zip</strong>, a w nim pięć plików o wspólnej nazwie: BINAURAL, AMBIX, MAPA, META i SCENA.</p>
+    <p>3. Otwórz <strong>Sferę</strong> i przeciągnij do niej <strong>całe archiwum</strong>. Sfera sama wyjmie z niego nagranie AMBIX i opis sceny, a mapę i META pominie — nie ma ich gdzie pokazać.</p>
+    <p>4. Nic więcej nie trzeba. Na kuli zapalą się <em>nazwane</em> punkty w miejscach Twoich dźwięków — świecące w rytm głośności każdego z nich, z promieniem pokazującym odległość źródła.</p>
+    <p>Jeśli wolisz, możesz rozpakować archiwum i wrzucić do Sfery same pliki AMBIX i SCENA — działa tak samo. Bez pliku AMBIX Sfera nie ma czego odtwarzać, a bez pliku SCENA pokaże samo pole bez podpisów.</p>
 
     <h3 class="sal-modal-h3">Który plik do czego</h3>
     <p><strong>BINAURAL</strong> — to jest plik do słuchania i do wysłania komuś. Gra na każdych zwykłych słuchawkach i w każdym odtwarzaczu.</p>

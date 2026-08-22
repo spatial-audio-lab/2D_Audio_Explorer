@@ -35,7 +35,7 @@ instalacji, bez backendu, bez konta. Część zestawu narzędzi **Spatial Audio 
 - **Dostępność** — powiększone czcionki i cele klikania, podniesiony kontrast, widoczny
   fokus klawiatury, pełna obsługa klawiaturą także dla akordeonów.
 
-## Eksport — pięć plików
+## Eksport — jedno archiwum, pięć plików w środku
 
 | Plik | Do czego |
 |---|---|

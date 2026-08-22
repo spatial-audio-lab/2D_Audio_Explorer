@@ -131,15 +131,24 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .sidebar { grid-area: side; display: flex; flex-direction: column; border-left: 1px solid var(--dim); background: rgba(10,12,8,0.5); overflow-y: auto; overflow-x: hidden; }
 .acc-panel { border-bottom: 1px solid var(--dim); }
 .acc-head { display: flex; align-items: center; justify-content: space-between; padding: 12px var(--lg); cursor: pointer; transition: background 0.2s; user-select: none; }
-.acc-head:hover { background: rgba(0,229,204,0.03); }
+.acc-head:hover { background: rgba(0,229,204,0.10); box-shadow: inset 3px 0 0 var(--cyan); }
+.acc-head:hover .acc-title, .acc-head:hover .acc-arrow, .acc-head:hover .acc-num { color: var(--cyan); }
 .acc-head-left { display: flex; align-items: center; gap: var(--sm); }
 .acc-num { font-family: var(--font-ui); font-size: 22px; font-weight: 300; color: var(--muted); width: 28px; }
 .acc-title { font-size: var(--fs-sm); letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber); font-weight: 700; }
 .acc-count { font-family: var(--font-ui); font-size: 18px; font-weight: 300; color: var(--cyan); }
 .acc-arrow { font-size: var(--fs-xs); color: var(--mid); transition: transform 0.3s; margin-left: var(--sm); }
 .acc-head.collapsed .acc-arrow { transform: rotate(-90deg); }
-.acc-body { max-height: 2000px; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; padding: 0 var(--lg) var(--md); }
-.acc-head.collapsed + .acc-body { max-height: 0; padding-top: 0; padding-bottom: 0; }
+/* Rozwijanie na siatce 0fr -> 1fr animuje sie do RZECZYWISTEJ wysokosci tresci. Wczesniej
+   bylo max-height 0 -> 2000 px: przejscie zawsze pokonywalo 2000 px w tym samym czasie,
+   wiec krotka sekcja otwierala sie szarpnieciem, a dluga nie nadazala za trescia. */
+/* Dwa poziomy sa konieczne: .zwijane-wnetrze przycina i moze zejsc do zera, a padding
+   siedzi w .zwijane-tresc. Padding na samym opakowaniu liczy sie do jego rozmiaru
+   zewnetrznego, wiec przy 0fr zostawalaby szpara wysokosci paddingu. */
+.zwijane-wnetrze { overflow: hidden; min-height: 0; }
+.acc-body { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 0.35s ease; padding: 0; }
+.acc-body > .zwijane-wnetrze > .zwijane-tresc { padding: 0 var(--lg) var(--md); }
+.acc-head.collapsed + .acc-body { grid-template-rows: 0fr; }
 
 .src-picker { display: flex; gap: 0; margin-bottom: var(--sm); }
 .pick-btn { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 6px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.25s; text-align: center; }
@@ -209,8 +218,8 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .motion-mode-btn:hover { color: var(--white); }
 .motion-mode-btn.active { color: var(--cyan); border-color: var(--cyan); background: rgba(0,229,204,0.06); }
 .motion-mode-btn.active + .motion-mode-btn { border-left-color: var(--cyan); }
-.motion-params { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; }
-.motion-params.open { max-height: 200px; }
+.motion-params { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+.motion-params.open { grid-template-rows: 1fr; }
 .path-actions { display: flex; gap: var(--xs); margin-top: 4px; }
 .path-hint { font-size: var(--fs-2xs); color: var(--mid); margin-top: 4px; line-height: 1.5; }
 .path-hint kbd { color: var(--cyan); font-family: inherit; }
@@ -225,16 +234,21 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
    Domyslnie zwiniete — panel miesci sie wtedy na ekranie bez przewijania, a naglowek
    pokazuje aktualny stan, wiec nie trzeba rozwijac, zeby wiedziec, co jest ustawione. */
 .sub-box { border: 1px solid var(--border-soft); margin: var(--sm) 0; }
-.sub-summary { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--white); font-weight: 700; padding: 9px 10px; cursor: pointer; display: flex; align-items: center; gap: var(--sm); list-style: none; }
-.sub-summary::-webkit-details-marker { display: none; }
+/* Podsekcje byly znacznikiem <details>, ktory otwiera sie skokowo i nie da sie tego
+   animowac. Dzis to zwykly div z klasa .open i tym samym mechanizmem siatki. */
+.sub-summary { font-family: var(--font-mono); font-size: var(--fs-2xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--white); font-weight: 700; padding: 9px 10px; cursor: pointer; display: flex; align-items: center; gap: var(--sm); user-select: none; }
 .sub-summary::after { content: '+'; color: var(--mid); font-weight: 400; }
-.sub-box[open] .sub-summary::after { content: '\2212'; }
-.sub-box[open] { border-color: var(--dim); }
-.sub-summary:hover { background: rgba(0,229,204,0.03); }
+.sub-box.open .sub-summary::after { content: '\2212'; }
+.sub-box.open { border-color: var(--dim); }
+.sub-summary:hover { background: rgba(0,229,204,0.09); box-shadow: inset 3px 0 0 rgba(0,229,204,0.55); color: var(--cyan); }
+.sub-summary:hover .sub-num, .sub-summary:hover .sub-state { color: var(--cyan); }
+.sub-summary:hover::after { color: var(--cyan); }
 .sub-num { color: var(--muted); font-weight: 400; }
 .sub-key { white-space: nowrap; }
 .sub-state { flex: 1; text-align: right; font-size: 11px; font-weight: 400; color: var(--muted); text-transform: none; letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sub-body { padding: 0 10px 10px; }
+.sub-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+.sub-box.open .sub-body { grid-template-rows: 1fr; }
+.sub-body > .zwijane-wnetrze > .zwijane-tresc { padding: 0 10px 10px; }
 .row-between { display: flex; justify-content: space-between; align-items: center; gap: var(--sm); }
 .opt-check { display: flex; align-items: center; gap: 5px; cursor: pointer; font-family: var(--font-mono); font-size: 12px; font-weight: 400; letter-spacing: 0.1em; text-transform: none; color: var(--mid); }
 .opt-check input { accent-color: var(--cyan); width: 16px; height: 16px; }
@@ -247,6 +261,23 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .btn-export { flex: 1; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px var(--md); border: 1px solid var(--dim); background: none; color: var(--white); cursor: pointer; transition: all 0.3s; }
 .btn-export:hover { border-color: var(--cyan); color: var(--cyan); }
 .btn-export:disabled { opacity: 0.3; cursor: not-allowed; }
+/* Naglowek sekcji 5 nie rozwija panelu, tylko otwiera okno — strzalka w gore i w prawo
+   mowi to bez podpisu, tak samo jak w linkach wychodzacych na zewnatrz. */
+.acc-head--akcja .acc-arrow--okno { transform: none; font-size: var(--fs-sm); }
+.acc-head--akcja:hover .acc-arrow--okno { transform: translate(2px,-2px); }
+
+/* Okno eksportu: szersze niz pozostale, bo mieszcza sie w nim dwie kolumny pol. */
+/* Selektor zlozony, bo regula bazowa .sal-modal stoi PONIZEJ w pliku i przy rownej
+   szczegolowosci wygralaby kolejnoscia. */
+.sal-modal.sal-modal--eksport { max-width: 900px; }
+.eks-wstep { margin-bottom: var(--lg) !important; }
+.eks-siatka { display: grid; grid-template-columns: 1fr 1fr; gap: var(--lg); align-items: start; }
+.eks-kolumna { min-width: 0; }
+.eks-kolumna .sub-box:first-child { margin-top: 0; }
+.eks-stopka { margin-top: var(--lg); padding-top: var(--md); border-top: 1px solid var(--dim); }
+.eks-stopka #kpoSteps { margin-top: 10px; }
+@media (max-width: 760px) { .eks-siatka { grid-template-columns: 1fr; } }
+
 .kpo-field { margin-bottom: 10px; }
 .kpo-field .export-label { margin-bottom: 5px; }
 .btn-kpo { width: 100%; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; padding: 12px var(--md); border: 1px solid rgba(0,229,204,0.4); background: rgba(0,229,204,0.05); color: var(--cyan); cursor: pointer; transition: all 0.3s; margin-top: var(--sm); font-weight: 700; }

@@ -31,16 +31,16 @@
               "type": "flac",
               "samplerate": 96000.0,
               "tags": [
-                "ambience",
-                "calm",
-                "campsite",
-                "creek",
-                "flow",
-                "light",
-                "nature",
-                "outdoors",
-                "rocks",
-                "water"
+                "atmosfera",
+                "spokój",
+                "obozowisko",
+                "strumień",
+                "przepływ",
+                "lekkie",
+                "natura",
+                "plener",
+                "kamienie",
+                "woda"
               ],
               "license": {
                 "short": "CC0",
@@ -67,15 +67,14 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "babbling",
-                "brook",
-                "creek",
-                "flow",
-                "flowing",
-                "liquid",
-                "river",
-                "stream",
-                "water"
+                "bulgotanie",
+                "strumyk",
+                "strumień",
+                "przepływ",
+                "płynąca",
+                "ciecz",
+                "rzeka",
+                "woda"
               ],
               "license": {
                 "short": "CC0",
@@ -102,16 +101,14 @@
               "type": "mp3",
               "samplerate": 44100.0,
               "tags": [
-                "distant",
-                "extreme",
-                "growling",
-                "heavy",
-                "heavy-rain",
-                "rain",
-                "rain-drops",
-                "raindrops",
-                "rolling-thunder",
-                "roll-of-thunder"
+                "odległe",
+                "skrajne",
+                "warczenie",
+                "ciężkie",
+                "ulewa",
+                "deszcz",
+                "krople deszczu",
+                "grzmot"
               ],
               "license": {
                 "short": "CC0",
@@ -138,13 +135,13 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "ambiance",
-                "cave",
-                "chamber",
-                "drip",
-                "reverb",
-                "water",
-                "wet"
+                "atmosfera",
+                "jaskinia",
+                "komnata",
+                "kapanie",
+                "pogłos",
+                "woda",
+                "mokre"
               ],
               "license": {
                 "short": "CC0",
@@ -172,14 +169,14 @@
               "samplerate": 48000.0,
               "tags": [
                 "ambient",
-                "exterior",
-                "hard",
-                "house",
-                "patio",
-                "porch",
-                "rain",
-                "rainfall",
-                "walla"
+                "na zewnątrz",
+                "twarde",
+                "dom",
+                "taras",
+                "ganek",
+                "deszcz",
+                "opady",
+                "gwar"
               ],
               "license": {
                 "short": "CC0",
@@ -206,15 +203,15 @@
               "type": "wav",
               "samplerate": 96000.0,
               "tags": [
-                "boiling",
-                "fire",
-                "hiss",
-                "hot",
-                "kitchen",
-                "sizzle",
-                "steam",
-                "stove",
-                "water"
+                "wrzenie",
+                "ogień",
+                "syk",
+                "gorący",
+                "kuchnia",
+                "skwierczenie",
+                "para",
+                "piec",
+                "woda"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -241,11 +238,11 @@
               "type": "wav",
               "samplerate": 96000.0,
               "tags": [
-                "heat",
-                "hiss",
-                "sizzle",
-                "steam",
-                "Water"
+                "ciepło",
+                "syk",
+                "skwierczenie",
+                "para",
+                "woda"
               ],
               "license": {
                 "short": "CC0",
@@ -272,11 +269,11 @@
               "type": "flac",
               "samplerate": 44100.0,
               "tags": [
-                "hiss",
-                "hot",
+                "syk",
+                "gorący",
                 "sauna",
-                "steam",
-                "water"
+                "para",
+                "woda"
               ],
               "license": {
                 "short": "CC0",
@@ -303,16 +300,15 @@
               "type": "mp3",
               "samplerate": 44100.0,
               "tags": [
-                "clean",
-                "clear",
-                "drainpipe",
-                "field-recording",
-                "high-pitch",
-                "nature",
-                "outdoors",
-                "rain",
-                "rainfall",
-                "shower"
+                "czyste",
+                "rynna",
+                "nagranie terenowe",
+                "wysokie",
+                "natura",
+                "plener",
+                "deszcz",
+                "opady",
+                "prysznic"
               ],
               "license": {
                 "short": "CC BY 3.0",
@@ -339,11 +335,11 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "early-morning",
-                "night",
-                "rain",
-                "Russia",
-                "thunder"
+                "świt",
+                "noc",
+                "deszcz",
+                "Rosja",
+                "grzmot"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -370,15 +366,15 @@
               "type": "wav",
               "samplerate": 96000.0,
               "tags": [
-                "ambience",
-                "deep",
-                "diver",
+                "atmosfera",
+                "głębokie",
+                "nurek",
                 "ocean",
-                "pool",
-                "scuba",
-                "sea",
-                "underwater",
-                "water"
+                "basen",
+                "nurkowanie",
+                "morze",
+                "podwodne",
+                "woda"
               ],
               "license": {
                 "short": "CC0",
@@ -405,16 +401,15 @@
               "type": "mp3",
               "samplerate": 48000.0,
               "tags": [
-                "ambience",
-                "atmosphere",
-                "bass",
-                "bottom",
-                "bubbles",
-                "deep",
-                "fish",
-                "flow",
-                "hydrophone",
-                "lake"
+                "atmosfera",
+                "bas",
+                "dno",
+                "bąbelki",
+                "głębokie",
+                "ryby",
+                "przepływ",
+                "hydrofon",
+                "jezioro"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -441,15 +436,15 @@
               "type": "mp3",
               "samplerate": 44100.0,
               "tags": [
-                "bamboo",
+                "bambus",
                 "chaser",
-                "deer",
-                "deerchaser",
-                "gardens",
-                "japanese",
+                "jeleń",
+                "odstraszacz",
+                "ogród",
+                "japońskie",
                 "odoshi",
                 "shishi",
-                "water"
+                "woda"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -476,12 +471,12 @@
               "type": "flac",
               "samplerate": 48000.0,
               "tags": [
-                "leaves",
+                "liście",
                 "onto",
-                "rain",
-                "sharp",
-                "stream",
-                "trickle"
+                "deszcz",
+                "ostre",
+                "strumień",
+                "sączenie"
               ],
               "license": {
                 "short": "CC0",
@@ -508,16 +503,15 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "ambience",
-                "autumn",
-                "field-recording",
-                "hit",
-                "leaves",
-                "nature",
-                "rain",
-                "raindrops",
-                "raining",
-                "rustle"
+                "atmosfera",
+                "jesień",
+                "nagranie terenowe",
+                "uderzenie",
+                "liście",
+                "natura",
+                "deszcz",
+                "krople deszczu",
+                "szelest"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -544,10 +538,10 @@
               "type": "flac",
               "samplerate": 48000.0,
               "tags": [
-                "drips",
-                "leaves",
-                "rain",
-                "wet"
+                "krople",
+                "liście",
+                "deszcz",
+                "mokre"
               ],
               "license": {
                 "short": "CC0",
@@ -574,12 +568,12 @@
               "type": "flac",
               "samplerate": 48000.0,
               "tags": [
-                "campground",
-                "leaves",
-                "medium",
-                "rain",
-                "soft",
-                "splatty"
+                "obóz",
+                "liście",
+                "średnie",
+                "deszcz",
+                "miękkie",
+                "plusk"
               ],
               "license": {
                 "short": "CC0",
@@ -606,9 +600,9 @@
               "type": "flac",
               "samplerate": 48000.0,
               "tags": [
-                "gentle",
-                "nearby",
-                "stream"
+                "łagodne",
+                "bliskie",
+                "strumień"
               ],
               "license": {
                 "short": "CC0",
@@ -635,11 +629,11 @@
               "type": "flac",
               "samplerate": 48000.0,
               "tags": [
-                "close",
-                "detail",
-                "gentle",
-                "stream",
-                "wet"
+                "bliskie",
+                "detal",
+                "łagodne",
+                "strumień",
+                "mokre"
               ],
               "license": {
                 "short": "CC0",
@@ -673,9 +667,9 @@
               "type": "mp3",
               "samplerate": 48000.0,
               "tags": [
-                "burning",
-                "fireplace",
-                "wood"
+                "palenie",
+                "kominek",
+                "drewno"
               ],
               "license": {
                 "short": "CC0",
@@ -702,9 +696,9 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "bellow",
-                "fireplace",
-                "sound-action"
+                "ryk",
+                "kominek",
+                "akcja dźwiękowa"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -738,16 +732,16 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "background",
-                "chime",
-                "chimes",
-                "clank",
+                "tło",
+                "dzwonek",
+                "dzwonki",
+                "brzęk",
                 "foley",
                 "metal",
-                "metallic",
+                "metaliczne",
                 "ting",
-                "wind",
-                "windchime"
+                "wiatr",
+                "dzwonki wietrzne"
               ],
               "license": {
                 "short": "CC0",
@@ -774,16 +768,14 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "chime",
-                "chimes",
+                "dzwonek",
+                "dzwonki",
                 "metal",
-                "metallic",
-                "tone",
-                "tuned",
-                "wind",
-                "wind-chime",
-                "windchime",
-                "wind-chimes"
+                "metaliczne",
+                "ton",
+                "strojone",
+                "wiatr",
+                "dzwonki wietrzne"
               ],
               "license": {
                 "short": "CC0",
@@ -810,13 +802,13 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "pages",
-                "paper",
-                "reading",
-                "rustling",
-                "studying",
-                "turning",
-                "working"
+                "kartki",
+                "papier",
+                "czytanie",
+                "szelest",
+                "nauka",
+                "obracanie",
+                "praca"
               ],
               "license": {
                 "short": "CC BY 3.0",
@@ -850,9 +842,9 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "Birdsong",
-                "Blackbird",
-                "Evening"
+                "śpiew ptaków",
+                "kos",
+                "wieczór"
               ],
               "license": {
                 "short": "CC0",
@@ -879,10 +871,10 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "bird",
-                "birdsong",
-                "blackbird",
-                "field-recording"
+                "ptak",
+                "śpiew ptaków",
+                "kos",
+                "nagranie terenowe"
               ],
               "license": {
                 "short": "CC0",
@@ -918,13 +910,13 @@
               "tags": [
                 "blume",
                 "cecrea",
-                "children",
-                "chile",
-                "cricket",
-                "crickets",
+                "dzieci",
+                "Chile",
+                "świerszcz",
+                "świerszcze",
                 "Dante",
-                "dream",
-                "dreams",
+                "sen",
+                "sny",
                 "Felix"
               ],
               "license": {
@@ -952,16 +944,15 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "ambiance",
-                "ambience",
+                "atmosfera",
                 "ambient",
-                "camp",
-                "camping",
-                "campsite",
-                "cowboy",
-                "cricket",
-                "crickets",
-                "evening"
+                "obóz",
+                "biwak",
+                "obozowisko",
+                "kowboj",
+                "świerszcz",
+                "świerszcze",
+                "wieczór"
               ],
               "license": {
                 "short": "CC0",
@@ -995,16 +986,15 @@
               "type": "mp3",
               "samplerate": 44100.0,
               "tags": [
-                "bell",
-                "brass",
-                "chime",
-                "clang",
+                "dzwon",
+                "mosiądz",
+                "dzwonek",
+                "łomot",
                 "ding",
                 "dong",
-                "elephant",
-                "ethnic",
-                "ring",
-                "slon"
+                "słoń",
+                "etniczne",
+                "dzwonienie"
               ],
               "license": {
                 "short": "CC0",
@@ -1031,11 +1021,11 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "Africa",
-                "bush",
-                "elephant",
-                "jungle",
-                "mystical-Creature",
+                "Afryka",
+                "krzaki",
+                "słoń",
+                "dżungla",
+                "istota mistyczna",
                 "Tanzania"
               ],
               "license": {
@@ -1063,16 +1053,13 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "bite",
-                "Cats",
-                "chomp",
-                "crunch",
-                "dry",
-                "eat",
-                "eating",
-                "food",
-                "munch",
-                "snack"
+                "ugryzienie",
+                "koty",
+                "chrupanie",
+                "chrupnięcie",
+                "suche",
+                "jedzenie",
+                "przekąska"
               ],
               "license": {
                 "short": "CC0",
@@ -1099,14 +1086,14 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "animal",
-                "beast",
-                "dog",
-                "growl",
-                "howl",
-                "monster",
-                "werewolf",
-                "wolf"
+                "zwierzę",
+                "bestia",
+                "pies",
+                "warczenie",
+                "wycie",
+                "potwór",
+                "wilkołak",
+                "wilk"
               ],
               "license": {
                 "short": "CC0",
@@ -1133,12 +1120,11 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "coyote",
-                "dog",
-                "howl",
-                "howling",
-                "wolf",
-                "wolves"
+                "kojot",
+                "pies",
+                "wycie",
+                "wilk",
+                "wilki"
               ],
               "license": {
                 "short": "CC0",
@@ -1165,11 +1151,10 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "ambiance",
+                "atmosfera",
                 "ambient",
-                "atmosphere",
-                "soundscape",
-                "whale"
+                "pejzaż dźwiękowy",
+                "wieloryb"
               ],
               "license": {
                 "short": "CC0",
@@ -1203,9 +1188,9 @@
               "type": "mp3",
               "samplerate": 48000.0,
               "tags": [
-                "Laboratory",
-                "listening",
-                "soundmap"
+                "laboratorium",
+                "słuchanie",
+                "mapa dźwiękowa"
               ],
               "license": {
                 "short": "CC0",
@@ -1234,14 +1219,14 @@
               "tags": [
                 "4bar",
                 "80bpm",
-                "air-pressure",
-                "crafts",
-                "cutter",
+                "sprężone powietrze",
+                "rzemiosło",
+                "przecinak",
                 "desoutter",
-                "labor",
-                "metalwork",
-                "motor",
-                "pneumatic"
+                "praca",
+                "metaloplastyka",
+                "silnik",
+                "pneumatyczne"
               ],
               "license": {
                 "short": "CC0",
@@ -1268,11 +1253,11 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "field-recording",
-                "industrial-sounds",
-                "medium-burst",
+                "nagranie terenowe",
+                "przemysłowe",
+                "średni impuls",
                 "samsung-S9",
-                "steam-trap",
+                "para",
                 "stereo"
               ],
               "license": {
@@ -1300,12 +1285,11 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "body",
-                "heart",
-                "heart-beat",
-                "heartbeat",
-                "human",
-                "synthesised"
+                "ciało",
+                "serce",
+                "bicie serca",
+                "człowiek",
+                "syntetyczne"
               ],
               "license": {
                 "short": "CC0",
@@ -1332,9 +1316,9 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "hearing-test",
-                "sine-wave",
-                "tone"
+                "test słuchu",
+                "fala sinusoidalna",
+                "ton"
               ],
               "license": {
                 "short": "CC0",
@@ -1361,16 +1345,15 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "Disturbed",
-                "Electrical",
-                "Electronic",
-                "Glitch",
-                "Glitches",
-                "Magnetic",
-                "Noise",
-                "Noises",
-                "Noisy",
-                "Perturbation"
+                "zakłócone",
+                "elektryczne",
+                "elektroniczne",
+                "zakłócenie",
+                "zakłócenia",
+                "magnetyczne",
+                "szum",
+                "szumy",
+                "hałaśliwe"
               ],
               "license": {
                 "short": "CC0",
@@ -1397,11 +1380,11 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "anvil",
-                "clank",
-                "clink",
-                "hammer",
-                "percussion"
+                "kowadło",
+                "brzęk",
+                "brzdęk",
+                "młot",
+                "perkusja"
               ],
               "license": {
                 "short": "CC0",
@@ -1428,16 +1411,11 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "abstract",
-                "Abstract",
-                "descending",
-                "Descending",
-                "flyby",
-                "Flyby",
-                "futuristic",
-                "Futuristic",
-                "sci-fi",
-                "Scifi"
+                "abstrakcyjne",
+                "opadające",
+                "przelot",
+                "futurystyczne",
+                "sci-fi"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -1464,16 +1442,11 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "abstract",
-                "Abstract",
-                "ascending",
-                "Ascending",
-                "flyby",
-                "Flyby",
-                "futuristic",
-                "Futuristic",
-                "sci-fi",
-                "Scifi"
+                "abstrakcyjne",
+                "rosnące",
+                "przelot",
+                "futurystyczne",
+                "sci-fi"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -1500,16 +1473,16 @@
               "type": "aiff",
               "samplerate": 48000.0,
               "tags": [
-                "ceramic",
-                "china",
+                "ceramika",
+                "Chiny",
                 "ching",
-                "cup",
-                "empty",
-                "grain",
-                "mortar",
-                "pestle",
+                "kubek",
+                "puste",
+                "ziarno",
+                "moździerz",
+                "tłuczek",
                 "ping",
-                "shwing"
+                "świst"
               ],
               "license": {
                 "short": "CC0",
@@ -1550,16 +1523,16 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "air",
-                "air-pressure",
-                "air-release",
-                "brake",
-                "cooker",
-                "deflate",
-                "evaporation",
-                "hiss",
-                "piston",
-                "poison"
+                "powietrze",
+                "sprężone powietrze",
+                "upust powietrza",
+                "hamulec",
+                "kuchenka",
+                "spuszczanie powietrza",
+                "parowanie",
+                "syk",
+                "tłok",
+                "trucizna"
               ],
               "license": {
                 "short": "CC0",
@@ -1586,11 +1559,11 @@
               "type": "aiff",
               "samplerate": 22050.0,
               "tags": [
-                "city",
-                "fx",
-                "music",
+                "miasto",
+                "efekt",
+                "muzyka",
                 "radio",
-                "urban"
+                "miejskie"
               ],
               "license": {
                 "short": "CC0",
@@ -1617,16 +1590,16 @@
               "type": "aiff",
               "samplerate": 44100.0,
               "tags": [
-                "Car",
-                "Channels",
-                "Dial",
-                "Driving",
-                "Field-Recording",
-                "Flipping",
+                "samochód",
+                "kanały",
+                "pokrętło",
+                "jazda",
+                "nagranie terenowe",
+                "przerzucanie",
                 "FM",
-                "Interior",
-                "Listen",
-                "Music"
+                "wnętrze",
+                "słuchanie",
+                "muzyka"
               ],
               "license": {
                 "short": "CC0",
@@ -1653,15 +1626,14 @@
               "type": "flac",
               "samplerate": 96000.0,
               "tags": [
-                "cars",
-                "city",
-                "field-recording",
-                "rain",
-                "rainfall",
-                "raining",
-                "road",
-                "shower",
-                "weather"
+                "samochody",
+                "miasto",
+                "nagranie terenowe",
+                "deszcz",
+                "opady",
+                "droga",
+                "prysznic",
+                "pogoda"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -1696,14 +1668,14 @@
               "samplerate": 48000.0,
               "tags": [
                 "ambient",
-                "field-recording",
-                "market",
-                "medieval",
-                "noise",
-                "people",
-                "plaza",
-                "street",
-                "talking"
+                "nagranie terenowe",
+                "targ",
+                "średniowieczne",
+                "szum",
+                "ludzie",
+                "plac",
+                "ulica",
+                "rozmowa"
               ],
               "license": {
                 "short": "CC0",
@@ -1730,16 +1702,15 @@
               "type": "wav",
               "samplerate": 96000.0,
               "tags": [
-                "coffee",
-                "field-recording",
-                "grind",
-                "grinder",
-                "grinding",
-                "machine",
-                "mill",
-                "mortar",
-                "noise",
-                "Pestle"
+                "kawa",
+                "nagranie terenowe",
+                "szlifowanie",
+                "szlifierka",
+                "maszyna",
+                "młyn",
+                "moździerz",
+                "szum",
+                "tłuczek"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -1774,15 +1745,14 @@
               "samplerate": 48000.0,
               "tags": [
                 "alarm",
-                "clock",
-                "clockhand",
-                "clockwork",
-                "hand",
+                "zegar",
+                "wskazówka",
+                "mechanizm zegarowy",
+                "dłoń",
                 "tac",
-                "tic",
-                "ticking",
-                "ticks",
-                "tick-tock"
+                "tyknięcie",
+                "tykanie",
+                "tik-tak"
               ],
               "license": {
                 "short": "CC0",
@@ -1816,13 +1786,13 @@
               "type": "flac",
               "samplerate": 48000.0,
               "tags": [
-                "ambience",
-                "factory",
-                "industrial",
-                "presses",
-                "quiet",
-                "release",
-                "steam"
+                "atmosfera",
+                "fabryka",
+                "przemysłowe",
+                "prasy",
+                "ciche",
+                "wybrzmienie",
+                "para"
               ],
               "license": {
                 "short": "CC0",
@@ -1849,16 +1819,15 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "ambience",
+                "atmosfera",
                 "ambient",
-                "atmosphere",
-                "background",
-                "bridge",
-                "dark",
-                "deep",
-                "drive",
-                "drone",
-                "effect"
+                "tło",
+                "most",
+                "ciemne",
+                "głębokie",
+                "jazda",
+                "dron dźwiękowy",
+                "efekt"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -1885,16 +1854,14 @@
               "type": "wav",
               "samplerate": 96000.0,
               "tags": [
-                "anvil",
-                "blacksmith",
-                "hammer",
-                "hit",
-                "hitting",
-                "impact",
-                "industrial",
+                "kowadło",
+                "kowal",
+                "młot",
+                "uderzenie",
+                "uderzanie",
+                "przemysłowe",
                 "metal",
-                "metallic",
-                "strike"
+                "metaliczne"
               ],
               "license": {
                 "short": "CC0",
@@ -1921,16 +1888,16 @@
               "type": "mp3",
               "samplerate": 44100.0,
               "tags": [
-                "can",
-                "coins",
-                "japan",
-                "japanese",
-                "machine",
-                "money",
-                "okinawa",
-                "soda",
-                "tokyo",
-                "vending"
+                "puszka",
+                "monety",
+                "Japonia",
+                "japońskie",
+                "maszyna",
+                "pieniądze",
+                "Okinawa",
+                "napój gazowany",
+                "Tokio",
+                "automat"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -1971,13 +1938,12 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "Cave",
-                "Cavern",
-                "Drone",
-                "Hollow",
-                "hum",
-                "Hum",
-                "synthesised"
+                "jaskinia",
+                "grota",
+                "dron dźwiękowy",
+                "pusty",
+                "buczenie",
+                "syntetyczne"
               ],
               "license": {
                 "short": "CC0",
@@ -2004,16 +1970,14 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "ambiance",
+                "atmosfera",
                 "ambient",
-                "atmosphere",
-                "cave",
-                "cavern",
-                "cinematic",
-                "dark",
-                "drama",
-                "drip",
-                "dripping"
+                "jaskinia",
+                "grota",
+                "filmowe",
+                "ciemne",
+                "dramat",
+                "kapanie"
               ],
               "license": {
                 "short": "CC0",
@@ -2040,16 +2004,16 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "Creak",
-                "Eerie",
-                "Effect",
-                "Metal",
-                "Movement",
-                "Sci-Fi",
-                "Shake",
-                "Squeaking",
-                "Squealing",
-                "Stress"
+                "skrzypienie",
+                "niesamowite",
+                "efekt",
+                "metal",
+                "ruch",
+                "sci-fi",
+                "potrząsanie",
+                "piszczenie",
+                "kwik",
+                "napięcie"
               ],
               "license": {
                 "short": "CC0",
@@ -2076,16 +2040,15 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "field-recording",
-                "flicker",
-                "flickering",
+                "nagranie terenowe",
+                "migotanie",
                 "horror",
-                "hum",
-                "light",
-                "movie",
+                "buczenie",
+                "lekkie",
+                "film",
                 "neon",
-                "noise",
-                "terror"
+                "szum",
+                "groza"
               ],
               "license": {
                 "short": "CC0",
@@ -2119,13 +2082,12 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "bowl",
-                "drone",
-                "harmonic",
-                "singing-bowl",
+                "misa",
+                "dron dźwiękowy",
+                "harmoniczne",
+                "misa tybetańska",
                 "thalamus-lab",
-                "tibetan",
-                "tibetan-bowl"
+                "tybetańskie"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -2152,12 +2114,11 @@
               "type": "m4a",
               "samplerate": 44100.0,
               "tags": [
-                "Bell",
-                "bowl-bell",
-                "Ring",
-                "Ringing",
-                "Tibet",
-                "Tibetan-singing-bowl"
+                "dzwon",
+                "misa",
+                "dzwonienie",
+                "Tybet",
+                "misa tybetańska"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -2184,11 +2145,11 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "bowl",
-                "field-recording",
-                "ringing",
-                "singing",
-                "tibetan"
+                "misa",
+                "nagranie terenowe",
+                "dzwonienie",
+                "śpiew",
+                "tybetańskie"
               ],
               "license": {
                 "short": "CC0",
@@ -2215,16 +2176,16 @@
               "type": "wav",
               "samplerate": 96000.0,
               "tags": [
-                "bell",
-                "bowl",
-                "hit",
-                "meditation",
+                "dzwon",
+                "misa",
+                "uderzenie",
+                "medytacja",
                 "metal",
-                "metallic",
-                "percussion",
-                "raw",
-                "recording",
-                "singing-bowl"
+                "metaliczne",
+                "perkusja",
+                "surowe",
+                "nagranie",
+                "misa tybetańska"
               ],
               "license": {
                 "short": "CC0",
@@ -2251,15 +2212,15 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "bell",
-                "bowl",
-                "clang",
+                "dzwon",
+                "misa",
+                "łomot",
                 "ding",
-                "ethnic",
-                "field-recording",
+                "etniczne",
+                "nagranie terenowe",
                 "gong",
-                "harmonic",
-                "hit",
+                "harmoniczne",
+                "uderzenie",
                 "metal"
               ],
               "license": {
@@ -2288,8 +2249,7 @@
               "samplerate": 96000.0,
               "tags": [
                 "gong",
-                "klankschaal",
-                "Singing-bowl"
+                "misa tybetańska"
               ],
               "license": {
                 "short": "CC0",
@@ -2316,12 +2276,11 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "breath",
-                "Breathing",
-                "calm",
-                "human",
-                "male",
-                "noise"
+                "oddech",
+                "spokój",
+                "człowiek",
+                "mężczyzna",
+                "szum"
               ],
               "license": {
                 "short": "CC0",
@@ -2362,10 +2321,10 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "clinking",
-                "cracking",
-                "grinding",
-                "mortar"
+                "brzdęk",
+                "trzask",
+                "szlifowanie",
+                "moździerz"
               ],
               "license": {
                 "short": "CC0",
@@ -2399,15 +2358,15 @@
               "type": "wav",
               "samplerate": 96000.0,
               "tags": [
-                "ambience",
-                "deep",
-                "diver",
+                "atmosfera",
+                "głębokie",
+                "nurek",
                 "ocean",
-                "pool",
-                "scuba",
-                "sea",
-                "underwater",
-                "water"
+                "basen",
+                "nurkowanie",
+                "morze",
+                "podwodne",
+                "woda"
               ],
               "license": {
                 "short": "CC0",
@@ -2434,16 +2393,15 @@
               "type": "mp3",
               "samplerate": 44100.0,
               "tags": [
-                "ambience",
+                "atmosfera",
                 "ambient",
-                "atmosphere",
-                "dolphin",
+                "delfin",
                 "echo",
-                "environment",
-                "marine",
-                "nature",
-                "reverb",
-                "squeak"
+                "otoczenie",
+                "morskie",
+                "natura",
+                "pogłos",
+                "pisk"
               ],
               "license": {
                 "short": "CC BY 3.0",
@@ -2470,16 +2428,14 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "abyss",
-                "ambience",
-                "atmosphere",
-                "deep",
-                "distant",
-                "dive",
-                "diving",
+                "głębia",
+                "atmosfera",
+                "głębokie",
+                "odległe",
+                "nurkowanie",
                 "echo",
-                "FX",
-                "immerge"
+                "efekt",
+                "zanurzenie"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -2506,16 +2462,14 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "abyss",
-                "ambience",
-                "atmosphere",
-                "deep",
-                "distant",
-                "dive",
-                "diving",
+                "głębia",
+                "atmosfera",
+                "głębokie",
+                "odległe",
+                "nurkowanie",
                 "echo",
-                "FX",
-                "immerge"
+                "efekt",
+                "zanurzenie"
               ],
               "license": {
                 "short": "CC BY 4.0",
@@ -2542,16 +2496,16 @@
               "type": "wav",
               "samplerate": 44100.0,
               "tags": [
-                "blowing",
-                "boiling",
-                "bubble",
-                "bubbles",
-                "bubbling",
-                "liquid",
-                "low",
-                "potion",
-                "submerged",
-                "underwater"
+                "dmuchanie",
+                "wrzenie",
+                "bąbel",
+                "bąbelki",
+                "bulgotanie",
+                "ciecz",
+                "niskie",
+                "mikstura",
+                "zanurzone",
+                "podwodne"
               ],
               "license": {
                 "short": "CC BY 3.0",
@@ -2578,15 +2532,14 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "boiling",
-                "bubble",
-                "bubbles",
-                "bubbling",
-                "bubbly",
-                "liquid",
-                "potion",
-                "underwater",
-                "water"
+                "wrzenie",
+                "bąbel",
+                "bąbelki",
+                "bulgotanie",
+                "ciecz",
+                "mikstura",
+                "podwodne",
+                "woda"
               ],
               "license": {
                 "short": "CC0",
@@ -2613,16 +2566,15 @@
               "type": "wav",
               "samplerate": 48000.0,
               "tags": [
-                "aquatic",
-                "deep-sea",
-                "depth",
-                "navy",
+                "wodne",
+                "głębiny",
+                "głębia",
+                "marynarka",
                 "ping",
-                "sea",
+                "morze",
                 "sonar",
                 "sub",
-                "submarine",
-                "underwater"
+                "podwodne"
               ],
               "license": {
                 "short": "CC BY 3.0",
@@ -2651,7 +2603,7 @@
               "tags": [
                 "ping",
                 "sonar",
-                "synth"
+                "syntezator"
               ],
               "license": {
                 "short": "CC0",

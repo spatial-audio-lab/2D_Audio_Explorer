@@ -20,15 +20,29 @@ async function loadLibrary(){
   try { const r=await fetch('library.json'); if(!r.ok) throw new Error('HTTP '+r.status); libraryData=await r.json(); libCountBadge.textContent=(libraryData.total_sounds||0)+' dźwięków'; renderLibTree(); }
   catch(e){ libTree.innerHTML='<div class="lib-empty-msg">Nie można załadować library.json</div>'; }
 }
+// Szukanie sklada polskie znaki do postaci bez ogonkow PO OBU STRONACH: 'strumien' znajduje
+// 'strumień', a 'ogień' znajduje 'ogien'. Bez tego trafienie zalezy od tego, czy uzytkownikowi
+// chcialo sie siegnac po prawy alt — a to nie jest kryterium wyszukiwania.
+const OGONKI={'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n','ó':'o','ś':'s','ź':'z','ż':'z'};
+function bezOgonkow(s){ return String(s||'').toLowerCase().replace(/[ąćęłńóśźż]/g, z=>OGONKI[z]); }
+
 function renderLibTree(){
   if(!libraryData) return;
-  const q=libSearchQuery.toLowerCase().trim();
+  const q=bezOgonkow(libSearchQuery).trim();
   const zwin=!q;                       // bez szukania: same naglowki dzialow
   let html='';
   for(const cat of libraryData.categories){
     let subs=[];
     for(const sub of (cat.subcategories||[])){
-      const sounds=(sub.sounds||[]).filter(s => { if(!q) return true; return s.label.toLowerCase().includes(q)||(s.tags||[]).some(t=>t.toLowerCase().includes(q))||s.author.toLowerCase().includes(q); });
+      // Nazwa dzialu tez jest szukana. Uzytkownik widzi w drzewie 'Ptaki' i 'Wnetrza',
+      // wiec wpisanie tego wprost ma pokazac caly dzial, a nie zero wynikow.
+      const wDziale = bezOgonkow(cat.label+' '+sub.label).includes(q);
+      const sounds=(sub.sounds||[]).filter(s => {
+        if(!q || wDziale) return true;
+        return bezOgonkow(s.label).includes(q)
+            || (s.tags||[]).some(t=>bezOgonkow(t).includes(q))
+            || bezOgonkow(s.author).includes(q);
+      });
       if(!sounds.length) continue;
       const sh=sounds.map(s => {
         const dur=s.duration?Math.round(s.duration)+'s':'', lic=s.license?.short||'?', licCls=lic==='CC0'?'cc0':'', isStream=!s.file;

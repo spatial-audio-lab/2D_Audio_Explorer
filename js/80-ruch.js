@@ -8,12 +8,22 @@ function gcp(e){ const r=mainCanvas.getBoundingClientRect(); return {x:e.clientX
 function s2w(sx,sy,r){ const sz=Math.min(r.width,r.height), sc=sz/(S.worldSize*2), cx=r.width/2, cy=r.height/2; if(S.mode==='explore'){ const rad=S.listener.angle*Math.PI/180, dx=(sx-cx)/sc, dy=(sy-cy)/sc; return {x:S.listener.x+dx*Math.cos(rad)-dy*Math.sin(rad), y:S.listener.y+dx*Math.sin(rad)+dy*Math.cos(rad)}; } return {x:(sx-cx)/sc, y:(sy-cy)/sc}; }
 function w2s(wx,wy){ const r=mainCanvas.getBoundingClientRect(), sz=Math.min(r.width,r.height), sc=sz/(S.worldSize*2), cx=r.width/2, cy=r.height/2; if(S.mode==='explore'){ const rad=S.listener.angle*Math.PI/180, dx=wx-S.listener.x, dy=wy-S.listener.y; return {x:cx+(dx*Math.cos(rad)+dy*Math.sin(rad))*sc, y:cy+(-dx*Math.sin(rad)+dy*Math.cos(rad))*sc}; } return {x:cx+wx*sc, y:cy+wy*sc}; }
 function findAt(wx,wy,th=1.5){ for(const s of S.sources) if(Math.hypot(s.x-wx,s.y-wy)<th) return s; return null; }
+// Czy kursor stoi na uchwycie srodka orbity albo bladzenia? Uchwyt istnieje tylko dla
+// ZAZNACZONEGO zrodla, bo tylko dla niego rysowany jest okrag. Dystans liczony w pikselach
+// ekranu, a nie w metrach sceny — inaczej przy malym zoomie uchwyt bylby nietrafialny.
+function uchwytSrodka(px,py){
+  const s=S.selectedSource;
+  if(!s || S.mode!=='edit') return null;
+  if(s.motion.mode!=='orbit' && s.motion.mode!=='random') return null;
+  const p=w2s(s.motion.originX, s.motion.originY);
+  return Math.hypot(p.x-px, p.y-py)<=16 ? s : null;
+}
 
-let dragSrc=null, pDown=false, pMoved=false, pStart={x:0,y:0};
+let dragSrc=null, dragOrigin=null, dragOff={x:0,y:0}, pDown=false, pMoved=false, pStart={x:0,y:0};
 mainCanvas.addEventListener('mousedown', e=>ptrDown(e.clientX,e.clientY,e.shiftKey));
 mainCanvas.addEventListener('mousemove', e=>ptrMove(e.clientX,e.clientY));
 mainCanvas.addEventListener('mouseup', e=>ptrUp(e.clientX,e.clientY));
-mainCanvas.addEventListener('mouseleave', ()=>{ pDown=false; dragSrc=null; });
+mainCanvas.addEventListener('mouseleave', ()=>{ pDown=false; dragSrc=null; dragOrigin=null; });
 mainCanvas.addEventListener('touchstart', e=>{ e.preventDefault(); ptrDown(e.touches[0].clientX,e.touches[0].clientY,false); },{passive:false});
 mainCanvas.addEventListener('touchmove', e=>{ e.preventDefault(); ptrMove(e.touches[0].clientX,e.touches[0].clientY); },{passive:false});
 mainCanvas.addEventListener('touchend', e=>{ ptrUp(pStart.x,pStart.y); },{passive:false});
@@ -22,17 +32,31 @@ function ptrDown(cx,cy,shiftKey){
   const{x,y,rect}=gcp({clientX:cx,clientY:cy}); const w=s2w(x,y,rect);
   if(shiftKey && S.mode==='edit' && S.selectedSource && S.selectedSource.motion.mode==='path'){ S.selectedSource.motion.waypoints.push({x:w.x,y:w.y}); showToast('Punkt #'+S.selectedSource.motion.waypoints.length); return; }
   pDown=true; pMoved=false; pStart={x:cx,y:cy};
-  if(S.mode==='edit'){ const s=findAt(w.x,w.y); if(s){dragSrc=s; selectSource(s);} }
+  if(S.mode==='edit'){
+    const u=uchwytSrodka(x,y);
+    if(u){ dragOrigin=u; dragOff={x:u.x-u.motion.originX, y:u.y-u.motion.originY}; return; }
+    const s=findAt(w.x,w.y);
+    // Przy orbicie i bladzeniu dzwiek mozna zaznaczyc, ale nie przeciagnac — od przesuwania
+    // jest uchwyt w srodku okregu. Ciagniecie za sam dzwiek i tak nie mialoby sensu:
+    // przy najblizszej klatce ruchu punkt wracalby na swoje miejsce na okregu.
+    if(s){ selectSource(s); if(s.motion.mode!=='orbit' && s.motion.mode!=='random') dragSrc=s; }
+  }
   else S.dragStartAngle=S.listener.angle;
 }
 function ptrMove(cx,cy){
   if(!pDown) return; const dx=cx-pStart.x, dy=cy-pStart.y; if(Math.abs(dx)>5||Math.abs(dy)>5) pMoved=true;
-  if(S.mode==='edit'&&dragSrc){ const{x,y,rect}=gcp({clientX:cx,clientY:cy}); const w=s2w(x,y,rect); const m=S.worldSize-1; const nx=Math.max(-m,Math.min(m,w.x)), ny=Math.max(-m,Math.min(m,w.y));
-    if(dragSrc.motion.mode==='orbit'||dragSrc.motion.mode==='random'){ const ddx=nx-dragSrc.x, ddy=ny-dragSrc.y; dragSrc.motion.originX+=ddx; dragSrc.motion.originY+=ddy; }
+  if(S.mode==='edit'&&dragOrigin){ const{x,y,rect}=gcp({clientX:cx,clientY:cy}); const w=s2w(x,y,rect); const m=S.worldSize-1;
+    const mo=dragOrigin.motion;
+    mo.originX=Math.max(-m,Math.min(m,w.x)); mo.originY=Math.max(-m,Math.min(m,w.y));
+    if(mo.mode==='random'){ mo.randomTX=mo.originX; mo.randomTY=mo.originY; mo.randomTimer=0; }
+    dragOrigin.x=Math.max(-m,Math.min(m,mo.originX+dragOff.x));
+    dragOrigin.y=Math.max(-m,Math.min(m,mo.originY+dragOff.y));
+    updPanners(dragOrigin); updateReverbSend(dragOrigin); renderSources();
+  } else if(S.mode==='edit'&&dragSrc){ const{x,y,rect}=gcp({clientX:cx,clientY:cy}); const w=s2w(x,y,rect); const m=S.worldSize-1; const nx=Math.max(-m,Math.min(m,w.x)), ny=Math.max(-m,Math.min(m,w.y));
     dragSrc.x=nx; dragSrc.y=ny; updPanners(dragSrc); renderSources();
   } else if(S.mode==='explore'&&pMoved){ S.listener.angle=S.dragStartAngle+dx*0.5; S.listener.angle=((S.listener.angle%360)+360)%360; updateListener(); }
 }
-function ptrUp(cx,cy){ if(S.mode==='explore'&&!pMoved&&pDown){ const{x,y,rect}=gcp({clientX:cx,clientY:cy}); S.target=s2w(x,y,rect); } pDown=false; dragSrc=null; }
+function ptrUp(cx,cy){ if(S.mode==='explore'&&!pMoved&&pDown){ const{x,y,rect}=gcp({clientX:cx,clientY:cy}); S.target=s2w(x,y,rect); } pDown=false; dragSrc=null; dragOrigin=null; }
 
 // MOTION AUTOMATION
 // -----------------------------------------------------------------------------------------
@@ -56,7 +80,9 @@ function stepMotion(mo,pos,dt,m,rnd){
 function updateMotion(dt){
   const m=S.worldSize-1;
   for(const s of S.sources){
-    const mo=s.motion; if(mo.mode==='static') continue;
+    // Stop zatrzymuje i dzwiek, i wedrowke punktu po scenie. Eksportu to nie dotyczy —
+    // tam trajektorie liczy simulateTrajectory z wlasnego zegara.
+    const mo=s.motion; if(mo.mode==='static' || !s.playing) continue;
     stepMotion(mo,s,dt,m,Math.random);
     if(s.routing==='spatial'){ updPanners(s); updateReverbSend(s); }
   }

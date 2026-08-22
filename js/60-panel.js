@@ -123,6 +123,7 @@ const KONTROLKI = [
 // Sekcje, ktore otwieraja sie albo gasna zaleznie od stanu wybranego zrodla.
 // Jeden wiersz = jedna regula widocznosci.
 const WIDOCZNOSC = [
+  { el:'speedParams',    klasa:'open',     gdy:s=>!!s && s.motion.mode!=='static' },
   { el:'orbitParams',    klasa:'open',     gdy:s=>!!s && s.motion.mode==='orbit'  },
   { el:'randomParams',   klasa:'open',     gdy:s=>!!s && s.motion.mode==='random' },
   { el:'pathParams',     klasa:'open',     gdy:s=>!!s && s.motion.mode==='path'   },

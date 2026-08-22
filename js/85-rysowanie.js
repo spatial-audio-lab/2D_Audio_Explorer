@@ -29,6 +29,15 @@ function loop(ts){
 }
 
 // DRAW — Main canvas
+// Uchwyt srodka orbity albo bladzenia. Wieksze kolo z celownikiem, zeby bylo widac,
+// ze to jest to, za co sie ciagnie, a nie ozdobna kropka.
+function rysujUchwytSrodka(px,py,rgb,aktywny){
+  ctx.strokeStyle='rgba('+rgb+','+(aktywny?0.95:0.55)+')'; ctx.lineWidth=aktywny?2:1.5;
+  ctx.fillStyle='rgba('+rgb+','+(aktywny?0.30:0.12)+')';
+  ctx.beginPath(); ctx.arc(px,py,9,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px-4,py); ctx.lineTo(px+4,py); ctx.moveTo(px,py-4); ctx.lineTo(px,py+4); ctx.stroke();
+}
+
 function draw(){
   const w=mainCanvas.width/(devicePixelRatio||1), h=mainCanvas.height/(devicePixelRatio||1);
   ctx.fillStyle='#0A0C08'; ctx.fillRect(0,0,w,h);
@@ -53,8 +62,8 @@ function draw(){
     if(hOff!==0&&!isDirect){ ctx.globalAlpha=0.15;ctx.strokeStyle='#00E5CC';ctx.lineWidth=1;ctx.setLineDash([3,3]); ctx.beginPath();ctx.ellipse(sx,sy,10,5,0,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]); ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx,drawY);ctx.stroke();ctx.globalAlpha=1; }
 
     // Motion viz
-    if(mo.mode==='orbit'&&sel){ ctx.strokeStyle=`rgba(${cMain},0.12)`;ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.arc(mo.originX*sc,mo.originY*sc,mo.orbitRadius*sc,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]); ctx.fillStyle=`rgba(${cMain},0.3)`;ctx.beginPath();ctx.arc(mo.originX*sc,mo.originY*sc,3,0,Math.PI*2);ctx.fill(); }
-    if(mo.mode==='random'&&sel){ ctx.strokeStyle=`rgba(${cMain},0.08)`;ctx.lineWidth=1;ctx.setLineDash([3,6]);ctx.beginPath();ctx.arc(mo.originX*sc,mo.originY*sc,mo.randomRange*sc,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]); const tx=mo.randomTX*sc,ty=mo.randomTY*sc;ctx.strokeStyle=`rgba(${cMain},0.25)`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(tx-4,ty);ctx.lineTo(tx+4,ty);ctx.moveTo(tx,ty-4);ctx.lineTo(tx,ty+4);ctx.stroke(); }
+    if(mo.mode==='orbit'&&sel){ ctx.strokeStyle=`rgba(${cMain},0.12)`;ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.arc(mo.originX*sc,mo.originY*sc,mo.orbitRadius*sc,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]); rysujUchwytSrodka(mo.originX*sc,mo.originY*sc,cMain,dragOrigin===s); }
+    if(mo.mode==='random'&&sel){ ctx.strokeStyle=`rgba(${cMain},0.08)`;ctx.lineWidth=1;ctx.setLineDash([3,6]);ctx.beginPath();ctx.arc(mo.originX*sc,mo.originY*sc,mo.randomRange*sc,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]); const tx=mo.randomTX*sc,ty=mo.randomTY*sc;ctx.strokeStyle=`rgba(${cMain},0.25)`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(tx-4,ty);ctx.lineTo(tx+4,ty);ctx.moveTo(tx,ty-4);ctx.lineTo(tx,ty+4);ctx.stroke(); rysujUchwytSrodka(mo.originX*sc,mo.originY*sc,cMain,dragOrigin===s); }
     if(mo.mode==='path'&&mo.waypoints.length>0){ const wp=mo.waypoints; ctx.strokeStyle=sel?`rgba(${cMain},0.3)`:`rgba(${cMain},0.1)`;ctx.lineWidth=sel?1.5:1;ctx.setLineDash(sel?[]:[3,3]); ctx.beginPath();ctx.moveTo(wp[0].x*sc,wp[0].y*sc); for(let wi=1;wi<wp.length;wi++) ctx.lineTo(wp[wi].x*sc,wp[wi].y*sc); if(mo.pathLoop&&wp.length>2) ctx.lineTo(wp[0].x*sc,wp[0].y*sc); ctx.stroke();ctx.setLineDash([]);
       if(sel){ wp.forEach((w,wi)=>{ ctx.fillStyle=wi===(mo.pathIndex+1)%wp.length?`rgba(${cMain},0.6)`:`rgba(${cMain},0.2)`;ctx.beginPath();ctx.arc(w.x*sc,w.y*sc,4,0,Math.PI*2);ctx.fill(); ctx.fillStyle=`rgba(${cMain},0.5)`;ctx.font="10px 'Azeret Mono',monospace";ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(String(wi+1),w.x*sc,w.y*sc-6); }); } }
 

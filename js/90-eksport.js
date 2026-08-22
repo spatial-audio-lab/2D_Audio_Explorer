@@ -3,6 +3,58 @@
 // patrz lista <script> na koncu index.html.
 
 
+// ARCHIWUM ZIP — metoda "stored", czyli bez kompresji.
+// Bajty plikow leza w srodku bez zmian, wiec Sfera wycina z archiwum sam WAV zwyklym
+// slice() na przesunieciu z katalogu centralnego: bez dekompresji i bez biblioteki.
+// Wlasny zapis, a nie zaleznosc — apka ma dzialac z pliku, bez kroku budowania.
+// Kompresja i tak nic by nie dala: WAV 32-bit float i JPEG sie nie sciskaja.
+const ZIP_CRC = (function(){
+  const t=new Uint32Array(256);
+  for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; }
+  return t;
+})();
+function zipCrc32(u8){ let c=0xFFFFFFFF; for(let i=0;i<u8.length;i++) c=ZIP_CRC[(c^u8[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+
+// `data` trafia do stempla czasu wpisow. Idzie z daty sceny, a nie z zegara systemowego,
+// zeby dwa eksporty tej samej sceny daly archiwum bajt w bajt identyczne.
+async function zbudujZip(wpisy, data){
+  const enc=new TextEncoder();
+  const d=(data instanceof Date && !isNaN(data)) ? data : new Date();
+  const czasDos=((d.getHours()&31)<<11)|((d.getMinutes()&63)<<5)|((d.getSeconds()>>1)&31);
+  const dataDos=(((Math.max(1980,d.getFullYear())-1980)&127)<<9)|(((d.getMonth()+1)&15)<<5)|(d.getDate()&31);
+  const lokalne=[], centralne=[]; let offset=0;
+  for(const [nazwa,blob] of wpisy){
+    const dane=new Uint8Array(await blob.arrayBuffer());
+    const nb=enc.encode(nazwa), crc=zipCrc32(dane);
+    const lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true);
+    lh.setUint16(8,0,true); lh.setUint16(10,czasDos,true); lh.setUint16(12,dataDos,true);
+    lh.setUint32(14,crc,true); lh.setUint32(18,dane.length,true); lh.setUint32(22,dane.length,true);
+    lh.setUint16(26,nb.length,true); lh.setUint16(28,0,true);
+    lokalne.push(new Uint8Array(lh.buffer), nb, dane);
+
+    const ch=new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true);
+    ch.setUint16(8,0x0800,true); ch.setUint16(10,0,true); ch.setUint16(12,czasDos,true); ch.setUint16(14,dataDos,true);
+    ch.setUint32(16,crc,true); ch.setUint32(20,dane.length,true); ch.setUint32(24,dane.length,true);
+    ch.setUint16(28,nb.length,true); ch.setUint16(30,0,true); ch.setUint16(32,0,true);
+    ch.setUint16(34,0,true); ch.setUint16(36,0,true); ch.setUint32(38, nazwa.slice(-1)==='/' ? 0x10 : 0, true);
+    ch.setUint32(42,offset,true);
+    centralne.push(new Uint8Array(ch.buffer), nb);
+    offset += 30+nb.length+dane.length;
+  }
+  const rozmiarKat=centralne.reduce((a,x)=>a+x.length,0);
+  const st=new DataView(new ArrayBuffer(22));
+  st.setUint32(0,0x06054b50,true); st.setUint16(4,0,true); st.setUint16(6,0,true);
+  st.setUint16(8,wpisy.length,true); st.setUint16(10,wpisy.length,true);
+  st.setUint32(12,rozmiarKat,true); st.setUint32(16,offset,true); st.setUint16(20,0,true);
+  return new Blob(lokalne.concat(centralne,[new Uint8Array(st.buffer)]),{type:'application/zip'});
+}
+
+// Naglowek sekcji 5 otwiera okno. otworzModal siedzi w 70-pasek.js, ktory laduje sie wczesniej.
+$('openExport').addEventListener('click', ()=>otworzModal($('modalEksport'), $('openExport')));
+$('openExport').addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); otworzModal($('modalEksport'), $('openExport')); } });
+
 // WAV ENCODING
 function bufToWav(audioBuffer, nCh){
   const sr=audioBuffer.sampleRate, len=audioBuffer.length;
@@ -118,7 +170,7 @@ async function exportScene(){
   btn.disabled=true; btn.textContent='⏳ Generowanie…'; stepsEl.innerHTML='';
 
   const srcs=S.sources.filter(s=>S.buffers[s.id]);
-  if(!srcs.length){ exportStep('⚠ Brak źródeł z buforem audio','error'); btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (5 plików)'; return; }
+  if(!srcs.length){ exportStep('⚠ Brak źródeł z buforem audio','error'); btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (archiwum .zip)'; return; }
 
   // Zrodla w trybie strumienia (biblioteka wpada w niego, gdy CORS zablokuje pobranie —
   // na liscie maja plakietke "stream") nie maja bufora w pamieci, wiec renderer offline
@@ -126,7 +178,7 @@ async function exportScene(){
   // rozjezdzala sie z tym, co bylo slychac w aplikacji. Teraz trzeba to swiadomie potwierdzic.
   const pominiete=S.sources.filter(s=>!S.buffers[s.id]);
   if(pominiete.length){
-    btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (5 plików)';
+    btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (archiwum .zip)';
     const ok=await askConfirm({
       title:'Część sceny nie trafi do plików',
       text:pominiete.length===1
@@ -547,12 +599,23 @@ async function exportScene(){
       s5.className='kpo-step done';
     } catch(e){ s5.textContent='✗ 5/5 Scena JSON — błąd: '+e.message; s5.className='kpo-step error'; throw e; }
 
-    // DOWNLOAD
-    [[binauralBlob,prefix+'_BINAURAL.wav'],[ambixBlob,prefix+'_AMBIX.wav'],[mapBlob,prefix+'_MAPA.jpg'],[metaBlob,prefix+'_META.txt'],[sceneBlob,prefix+'_SCENA.json']].forEach(([blob,name])=>{
-      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href);
-    });
-    exportStep('✓ Gotowe! 5 plików pobranych.','done');
+    // POBIERANIE — jedno archiwum zamiast pieciu osobnych plikow. Nazwy wpisow w srodku
+    // zostaja te same, wiec kto rozpakuje archiwum, dostaje dokladnie to co wczesniej.
+    // Wpisy leza w KATALOGU o nazwie sceny, a nie w korzeniu archiwum. Rozpakowanie
+    // wysypuje zawartosc do biezacego katalogu, wiec bez tego piec plikow rozsypaloby
+    // sie po pulpicie. Pierwszy wpis to sam katalog — po nim narzedzia poznaja strukture.
+    const kat=prefix+'/';
+    const zipBlob=await zbudujZip([
+      [kat, new Blob([])],
+      [kat+prefix+'_BINAURAL.wav', binauralBlob],
+      [kat+prefix+'_AMBIX.wav',    ambixBlob],
+      [kat+prefix+'_MAPA.jpg',     mapBlob],
+      [kat+prefix+'_META.txt',     metaBlob],
+      [kat+prefix+'_SCENA.json',   sceneBlob],
+    ], S.sceneCreatedAt);
+    const a=document.createElement('a'); a.href=URL.createObjectURL(zipBlob); a.download=prefix+'.zip'; a.click(); URL.revokeObjectURL(a.href);
+    exportStep('✓ Gotowe! '+prefix+'.zip — 5 plików w archiwum, '+(zipBlob.size/1048576).toFixed(1)+' MB','done');
   } catch(e){ exportStep('Eksport przerwany: '+e.message,'error'); }
-  btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (5 plików)';
+  btn.disabled=false; btn.textContent='⬇ Eksportuj scenę (archiwum .zip)';
 }
 

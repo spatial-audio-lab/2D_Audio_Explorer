@@ -37,6 +37,37 @@ function askConfirm({ title='Uwaga', text='Na pewno?', sub='', yes='Tak', no='Ni
   });
 }
 
+// ZWIJANIE — jeden mechanizm dla calej apki
+// Siatka 0fr -> 1fr animuje sie do rzeczywistej wysokosci tresci, ale wymaga jednego
+// opakowania z overflow:hidden. Opakowanie dokladane jest tutaj, a nie w markupie, zeby
+// nowa sekcja dostawala plynna animacje sama, bez pamietania o dodatkowym <div>.
+function opakujZwijane(sel){
+  document.querySelectorAll(sel).forEach(el=>{
+    if(el.children.length===1 && el.firstElementChild.classList.contains('zwijane-wnetrze')) return;
+    const w=document.createElement('div'); w.className='zwijane-wnetrze';
+    const c=document.createElement('div'); c.className='zwijane-tresc';
+    while(el.firstChild) c.appendChild(el.firstChild);
+    w.appendChild(c); el.appendChild(w);
+  });
+}
+['.acc-body','.motion-params','.sub-body'].forEach(opakujZwijane);
+
+// Podsekcje (3.1 Szerokosc stereo, 3.2 Ruch, 4.1 Reverb ...) nie sa juz <details>.
+function przelaczSubBox(h){
+  const box=h.closest('.sub-box'); if(!box) return;
+  const otwarty=box.classList.toggle('open');
+  h.setAttribute('aria-expanded', otwarty?'true':'false');
+}
+document.addEventListener('click', e=>{
+  const h=e.target.closest && e.target.closest('.sub-summary');
+  if(h) przelaczSubBox(h);
+});
+document.addEventListener('keydown', e=>{
+  if(e.key!=='Enter' && e.key!==' ') return;
+  const h=e.target.closest && e.target.closest('.sub-summary');
+  if(h){ e.preventDefault(); przelaczSubBox(h); }
+});
+
 // ACCORDION
 function toggleAccHead(h){ const collapsed=h.classList.toggle('collapsed'); h.setAttribute('aria-expanded', collapsed?'false':'true'); }
 document.querySelectorAll('.acc-head').forEach(h => {
