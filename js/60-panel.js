@@ -99,9 +99,8 @@ const KONTROLKI = [
     pisze:(s,v)=>{ s.motion.orbitRadius=v; if(s.motion.mode==='orbit') ustawNaOrbicie(s); },
     odswiezListe:true },
 
-  // Start liczony od POLNOCY, bo tam patrzy sluchacz. Suwak czyta biezacy kat, wiec po
-  // odsluchu pokazuje, gdzie dzwiek naprawde stoi — a to jest zarazem punkt, od ktorego
-  // zacznie sie nagranie.
+  // Start liczony od POLNOCY, bo tam patrzy sluchacz. To PARAMETR, nie odczyt biezacej
+  // pozycji: od niego rusza odsluch, nagranie i powrot po nacisnieciu Stop.
   { nazwa:'start', typ:'suwak', wej:'orbitStart', pole:'orbitStartVal', zasieg:'zrodlo',
     skala:1, pusta:0, format:v=>Math.round(v)+'°',
     czyta:s=>katStartu(s.motion),

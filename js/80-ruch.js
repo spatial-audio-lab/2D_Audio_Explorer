@@ -81,10 +81,13 @@ function stepMotion(mo,pos,dt,m,rnd){
 // W modelu: orbitAngle w radianach, 0 = wschod, rosnie zgodnie z ruchem wskazowek.
 // Na suwaku: stopnie, 0 = polnoc (przed sluchaczem), ujemne w LEWO, dodatnie w PRAWO.
 // Wzor jest jeden i tylko tutaj, zeby te dwie konwencje nie zaczely zyc osobno.
-function katStartu(mo){
-  let st=(mo.orbitAngle||0)*180/Math.PI+90;
-  return Math.round(((st+180)%360+360)%360-180);
-}
+// Suwak czyta PARAMETR, nie biezacy kat. Wczesniej czytal orbitAngle i po odsluchu panel
+// pokazywal 0 stopni, podczas gdy dzwiek stal juz po drugiej stronie okregu — a eksport
+// szedl za dzwiekiem, nie za suwakiem. Zmierzone: po 15 s obiegu 30-sekundowego suwak
+// mowil "0 (przed sluchaczem)", a zrodlo bylo na (0, +5), czyli za plecami.
+function katStartu(mo){ return Math.round(mo.orbitStart||0); }
+// Kat biegu wyliczony z parametru startu.
+function katZeStartu(mo){ return ((mo.orbitStart||0)-90)*Math.PI/180; }
 // Sadza zrodlo na jego wlasnym okregu. Bez tego dzwiek stoi OBOK orbity az do
 // pierwszej klatki ruchu, a wtedy przeskakuje o caly promien.
 function ustawNaOrbicie(s){
@@ -95,7 +98,14 @@ function ustawNaOrbicie(s){
 }
 // Suwak Start przesuwa DZWIEK po okregu; srodek zostaje tam, gdzie byl.
 function ustawKatOrbity(s, stopnie){
-  s.motion.orbitAngle=(stopnie-90)*Math.PI/180;
+  s.motion.orbitStart=stopnie;
+  s.motion.orbitAngle=katZeStartu(s.motion);
+  ustawNaOrbicie(s);
+}
+// Przewiniecie orbity na poczatek. Wolane przy Play i przy Stop, zeby panel, obraz
+// i eksport zawsze mowily to samo o tym, gdzie zaczyna sie nagranie.
+function wrocNaStartOrbity(s){
+  s.motion.orbitAngle=katZeStartu(s.motion);
   ustawNaOrbicie(s);
 }
 
@@ -143,6 +153,13 @@ function simulateTrajectory(s,dur,fps){
   const mo=Object.assign({},s.motion,{ waypoints:(s.motion.waypoints||[]).map(w=>({x:w.x,y:w.y})) });
   const rnd=makeRng(mo.seed);
   const pos={ x:s.x, y:s.y };
+  if(mo.mode==='orbit'){
+    // Nagranie ma sie zaczac tam, co pokazuje suwak Start — niezaleznie od tego, czy
+    // ktos przed eksportem sluchal sceny i zostawil dzwiek w polowie okregu.
+    mo.orbitAngle=katZeStartu(mo);
+    pos.x=mo.originX+Math.cos(mo.orbitAngle)*mo.orbitRadius;
+    pos.y=mo.originY+Math.sin(mo.orbitAngle)*mo.orbitRadius;
+  }
   for(let i=0;i<frames;i++){
     xs[i]=pos.x; ys[i]=pos.y;
     stepMotion(mo,pos,dt,m,rnd);

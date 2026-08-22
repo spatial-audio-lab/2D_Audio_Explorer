@@ -57,7 +57,10 @@ function buildSrc(id, name, x, y, vol, libId){
     // orbitPeriod to czas PELNEGO obiegu w sekundach. Wczesniej okres wynikal z dzielenia
     // predkosci przez promien i przy domyslnych ustawieniach wychodzil 15,71 s — liczba,
     // ktorej nikt nie wybral. `speed` zostaje dla trybow random i sciezka.
-    motion:{ mode:'static', speed:2, orbitRadius:5, orbitAngle:-Math.PI/2, orbitPeriod:10, originX:x, originY:y,
+    // orbitStart to PARAMETR: stopnie od polnocy, ujemne w lewo. Od niego zaczyna sie
+    // odsluch i nagranie. orbitAngle to tylko stan biegu — dryfuje w trakcie grania
+    // i nie wolno go czytac jako "startu", bo panel zaczyna wtedy klamac.
+    motion:{ mode:'static', speed:2, orbitRadius:5, orbitStart:0, orbitAngle:-Math.PI/2, orbitPeriod:10, originX:x, originY:y,
       randomRange:8, randomTX:x, randomTY:y, randomTimer:0,
       // Ziarno generatora dla trybu Random. Ruch NA EKRANIE zostaje losowy (Math.random
       // w updateMotion), ale symulacja na potrzeby eksportu idzie z tego ziarna — dzieki
@@ -185,12 +188,14 @@ async function handleFiles(files){
 // PLAY / STOP / REMOVE / SELECT
 function playSource(s){
   if(!s||s.playing) return;
+  if(s.motion.mode==='orbit') wrocNaStartOrbity(s);
   if(s.isStream && s.audioElement){ audioCtx.resume().then(()=>s.audioElement.play()); s.playing=true; }
   else if(!s.isStream && S.buffers[s.id]){ s.node=audioCtx.createBufferSource(); s.node.buffer=S.buffers[s.id]; s.node.loop=true; s.node.connect(s.gain); s.node.start(); s.playing=true; }
   renderSources(); updateCounters();
 }
 function stopSource(s){
   if(!s||!s.playing) return;
+  if(s.motion.mode==='orbit') wrocNaStartOrbity(s);
   if(s.isStream && s.audioElement){ s.audioElement.pause(); s.audioElement.currentTime=0; }
   else if(s.node){ try{s.node.stop();}catch(e){} s.node=null; }
   s.playing=false; renderSources(); updateCounters();
