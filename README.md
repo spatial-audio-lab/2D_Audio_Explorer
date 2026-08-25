@@ -156,7 +156,12 @@ albo gaśnie) i `WSKAZNIKI` (podpisy stanu w nagłówkach podsekcji).
 Po zmianie uruchom `harness-panel.js` — sprawdza między innymi, czy **każdy** suwak
 w panelu ma swój opis w rejestrze.
 
+## Publikacja na GitHub Pages
 
+Repozytorium zawiera `index.html`, `library.json` oraz katalogi `css/`, `js/` i
+`assets/` — wystarczy włączyć
+GitHub Pages w Settings → Pages → Source: wybrana gałąź. Dźwięki z biblioteki są
+streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią repozytorium.
 ---
 
 
@@ -184,9 +189,4 @@ Projekt jest realizowany w ramach programu stypendialnego Krajowego Planu Odbudo
 - **Wartość dofinansowania z Unii Europejskiej (NextGenerationEU):** 36 000,00 zł brutto.
 - Umowa nr **143/KPO.STYPENDIA/NIMIT/2025**.
 
-## Publikacja na GitHub Pages
 
-Repozytorium zawiera `index.html`, `library.json` oraz katalogi `css/`, `js/` i
-`assets/` — wystarczy włączyć
-GitHub Pages w Settings → Pages → Source: wybrana gałąź. Dźwięki z biblioteki są
-streamowane z CDN Freesound, więc same pliki audio nie muszą być częścią repozytorium.
