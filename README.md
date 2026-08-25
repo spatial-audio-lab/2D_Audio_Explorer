@@ -1,3 +1,5 @@
+![Zestawienie logotypów KPO, RP i UE](https://raw.githubusercontent.com/spatial-audio-lab/spatial-audio-lab.github.io/main/KPO.jpg)
+
 # Scena — scenografia dźwiękowa
 
 Warsztat do budowania scen dźwięku przestrzennego w przeglądarce: rozstawiasz dźwięki
