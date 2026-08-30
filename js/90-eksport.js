@@ -188,11 +188,32 @@ function rysujTraseNaMapie(ctx,tr,sc){
   }
 }
 
+// Nazwa sceny i jej numer ida do NAZW PLIKOW: prefiksu piatki plikow, wpisow archiwum,
+// nazwy pobieranego .zip i pola `audioFile` w SCENA.json. Dlatego czyszczenie musi byc
+// JEDNO. Wczesniej znikaly tu tylko spacje, a znaki zabronione szly dalej: przegladarka
+// podmieniala je po cichu w nazwie POBIERANEGO pliku, ale JSON zachowywal oryginal, wiec
+// `audioFile` wskazywal plik, ktorego na dysku nie ma. Ukosnik dodatkowo robil w archiwum
+// lewe podkatalogi. Zmierzone na realnym eksporcie sceny <<Strumien / Burza / Cykady>>.
+// Zabronione na Windows sa znaki tworzace ponizsza klase oraz znaki sterujace; kropka albo
+// spacja na koncu nazwy tez (system je ucina). Ciag takich znakow zwija sie do JEDNEGO
+// podkreslenia. Fallback `zapas` chroni przed nazwa zlozona z samych znakow zabronionych.
+function nazwaPliku(tekst, zapas){
+  const czyste=String(tekst==null?'':tekst)
+    .replace(/[\\/:*?"<>|\u0000-\u001F]+/g,' ')
+    .replace(/\s+/g,'_')
+    .replace(/^[_.]+|[_.]+$/g,'');
+  return czyste||zapas||'Scena';
+}
+
 async function exportScene(){
   const btn=$('generateExport');
   const numerOn=$('sceneNumberOn').checked;
-  const nr=numerOn ? ($('sceneNumber').value||'001').trim() : '';
-  const nm=($('sceneName').value||'Scena').trim().replace(/\s+/g,'_');
+  const nr=numerOn ? nazwaPliku($('sceneNumber').value||'001','001') : '';
+  // Dwie osobne wielkosci, bo maja rozne zadania. `tytul` to nazwa CZYTANA przez czlowieka:
+  // naglowek MAPY, pole Scena w META, `scene.name` w SCENA.json. `nm` to ta sama nazwa
+  // przepuszczona przez nazwaPliku() i uzywana wylacznie tam, gdzie robi za nazwe pliku.
+  const tytul=($('sceneName').value||'Scena').trim().replace(/\s+/g,' ');
+  const nm=nazwaPliku(tytul);
   const opisSceny=($('sceneDesc').value||'').trim();
   const autorSceny=($('sceneAuthor').value||'').trim();
   const licencjaSceny=($('sceneLicense').value||'').trim();
@@ -545,7 +566,7 @@ async function exportScene(){
       const TUSZ='#000000', SIATKA='rgba(0,0,0,0.10)', RAMKA='rgba(0,0,0,0.30)',
             OSIE='rgba(0,0,0,0.20)', PODPIS='#333333', DROBNE='#555555';
       sc2.fillStyle='#FFFFFF'; sc2.fillRect(0,0,snap.width,snap.height);
-      sc2.fillStyle=TUSZ; sc2.font="bold 14px 'Azeret Mono',monospace"; sc2.fillText(numerOn?`SAL SCENA ${nr} — ${nm.replace(/_/g,' ')}`:`SAL — ${nm.replace(/_/g,' ')}`,20,28);
+      sc2.fillStyle=TUSZ; sc2.font="bold 14px 'Azeret Mono',monospace"; sc2.fillText(numerOn?`SAL SCENA ${nr} — ${tytul}`:`SAL — ${tytul}`,20,28);
       sc2.fillStyle=PODPIS; sc2.font="11px 'Azeret Mono',monospace";
       // Data na obrazku jest opcjonalna — komplet danych i tak siedzi w META i w JSON.
       sc2.fillText(`Czas: ${dur}s · Źródeł: ${srcs.length}`+($('mapDateOn').checked?` · ${window._getDate()}`:''),20,48);
@@ -593,7 +614,7 @@ async function exportScene(){
     const s4=exportStep('4/5 Metadane TXT…');
     let metaBlob;
     try {
-      let txt=`SAL — Spatial Audio Lab\n${'═'.repeat(40)}\nScena: ${numerOn?nr+' — ':''}${nm.replace(/_/g,' ')}\n${autorSceny?'Autor sceny: '+autorSceny+'\n':''}${licencjaSceny?'Licencja sceny: '+licencjaSceny+'\n':''}${opisSceny?'\nOpis:\n'+opisSceny+'\n':''}\nData: ${window._getDateFull()}\nCzas trwania: ${dur}s\nSample rate: ${sr} Hz\nReverb: ${includeReverb&&reverbState.enabled?'Tak (rozmiar:'+reverbState.roomSize.toFixed(2)+', tłumienie:'+reverbState.damping.toFixed(2)+', wet:'+Math.round(reverbState.wet*100)+'%)':'Nie'}\n\nListener: x=${S.listener.x.toFixed(2)}, y=${S.listener.y.toFixed(2)}, angle=${Math.round(S.listener.angle)}°\n\nŹródła (${srcs.length}):\n${'─'.repeat(40)}\n`;
+      let txt=`SAL — Spatial Audio Lab\n${'═'.repeat(40)}\nScena: ${numerOn?nr+' — ':''}${tytul}\n${autorSceny?'Autor sceny: '+autorSceny+'\n':''}${licencjaSceny?'Licencja sceny: '+licencjaSceny+'\n':''}${opisSceny?'\nOpis:\n'+opisSceny+'\n':''}\nData: ${window._getDateFull()}\nCzas trwania: ${dur}s\nSample rate: ${sr} Hz\nReverb: ${includeReverb&&reverbState.enabled?'Tak (rozmiar:'+reverbState.roomSize.toFixed(2)+', tłumienie:'+reverbState.damping.toFixed(2)+', wet:'+Math.round(reverbState.wet*100)+'%)':'Nie'}\n\nListener: x=${S.listener.x.toFixed(2)}, y=${S.listener.y.toFixed(2)}, angle=${Math.round(S.listener.angle)}°\n\nŹródła (${srcs.length}):\n${'─'.repeat(40)}\n`;
       srcs.forEach((src,i)=>{
         // Pozycja z POCZATKU nagrania, nie z chwili, w ktorej ta petla akurat sie wykonuje.
         const p0=pozStartowa(src);
@@ -647,7 +668,7 @@ async function exportScene(){
         // Przy wiekszej liczbie zrodel i niezerowych wysokosciach zysk jest wiekszy.
         // Odtwarzacz rozpoznaje oba zapisy po ksztalcie pola, wiec pliki v2 dalej sie otwieraja.
         version:3,
-        scene:{ number:numerOn?nr:null, name:nm.replace(/_/g,' '), description:opisSceny||null,
+        scene:{ number:numerOn?nr:null, name:tytul, description:opisSceny||null,
                 author:autorSceny||null, license:licencjaSceny||null,
                 date:window._getDateFull(), duration:dur, sampleRate:sr },
         audioFile:prefix+'_AMBIX.wav',
