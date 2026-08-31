@@ -46,6 +46,7 @@ function buildSrc(id, name, x, y, vol, libId){
   gain.connect(reverbSend); reverbSend.connect(reverbInput);
   const s = {
     id, name, x, y, height:0, volume:vol,
+    startedAt:null,
     routing:'spatial', width:0, spreadAngle:0,
     playing:false, node:null,
     gain, airFilter, splitter, pannerL, pannerR, reverbSend,
@@ -190,7 +191,9 @@ function playSource(s){
   if(!s||s.playing) return;
   if(s.motion.mode==='orbit') wrocNaStartOrbity(s);
   if(s.isStream && s.audioElement){ audioCtx.resume().then(()=>s.audioElement.play()); s.playing=true; }
-  else if(!s.isStream && S.buffers[s.id]){ s.node=audioCtx.createBufferSource(); s.node.buffer=S.buffers[s.id]; s.node.loop=true; s.node.connect(s.gain); s.node.start(); s.playing=true; }
+  // startedAt to jedyny zegar bufora — AudioBufferSourceNode nie ma wlasnego czasu.
+  // Z niego liczy sie kursor na fali (pozycjaOdtwarzania w 84-fala.js).
+  else if(!s.isStream && S.buffers[s.id]){ s.node=audioCtx.createBufferSource(); s.node.buffer=S.buffers[s.id]; s.node.loop=true; s.node.connect(s.gain); s.node.start(); s.startedAt=audioCtx.currentTime; s.playing=true; }
   renderSources(); updateCounters();
 }
 function stopSource(s){
@@ -198,6 +201,7 @@ function stopSource(s){
   if(s.motion.mode==='orbit') wrocNaStartOrbity(s);
   if(s.isStream && s.audioElement){ s.audioElement.pause(); s.audioElement.currentTime=0; }
   else if(s.node){ try{s.node.stop();}catch(e){} s.node=null; }
+  s.startedAt=null;
   s.playing=false; renderSources(); updateCounters();
 }
 function removeSource(id){
@@ -208,6 +212,6 @@ function removeSource(id){
   try{s.pannerL.disconnect();}catch(e){} try{s.pannerR.disconnect();}catch(e){}
   try{s.reverbSend.disconnect();}catch(e){}
   if(s.audioElement) s.audioElement.src='';
-  delete S.buffers[id]; S.sources.splice(i,1); renderSources(); updateLibBtns(); showToast('Usunięto');
+  delete S.buffers[id]; odswiezFale(id); S.sources.splice(i,1); renderSources(); updateLibBtns(); showToast('Usunięto');
 }
 function selectSource(s){ S.selectedSource=s; updateSel(); renderSources(); syncSubStates(); }

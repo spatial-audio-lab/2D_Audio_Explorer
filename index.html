@@ -89,6 +89,13 @@
       <input class="sel-name empty" id="selName" type="text" maxlength="40" disabled
              placeholder="— brak wyboru —" aria-label="Nazwa wybranego dźwięku" />
 
+      <!-- Fala: gdzie w nagraniu jest cicho, gdzie glosno i w ktorym miejscu jestesmy.
+           Liczona z bufora w pamieci, wiec strumien z biblioteki fali nie ma. -->
+      <div class="fala-box">
+        <canvas id="falaCanvas" class="fala" role="img" aria-label="Fala wybranego dźwięku"></canvas>
+        <div class="fala-meta"><span class="fala-etyk">Fala</span><span id="falaCzas">—</span></div>
+      </div>
+
       <!-- Atrybucja nad przełącznikiem trybu: to metryczka dźwięku, a nie parametr brzmienia. -->
       <div class="sub-box" id="attrBox">
         <div class="sub-summary" role="button" tabindex="0" aria-expanded="false"><span class="sub-key">Atrybucja</span><span class="sub-state" id="attrState">—</span></div>
@@ -400,6 +407,7 @@
 <script src="js/60-panel.js"></script>
 <script src="js/70-pasek.js"></script>
 <script src="js/80-ruch.js"></script>
+<script src="js/84-fala.js"></script>
 <script src="js/85-rysowanie.js"></script>
 <script src="js/90-eksport.js"></script>
 <script src="js/99-init.js"></script>

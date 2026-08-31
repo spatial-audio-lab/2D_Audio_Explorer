@@ -124,6 +124,7 @@ pośredniej.
 | `js/60-panel.js` | prawy panel: **rejestr kontrolek**, lista źródeł, liczniki |
 | `js/70-pasek.js` | pasek marki, modale Pomoc / O projekcie, klawiatura |
 | `js/80-ruch.js` | mysz i dotyk, ruch źródeł, symulacja trajektorii |
+| `js/84-fala.js` | fala wybranego dźwięku i kursor odtwarzania w panelu |
 | `js/85-rysowanie.js` | pętla klatek, scena i mapa w rogu |
 | `js/90-eksport.js` | kodowanie WAV, obwiednia głośności, `exportScene()` |
 | `js/99-init.js` | start aplikacji — **musi zostać ostatni** |

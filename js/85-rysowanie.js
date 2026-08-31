@@ -25,7 +25,7 @@ function loop(ts){
   if(S.target&&S.mode==='explore'){const p=w2s(S.target.x,S.target.y);targetIndicator.style.left=(p.x-10)+'px';targetIndicator.style.top=(p.y-10)+'px';targetIndicator.classList.add('visible');}
   else targetIndicator.classList.remove('visible');
   updateMotion(dt); updateAirAbsorption();
-  draw(); drawMinimap(); requestAnimationFrame(loop);
+  draw(); drawMinimap(); rysujFale(); requestAnimationFrame(loop);
 }
 
 // DRAW — Main canvas
