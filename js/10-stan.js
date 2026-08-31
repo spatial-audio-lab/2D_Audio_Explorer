@@ -7,6 +7,8 @@
 let compassRotation = 0;
 const S = {
   mode:'edit', sceneName:null, sceneCreatedAt:null,
+  // sceneStart: zero wspolnego zegara sceny w czasie audioCtx. null = scena nie gra.
+  sceneStart:null,
   listener:{x:0,y:0,angle:0}, target:null,
   sources:[], buffers:{}, selectedSource:null, keys:{},
   worldSize:25, moveSpeed:6, rotSpeed:90, dragStartAngle:0

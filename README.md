@@ -23,6 +23,15 @@ instalacji, bez backendu, bez konta. Część zestawu narzędzi **Spatial Audio 
   *W przestrzeni* / *Bezpośrednio* (dla lektora albo muzyki, która nie ma być częścią sceny).
 - **Ruch źródeł w czasie** — orbita, błądzenie losowe albo narysowana trasa
   (`Shift`+klik dodaje punkty ścieżki).
+- **Fala dźwięku** — pod nazwą wybranego źródła widać jego przebieg: gdzie jest cicho,
+  gdzie głośno i w którym miejscu nagrania właśnie jesteś. Kursor jedzie w trakcie
+  odsłuchu. Dźwięki strumieniowane z biblioteki fali nie mają — nie ma ich w pamięci.
+- **Czas każdego źródła** — *Odtwarzanie: Loop / Raz* (tło grające bez końca albo
+  pojedyncze zdarzenie) oraz suwak *Wejście*, czyli sekunda, w której dźwięk wchodzi.
+  Wejście liczy się od zera, które stawia przycisk **▶ Wszystkie**; pojedyncze ▶ przy
+  źródle na liście gra od razu i jest podglądem brzmienia, nie odtworzeniem sceny.
+  Źródło, które czeka na swoją sekundę albo już wybrzmiało, **nadal jedzie po swojej
+  trajektorii** — tak samo jak w eksporcie.
 - **Pogłos przestrzeni** — konwolucyjny reverb z regulacją wielkości pomieszczenia
   i tłumienia, wspólny dla całej sceny. W eksporcie AmbiX pogłos zachowuje szerokość:
   lewy kanał idzie w lewo, prawy w prawo, po 0,5 — nie jest zwijany do mono w kanale W.

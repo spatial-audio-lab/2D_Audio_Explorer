@@ -96,9 +96,9 @@ function floatArraysToWav32(arrays, sr){
 // miksu. Liczone wprost z bufora zrodla (getChannelData), przed zmiksowaniem — wiec nie
 // wymaga eksportu osobnych stemow. Jeden przebieg po juz wczytanym buforze.
 //
-// Os czasu jest osia EKSPORTU, nie osia oryginalu: zrodla graja w petli (n.loop=true), wiec
-// petla jest tu juz zawinieta. Odtwarzacz indeksuje tablice wprost czasem odtwarzania i nie
-// musi wiedziec, jak dlugi byl plik zrodlowy.
+// Os czasu jest osia EKSPORTU, nie osia oryginalu: petla, wejscie w sekundzie X i tryb Raz
+// sa tu juz zawiniete. Odtwarzacz indeksuje tablice wprost czasem odtwarzania i nie musi
+// wiedziec, jak dlugi byl plik zrodlowy ani kiedy zrodlo weszlo.
 //
 // Skala: RMS okna -> dBFS -> 0..255 liniowo w decybelach od LEVEL_FLOOR_DB do 0 dBFS.
 // Kwantyzacja liniowa w amplitudzie zgubilaby wszystko ponizej -40 dB w kilku krokach.
@@ -109,19 +109,48 @@ const LEVEL_FLOOR_DB = -60;
 // decymacji do 10 Hz i interpolacji liniowej blad pozycji nie przekracza 13 cm, a klatek
 // jest piec razy mniej. Pomiar i warianty: _SAL-docs\kontrakt-scena-sfera.md, sekcja 4.
 const PATH_HZ = 10;
-function levelEnvelope(buffer, durationSec){
+
+// KIEDY I JAK DLUGO BRZMI ZRODLO NA OSI EKSPORTU — jedno miejsce dla obu torow
+// (binauralnego i AmbiX) oraz dla obwiedni glosnosci w SCENA.json. Gdyby kazdy z nich
+// liczyl to sam, dzwiek i opis rozjechalyby sie tak samo, jak kiedys rozjechala sie
+// pozycja startowa: plik mowilby jedno, a JSON drugie.
+//   wejscie — sekunda, w ktorej zrodlo wchodzi (suwak Wejscie)
+//   petla   — czy po koncu nagrania leci od nowa (Odtwarzanie: Loop)
+//   koniec  — sekunda, w ktorej zrodlo milknie
+//   gra     — czy w ogole cokolwiek z niego slychac w tym eksporcie
+// UWAGA: to dotyczy wylacznie DZWIEKU. Trajektoria liczy sie niezaleznie, przez cale
+// nagranie, takze zanim zrodlo wejdzie i po tym, jak wybrzmi — punkt jedzie po swoim
+// torze niemo. Tak samo zachowuje sie scena na ekranie.
+function planOdtwarzania(s, dur){
+  const wejscie=Math.max(0, s.startOffset||0);
+  const petla=s.playback!=='once';
+  const buf=S.buffers[s.id];
+  const koniec=petla ? dur : Math.min(dur, wejscie+(buf?buf.duration:0));
+  return { wejscie, petla, koniec, gra: wejscie<dur && koniec>wejscie };
+}
+
+function levelEnvelope(buffer, durationSec, wejscieSec, petla){
   const sr=buffer.sampleRate, nCh=buffer.numberOfChannels, len=buffer.length;
   const chans=[]; for(let c=0;c<nCh;c++) chans.push(buffer.getChannelData(c));
   const win=Math.max(1,Math.round(sr/LEVEL_HZ));
   const frames=Math.max(1,Math.ceil(durationSec*LEVEL_HZ));
   const out=new Array(frames);
+  // Przesuniecie o wejscie zrodla. Przed wejsciem probek NIE MA — takze w trybie petli,
+  // bo petla zaczyna sie dopiero od wejscia, a nie biegnie wstecz od zera sceny.
+  const przesun=Math.round((wejscieSec||0)*sr);
+  const zapetlone=petla!==false;
   for(let f=0;f<frames;f++){
-    const start=Math.round(f*sr/LEVEL_HZ);
+    const start=Math.round(f*sr/LEVEL_HZ)-przesun;
     let sum=0;
     for(let i=0;i<win;i++){
-      const idx=(start+i)%len;                       // petla zrodla
-      let m=0; for(let c=0;c<nCh;c++) m+=chans[c][idx];
-      m/=nCh; sum+=m*m;
+      const p=start+i;
+      let m=0;
+      if(p>=0 && (zapetlone || p<len)){
+        const idx=zapetlone ? p%len : p;             // petla zrodla
+        for(let c=0;c<nCh;c++) m+=chans[c][idx];
+        m/=nCh;
+      }
+      sum+=m*m;                                      // poza czasem brzmienia: cisza
     }
     const rms=Math.sqrt(sum/win);
     const db=rms>1e-7 ? 20*Math.log10(rms) : LEVEL_FLOOR_DB;
@@ -309,7 +338,9 @@ async function exportScene(){
         if(s.routing==='direct'){
           // Direct: bypass HRTF, go straight to master
           const g=off.createGain(); g.gain.value=s.volume;
-          const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=true; n.connect(g); g.connect(offMaster); n.start(0); n.stop(dur);
+          const pl=planOdtwarzania(s,dur);
+          const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=pl.petla; n.connect(g); g.connect(offMaster);
+          if(pl.gra){ n.start(pl.wejscie); n.stop(pl.koniec); }
         } else {
           // Spatial: air filter + dual panners
           // `tr` jest ustawione tylko dla zrodel, ktore faktycznie sie ruszaja. Gdy go nie ma,
@@ -346,7 +377,9 @@ async function exportScene(){
           // Reverb send — takze zalezna od odleglosci, wiec przy ruchu tez musi jechac w czasie.
           if(offRevInput){ const rs=off.createGain(); g.connect(rs); rs.connect(offRevInput);
             if(tr) rampParam(rs.gain, i=>sendZ(dyst(tr.xs[i],tr.ys[i])), tr); else rs.gain.value=sendZ(dist3d); }
-          const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=true; n.connect(g); n.start(0); n.stop(dur);
+          const pl=planOdtwarzania(s,dur);
+          const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=pl.petla; n.connect(g);
+          if(pl.gra){ n.start(pl.wejscie); n.stop(pl.koniec); }
         }
       }
       const rendered=await off.startRendering();
@@ -457,11 +490,15 @@ async function exportScene(){
 
       let nPrzestrzenne=0, nBezkierunkowe=0;
       for(const s of srcs){
-        const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=true;
+        const pl=planOdtwarzania(s,dur);
+        const n=off.createBufferSource(); n.buffer=S.buffers[s.id]; n.loop=pl.petla;
         const objMeta={ name:s.name, routing:s.routing, volume:+(s.volume.toFixed(3)),
+                        // playback i startAt opisuja CZAS zrodla: 'loop' gra do konca nagrania,
+                        // 'once' milknie po jednym przebiegu. startAt to sekunda wejscia.
+                        playback:pl.petla?'loop':'once', startAt:+(pl.wejscie.toFixed(3)),
                         author:s.attrAuthor||null, license:s.attrLicense||null, sourceUrl:s.attrUrl||null,
                         level:{ hz:LEVEL_HZ, encoding:'uint8-db-b64', dbFloor:LEVEL_FLOOR_DB,
-                                values:levelToB64(levelEnvelope(S.buffers[s.id],dur)) } };
+                                values:levelToB64(levelEnvelope(S.buffers[s.id],dur,pl.wejscie,pl.petla)) } };
         sceneObjects.push(objMeta);
         if(s.routing==='direct'){
           // Zrodla "Bezposrednio" nie maja pozycji na scenie. W FOA sa polem bezkierunkowym
@@ -534,7 +571,7 @@ async function exportScene(){
             if(tr) rampParam(rs.gain, i=>sendZ(dyst(tr.xs[i],tr.ys[i])), tr); else rs.gain.value=sendZ(dist3d); }
           nPrzestrzenne++;
         }
-        n.start(0); n.stop(dur);
+        if(pl.gra){ n.start(pl.wejscie); n.stop(pl.koniec); }
       }
 
       const rendered=await off.startRendering();
@@ -625,6 +662,11 @@ async function exportScene(){
           txt+=`    Absorpcja: ${Math.round(cutoff)} Hz\n`;
           if(src.width>0.05) txt+=`    Szerokość stereo: ${src.width.toFixed(1)}m @ ${Math.round(src.spreadAngle)}°\n`;
         }
+        // Czas zrodla stoi obok glosnosci, bo to ta sama kategoria: co i kiedy slychac.
+        const plM=planOdtwarzania(src,dur);
+        txt+=`    Odtwarzanie: ${plM.petla?'loop (do konca nagrania)':'raz'}\n`;
+        if(plM.wejscie>0.01) txt+=`    Wejście: ${plM.wejscie.toFixed(1)}s${plM.gra?'':' (poza czasem nagrania — nie słychać)'}\n`;
+        if(!plM.petla&&plM.gra) txt+=`    Wybrzmiewa: ${plM.koniec.toFixed(1)}s\n`;
         if(src.motion.mode!=='static'){
           const utrwalony=!!trajektorie[src.id];
           const jakSzybko = src.motion.mode==='orbit'

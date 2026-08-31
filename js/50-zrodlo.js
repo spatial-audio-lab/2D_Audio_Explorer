@@ -46,7 +46,16 @@ function buildSrc(id, name, x, y, vol, libId){
   gain.connect(reverbSend); reverbSend.connect(reverbInput);
   const s = {
     id, name, x, y, height:0, volume:vol,
-    startedAt:null,
+    // playback: 'loop' = tlo grajace bez konca, 'once' = pojedyncze zdarzenie.
+    // startOffset: sekunda SCENY, w ktorej zrodlo wchodzi. Liczona od zera, ktore
+    // stawia przycisk Wszystkie — pojedyncze play przy zrodle jej nie uzywa.
+    // startedAt: absolutny czas audioCtx, na ktory zaplanowano start. Jedyny zegar
+    // bufora, bo AudioBufferSourceNode wlasnego nie ma.
+    // brzmi: czy SLYCHAC teraz. `playing` znaczy 'uruchomione w scenie' i zostaje
+    // prawda takze wtedy, gdy zrodlo czeka na swoja sekunde albo juz wybrzmialo —
+    // dzieki temu punkt jedzie po swojej trajektorii przez cale nagranie, dokladnie
+    // tak jak w eksporcie, ktory trajektorie liczy niezaleznie od dzwieku.
+    playback:'loop', startOffset:0, startedAt:null, brzmi:false,
     routing:'spatial', width:0, spreadAngle:0,
     playing:false, node:null,
     gain, airFilter, splitter, pannerL, pannerR, reverbSend,
@@ -187,22 +196,65 @@ async function handleFiles(files){
 }
 
 // PLAY / STOP / REMOVE / SELECT
-function playSource(s){
+// `kiedy` to absolutny czas audioCtx, na ktory ma byc zaplanowany start. Pominiete
+// znaczy 'teraz'. Planowaniem zajmuje sie Web Audio (node.start(kiedy)), wiec wejscie
+// zrodla jest dokladne co do probki, a nie co do klatki ekranu.
+function playSource(s, kiedy){
   if(!s||s.playing) return;
   if(s.motion.mode==='orbit') wrocNaStartOrbity(s);
-  if(s.isStream && s.audioElement){ audioCtx.resume().then(()=>s.audioElement.play()); s.playing=true; }
-  // startedAt to jedyny zegar bufora — AudioBufferSourceNode nie ma wlasnego czasu.
-  // Z niego liczy sie kursor na fali (pozycjaOdtwarzania w 84-fala.js).
-  else if(!s.isStream && S.buffers[s.id]){ s.node=audioCtx.createBufferSource(); s.node.buffer=S.buffers[s.id]; s.node.loop=true; s.node.connect(s.gain); s.node.start(); s.startedAt=audioCtx.currentTime; s.playing=true; }
+  const teraz=audioCtx.currentTime;
+  const t0=(kiedy===undefined||kiedy<teraz)?teraz:kiedy;
+  const petla=s.playback!=='once';
+  if(s.isStream && s.audioElement){
+    s.audioElement.loop=petla; s.startedAt=t0; s.playing=true;
+    if(t0<=teraz){ audioCtx.resume().then(()=>s.audioElement.play()); s.brzmi=true; }
+  }
+  else if(!s.isStream && S.buffers[s.id]){
+    s.node=audioCtx.createBufferSource(); s.node.buffer=S.buffers[s.id];
+    s.node.loop=petla; s.node.connect(s.gain); s.node.start(t0);
+    s.startedAt=t0; s.brzmi=(t0<=teraz); s.playing=true;
+  }
   renderSources(); updateCounters();
+}
+
+// ZEGAR SCENY — wspolne zero dla wejsc zrodel. Przycisk Wszystkie stawia zero i kazde
+// zrodlo rusza w swojej sekundzie. Pojedyncze play przy zrodle gra OD RAZU i offsetu
+// nie uzywa: to podglad brzmienia, a nie odtworzenie sceny.
+// Zapas 0,12 s daje przegladarce czas na zbudowanie wezlow, zanim minie zero — bez
+// niego zrodlo z offsetem 0 bywaloby planowane w przeszlosci i gralo z opoznieniem.
+function graWszystkie(){
+  audioCtx.resume();
+  S.sceneStart=audioCtx.currentTime+0.12;
+  for(const s of S.sources) playSource(s, S.sceneStart+(s.startOffset||0));
+}
+function stopWszystkie(){
+  S.sceneStart=null;
+  for(const s of S.sources) stopSource(s);
+}
+
+// Wolane z petli klatek. Przestawia flage `brzmi` w chwili, w ktorej zrodlo naprawde
+// zaczyna albo konczy brzmiec. Dzwiek planuje Web Audio — tutaj chodzi tylko o to,
+// zeby obraz i lista mowily to samo, co slychac.
+function pilnujZegara(){
+  const teraz=audioCtx.currentTime;
+  let zmiana=false;
+  for(const s of S.sources){
+    if(!s.playing || s.startedAt==null) continue;
+    const buf=s.isStream?null:S.buffers[s.id];
+    const dl=buf?buf.duration:Infinity;
+    const brzmi = teraz>=s.startedAt && (s.playback!=='once' || teraz<s.startedAt+dl);
+    if(brzmi===s.brzmi) continue;
+    s.brzmi=brzmi; zmiana=true;
+    if(s.isStream&&s.audioElement){ if(brzmi) s.audioElement.play(); else s.audioElement.pause(); }
+  }
+  if(zmiana) renderSources();
 }
 function stopSource(s){
   if(!s||!s.playing) return;
   if(s.motion.mode==='orbit') wrocNaStartOrbity(s);
   if(s.isStream && s.audioElement){ s.audioElement.pause(); s.audioElement.currentTime=0; }
   else if(s.node){ try{s.node.stop();}catch(e){} s.node=null; }
-  s.startedAt=null;
-  s.playing=false; renderSources(); updateCounters();
+  s.playing=false; s.brzmi=false; s.startedAt=null; renderSources(); updateCounters();
 }
 function removeSource(id){
   const i=S.sources.findIndex(s=>s.id===id); if(i===-1) return;

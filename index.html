@@ -96,6 +96,12 @@
         <div class="fala-meta"><span class="fala-etyk">Fala</span><span id="falaCzas">—</span></div>
       </div>
 
+      <!-- Odtwarzanie i wejscie stoja pod fala, bo obie kontrolki dotycza CZASU, a fala
+           jest jego obrazem. Wejscie liczy sie od zera, ktore stawia przycisk
+           "Wszystkie" w sekcji 2 — pojedyncze play przy zrodle gra od razu. -->
+      <div class="routing-toggle" id="playbackToggle"><button class="routing-btn active" data-playback="loop">Loop</button><button class="routing-btn" data-playback="once">Raz</button></div>
+      <div class="param-row"><label>Wejście</label><input type="range" id="startOffset" min="0" max="120" value="0"><span class="param-val" id="startOffsetVal">0.0 s</span></div>
+
       <!-- Atrybucja nad przełącznikiem trybu: to metryczka dźwięku, a nie parametr brzmienia. -->
       <div class="sub-box" id="attrBox">
         <div class="sub-summary" role="button" tabindex="0" aria-expanded="false"><span class="sub-key">Atrybucja</span><span class="sub-state" id="attrState">—</span></div>

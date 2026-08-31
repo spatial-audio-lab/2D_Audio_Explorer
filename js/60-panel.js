@@ -37,6 +37,30 @@ const KONTROLKI = [
   { nazwa:'link', typ:'tekst', wej:'selUrl', zasieg:'zrodlo',
     czyta:s=>s.attrUrl||'', pisze:(s,v)=>{ s.attrUrl=v.trim()||null; } },
 
+  // Loop albo Raz. Slowo "petla" jest tu celowo NIEUZYTE — nizej stoi suwak Petla,
+  // ktory dotyczy petli TRAJEKTORII (czy dzwiek wraca na poczatek sciezki). Dwie
+  // "petle" w jednym panelu znaczylyby dwie rozne rzeczy.
+  // Zmiana w trakcie grania dziala od razu: flaga loop wezla da sie przestawic na zywo.
+  { nazwa:'odtwarzanie', typ:'grupa', wej:'playbackToggle', atrybut:'playback', zasieg:'zrodlo',
+    klasy:['active'], klasaAktywna:()=>'active',
+    pusta:'loop', czyta:s=>s.playback||'loop',
+    pisze:(s,v)=>{
+      s.playback=v;
+      if(s.node) s.node.loop=(v!=='once');
+      if(s.isStream&&s.audioElement) s.audioElement.loop=(v!=='once');
+      showToast(v==='once'?'Odtwarzanie: raz':'Odtwarzanie: loop');
+    },
+    // Bez odswiezWszystko klasa active zostaje na starym przycisku: klasy grupy
+    // przestawia pokaz(), a ta chodzi tylko przez updateSel().
+    odswiezWszystko:true, odswiezListe:true },
+
+  // Sekunda sceny, w ktorej zrodlo wchodzi. Suwak zmienia PARAMETR — na biegnaca scene
+  // nie wplywa, bo wejscia sa zaplanowane w Web Audio przy nacisnieciu Wszystkie.
+  { nazwa:'wejscie', typ:'suwak', wej:'startOffset', pole:'startOffsetVal', zasieg:'zrodlo',
+    skala:0.5, pusta:0, format:v=>v.toFixed(1)+' s',
+    czyta:s=>s.startOffset||0, pisze:(s,v)=>{ s.startOffset=v; },
+    odswiezListe:true },
+
   { nazwa:'routing', typ:'grupa', wej:'routingToggle', atrybut:'route', zasieg:'zrodlo',
     klasy:['active','active-direct'], klasaAktywna:v=>v==='direct'?'active-direct':'active',
     pusta:'spatial', czyta:s=>s.routing,
@@ -296,9 +320,16 @@ function renderSources(){
     const wTag=s.width>0.05&&s.routing==='spatial'?' · ↔'+s.width.toFixed(1)+'m':'';
     const rTag=s.routing==='direct'?' · direct':'';
     const mTag=s.motion.mode!=='static'?' · '+s.motion.mode:'';
+    // Trzy stany czasu na liscie. "czeka" i "wybrzmial" to zrodla, ktore SA w scenie
+    // (jada po swojej trajektorii), ale nic z nich nie slychac — bez podpisu wygladaja
+    // jak zepsute. Czekanie poznaje sie po zaplanowanym starcie w przyszlosci.
+    const pTag=s.playback==='once'?' · raz':'';
+    const oTag=(s.startOffset||0)>0.01?' · wejście '+(s.startOffset).toFixed(1)+'s':'';
+    const czeka=s.playing&&s.startedAt!=null&&audioCtx.currentTime<s.startedAt;
+    const sTag=s.playing&&!s.brzmi?(czeka?' · czeka':' · wybrzmiał'):'';
     const hAbs=Math.abs(s.height||0);
     const hTag=hAbs>0.2?' · '+(s.height>0?'↑':'↓')+hAbs.toFixed(1)+'m':'';
-    return `<div class="source-item ${S.selectedSource===s?'selected':''} ${s.playing?'playing':''}" data-id="${s.id}" role="button" tabindex="0" aria-label="Zaznacz źródło ${s.name}"><div class="src-num">${i+1}</div><div class="src-info"><div class="src-name">${s.name}</div><div class="src-meta">${d}m · ${Math.round(s.volume*100)}%${hTag}${wTag}${rTag}${mTag}${s.isStream?' · stream':''}</div></div><button class="src-btn ${s.playing?'active':''}" data-a="t" aria-label="${s.playing?'Zatrzymaj':'Odtwórz'} ${s.name}">${s.playing?'‖':'▶'}</button><button class="src-btn del" data-a="d" aria-label="Usuń ${s.name}">✕</button></div>`;
+    return `<div class="source-item ${S.selectedSource===s?'selected':''} ${s.playing?'playing':''}" data-id="${s.id}" role="button" tabindex="0" aria-label="Zaznacz źródło ${s.name}"><div class="src-num">${i+1}</div><div class="src-info"><div class="src-name">${s.name}</div><div class="src-meta">${d}m · ${Math.round(s.volume*100)}%${hTag}${wTag}${rTag}${mTag}${pTag}${oTag}${sTag}${s.isStream?' · stream':''}</div></div><button class="src-btn ${s.playing?'active':''}" data-a="t" aria-label="${s.playing?'Zatrzymaj':'Odtwórz'} ${s.name}">${s.playing?'‖':'▶'}</button><button class="src-btn del" data-a="d" aria-label="Usuń ${s.name}">✕</button></div>`;
   }).join('');
   sourcesList.querySelectorAll('.source-item').forEach(el=>{
     const s=S.sources.find(x=>x.id===el.dataset.id);
@@ -331,10 +362,12 @@ function updateCounters(){
 // =========================================================================================
 // RESZTA PANELU — to, co nie jest kontrolka parametru
 // =========================================================================================
-$('playAllBtn').addEventListener('click', ()=>S.sources.forEach(s=>playSource(s)));
-$('stopAllBtn').addEventListener('click', ()=>S.sources.forEach(s=>stopSource(s)));
-$('tPlayAll').addEventListener('click', ()=>{ S.sources.some(s=>s.playing)?S.sources.forEach(s=>stopSource(s)):S.sources.forEach(s=>playSource(s)); });
-$('tStopAll').addEventListener('click', ()=>S.sources.forEach(s=>stopSource(s)));
+// "Wszystkie" to ZERO sceny: od tej chwili liczy sie suwak Wejscie przy kazdym zrodle.
+// Pojedyncze play przy zrodle na liscie omija zegar i gra od razu — to podglad brzmienia.
+$('playAllBtn').addEventListener('click', graWszystkie);
+$('stopAllBtn').addEventListener('click', stopWszystkie);
+$('tPlayAll').addEventListener('click', ()=>{ S.sources.some(s=>s.playing)?stopWszystkie():graWszystkie(); });
+$('tStopAll').addEventListener('click', stopWszystkie);
 
 // Numer sceny jest opcjonalny. Wylaczony — pliki nazywaja sie samym tytulem sceny,
 // a numer nie pojawia sie ani w META, ani na mapie JPG.

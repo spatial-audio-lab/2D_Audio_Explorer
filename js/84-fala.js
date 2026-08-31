@@ -59,15 +59,18 @@ function malujFale(buffer, szer, wys){
 }
 
 // Gdzie jestesmy w nagraniu, w sekundach. null = nic nie gra albo nie wiadomo.
-// Strumien z biblioteki niesie wlasny zegar; bufor z dysku nie ma zadnego, wiec
-// liczymy od chwili startu zapisanej w playSource (s.startedAt).
+// Wartosc UJEMNA znaczy, ze zrodlo czeka na swoja sekunde w scenie i tyle jeszcze
+// brakuje. Strumien z biblioteki niesie wlasny zegar; bufor z dysku nie ma zadnego,
+// wiec liczymy od chwili startu zapisanej w playSource (s.startedAt).
 function pozycjaOdtwarzania(s){
   if(!s||!s.playing) return null;
   if(s.isStream) return s.audioElement ? s.audioElement.currentTime : null;
   const buf=S.buffers[s.id];
-  if(!buf||!s.startedAt) return null;
+  if(!buf||s.startedAt==null) return null;
   const t=audioCtx.currentTime-s.startedAt;
-  return t<0 ? 0 : t%buf.duration;
+  if(t<0) return t;
+  // Tryb Raz konczy sie na koncu nagrania; petla zawija sie i liczy od nowa.
+  return s.playback==='once' ? Math.min(t,buf.duration) : t%buf.duration;
 }
 
 function czasNapis(sek){
@@ -107,12 +110,22 @@ function rysujFale(){
     $('falaCzas').textContent=czasNapis(buf.duration);
     return;
   }
-  const x=Math.round((poz/buf.duration)*szer)+0.5;
+  if(poz<0){
+    // Zrodlo czeka na swoja sekunde. Kursora nie ma, bo nie ma czego wskazywac.
+    $('falaCzas').textContent='wejście za '+czasNapis(-poz);
+    return;
+  }
+  const wybrzmial = s.playback==='once' && poz>=buf.duration;
+  const x=Math.round((Math.min(poz,buf.duration)/buf.duration)*szer)+0.5;
   // Przebyta czesc przygasa, zeby kierunek byl widoczny bez patrzenia na kursor.
   c.fillStyle='rgba(10,12,8,0.45)'; c.fillRect(0,0,x,wys);
-  c.strokeStyle='#FFAB00'; c.lineWidth=Math.max(1,Math.round(dpr));
+  // Po wybrzmieniu kursor gasnie do szarosci: zrodlo jest jeszcze w scenie i jedzie
+  // po swojej trajektorii, ale juz nie brzmi.
+  c.strokeStyle=wybrzmial?'rgba(156,152,144,0.8)':'#FFAB00'; c.lineWidth=Math.max(1,Math.round(dpr));
   c.beginPath(); c.moveTo(x,0); c.lineTo(x,wys); c.stroke();
-  $('falaCzas').textContent=czasNapis(poz)+' / '+czasNapis(buf.duration);
+  $('falaCzas').textContent = wybrzmial
+    ? 'wybrzmiał · '+czasNapis(buf.duration)
+    : czasNapis(poz)+' / '+czasNapis(buf.duration);
 }
 
 // Kasuje pamiec podreczna. Wolane przy zmianie szerokosci plotna i przy usuwaniu zrodla.
