@@ -35,4 +35,8 @@ const randomRangeEl=$('randomRange'), randomRangeVal=$('randomRangeVal');
 const pathLoopEl=$('pathLoop'), pathLoopVal=$('pathLoopVal');
 const orbitParams=$('orbitParams'), randomParams=$('randomParams'), pathParams=$('pathParams');
 const libPanel=$('libraryPanel'), libTree=$('libTree'), libSearch=$('libSearch'), libCountBadge=$('libCountBadge');
+// Uchwyt prawego panelu stal dotad w 60-panel.js, czyli PO plikach, ktore go dzis
+// potrzebuja (20-ui.js otwiera i zamyka szuflade na telefonie). Kolejnosc ladowania
+// jest kontraktem: plik korzysta z tego, co zadeklarowaly pliki przed nim.
+const sidebar=$('sidebar');
 

@@ -75,3 +75,30 @@ document.querySelectorAll('.acc-head').forEach(h => {
   h.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleAccHead(h); } });
 });
 
+// SZUFLADA — prawy panel na telefonie.
+// Klasa `szuflada-otwarta` znaczy cos WYLACZNIE ponizej 900 px; wyzej reguly jej nie
+// czytaja, wiec zostawienie jej na elemencie po obroceniu telefonu nic nie psuje.
+// Stan trzyma klasa na elemencie, a nie osobna zmienna — inaczej po zmianie szerokosci
+// okna zmienna i wyglad zaczelyby mowic co innego.
+function ustawSzuflade(otwarta){
+  const u=$('szufladaUchwyt'); if(!u) return;
+  sidebar.classList.toggle('szuflada-otwarta', otwarta);
+  u.setAttribute('aria-expanded', otwarta?'true':'false');
+  // Otwierana szuflada zaczyna od gory: po zamknieciu i ponownym otwarciu uzytkownik
+  // ma zobaczyc sekcje 1, a nie miejsce, w ktorym skonczyl przewijac poprzednio.
+  if(otwarta) sidebar.scrollTop=0;
+}
+(function wepnijSzuflade(){
+  const u=$('szufladaUchwyt'); if(!u) return;
+  u.addEventListener('click', ()=>ustawSzuflade(!sidebar.classList.contains('szuflada-otwarta')));
+})();
+
+// Krzyzyk biblioteki. Na telefonie biblioteka przykrywa cale plotno, wiec bez tego
+// przycisku nie da sie do niej wrocic. `ustawBiblioteke` mieszka w 40-biblioteka.js,
+// czyli w pliku ladowanym PO tym — deklaracja funkcji sie hoistuje, ale wolamy ja
+// dopiero z klikniecia, wiec kolejnosc i tak nie ma tu znaczenia.
+(function wepnijZamknijBiblioteke(){
+  const z=$('libZamknij'); if(!z) return;
+  z.addEventListener('click', ()=>ustawBiblioteke(false));
+})();
+

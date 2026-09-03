@@ -49,7 +49,10 @@
   <div class="hp-warn" id="hpWarn"><span class="hp-ico">&#9834;</span><span class="hp-txt">Załóż słuchawki (odpowiednio LEWE i PRAWE ucho) — bez nich efekt przestrzenny (HRTF) nie zadziała poprawnie.</span><button class="hp-close" id="hpWarnClose" aria-label="Zamknij ostrzeżenie">&times;</button></div>
 
   <aside class="library-panel collapsed" id="libraryPanel">
-    <div class="lib-header"><div class="lib-header-row"><span class="lib-title">Biblioteka</span><span class="lib-count-badge" id="libCountBadge">—</span></div><input class="lib-search" id="libSearch" type="text" placeholder="Szukaj dźwięków…"></div>
+    <!-- Krzyzyk widac WYLACZNIE na telefonie: tam biblioteka wchodzi na pelny ekran
+         i przykrywa plotno, wiec musi byc czym ja zamknac. Na komputerze zostaje
+         panelem bocznym, ktory zwija przycisk «Biblioteka SAL» z sekcji 01. -->
+    <div class="lib-header"><div class="lib-header-row"><span class="lib-title">Biblioteka</span><span class="lib-count-badge" id="libCountBadge">—</span><button class="lib-zamknij" id="libZamknij" type="button" aria-label="Zamknij bibliotekę">&times;</button></div><input class="lib-search" id="libSearch" type="text" placeholder="Szukaj dźwięków…"></div>
     <div class="lib-tree" id="libTree"><div class="lib-empty-msg">Ładowanie…</div></div>
   </aside>
 
@@ -69,6 +72,10 @@
   </div>
 
   <aside class="sidebar" id="sidebar">
+    <!-- Uchwyt szuflady. Na komputerze jest ukryty (display:none w css/sal.css) — prawy
+         panel stoi tam po prawej i nie ma czego rozwijac. Ponizej 900 px panel jedzie
+         na dol jako szuflada NAD paskiem transportu, a ten przycisk ja otwiera i zamyka. -->
+    <button class="szuflada-uchwyt" id="szufladaUchwyt" type="button" aria-expanded="false" aria-controls="sidebar"><span class="szuflada-kreska"></span><span class="szuflada-etyk">Ustawienia sceny</span><span class="szuflada-strzalka">▾</span></button>
     <div class="acc-panel"><div class="acc-head" data-acc="add" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">1</span><span class="acc-title">Dodaj dźwięki</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
       <!-- Dwa zrodla dzwieku obok siebie. Wczesniej biblioteka byla zakladka w gornym pasku,
            wiec nie wygladala na czesc kroku "dodaj dzwieki" i latwo bylo jej nie zauwazyc. -->

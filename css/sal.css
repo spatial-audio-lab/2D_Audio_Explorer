@@ -45,7 +45,13 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .library-panel { grid-area: lib; display: flex; flex-direction: column; border-right: 1px solid var(--dim); background: rgba(10,12,8,0.5); overflow: hidden; min-width: 0; max-width: var(--lib-w); width: var(--lib-w); transition: max-width 0.4s ease, width 0.4s ease; }
 .library-panel.collapsed { max-width: 0; width: 0; border-right-width: 0; }
 .lib-header { padding: var(--md) var(--lg); border-bottom: 1px solid var(--dim); flex-shrink: 0; }
-.lib-header-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--sm); }
+.lib-header-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sm); margin-bottom: var(--sm); }
+/* Krzyzyk zamykajacy biblioteke istnieje tylko na telefonie — patrz blok <=900 px. */
+.lib-zamknij { display: none; align-items: center; justify-content: center; flex: none;
+  width: 32px; height: 32px; margin: -4px -8px -4px 0; background: none;
+  border: 1px solid var(--dim); color: var(--mid); font-family: var(--font-mono);
+  font-size: var(--fs-lg); line-height: 1; cursor: pointer; }
+.lib-zamknij:hover { border-color: var(--cyan); color: var(--cyan); }
 .lib-title { font-family: var(--font-ui); font-size: 18px; font-weight: 300; color: var(--white); }
 .lib-count-badge { font-size: var(--fs-xs); letter-spacing: 0.15em; color: var(--amber); font-weight: 700; }
 .lib-search { width: 100%; background: rgba(240,235,224,0.04); border: 1px solid var(--dim); color: var(--white); font-family: var(--font-mono); font-size: var(--fs-sm); padding: var(--sm) 10px; transition: border-color 0.3s; }
@@ -129,6 +135,9 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .hint kbd { color: var(--cyan); font-family: inherit; font-weight: 700; }
 
 .sidebar { grid-area: side; display: flex; flex-direction: column; border-left: 1px solid var(--dim); background: rgba(10,12,8,0.5); overflow-y: auto; overflow-x: hidden; }
+/* Uchwyt szuflady. Na komputerze go nie ma — panel stoi po prawej i nic nie zwija.
+   Wyglad i zachowanie: blok <=900 px nizej. */
+.szuflada-uchwyt { display: none; }
 .acc-panel { border-bottom: 1px solid var(--dim); }
 .acc-head { display: flex; align-items: center; justify-content: space-between; padding: 12px var(--lg); cursor: pointer; transition: background 0.2s; user-select: none; }
 .acc-head:hover { background: rgba(0,229,204,0.10); box-shadow: inset 3px 0 0 var(--cyan); }
@@ -386,9 +395,72 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .help-panel h3:first-child { margin-top: 0; }
 .hidden-input { display: none; }
 
+/* ============================================================================
+   TELEFON I TABLET (<=900 px)
+   Dotad ten blok mial jedna linijke: `.library-panel, .sidebar, .control-hints
+   { display: none }`. Zmierzone 03.09 na realnym renderze pod localhostem:
+   sidebar `none`, libraryPanel `none` — czyli na telefonie nie dalo sie dodac
+   ZADNEGO dzwieku ani niczego ustawic. Apka nie byla "nieczytelna", tylko pusta.
+   Panele wiec nie znikaja — zmieniaja miejsce: prawy panel jedzie na dol jako
+   szuflada nad paskiem transportu, biblioteka wchodzi na pelny ekran.
+   ============================================================================ */
 @media (max-width: 900px) {
   .app-layout { grid-template-columns: 1fr; grid-template-rows: var(--nav-h) auto 1fr var(--transport-h); grid-template-areas: "nav" "warn" "canvas" "transport"; }
-  .library-panel, .sidebar, .control-hints { display: none; }
+
+  /* Pasek marki ma wlasny blok <=900 px NIZEJ w pliku, tuz nad blokiem <=380 px.
+     Powod jest w kaskadzie, nie w porzadku tresci: reguly bazowe paska (.sal-tabs,
+     .sal-burger) sa zadeklarowane PO tym miejscu, wiec przy rownej specyficznosci
+     wygrywaja kolejnoscia. Zmierzone: burger sie stad nie zapalal. */
+
+  /* --- NAKLADKI NA PLOTNIE -------------------------------------------------
+     HUD 168 px + minimapa 120 px = 288 px z 390 px szerokosci telefonu. Cale
+     plotno JEST mapa, wiec minimapa nie niesie tam nowej informacji, a podpowiedzi
+     klawiszowe (WASD, Shift+klik) opisuja klawisze, ktorych telefon nie ma. --- */
+  .hud, .minimap, .control-hints { display: none; }
+
+  /* --- PRAWY PANEL JAKO SZUFLADA -------------------------------------------
+     Szuflada stoi NAD paskiem transportu, a nie na nim: Graj i Stop maja byc pod
+     palcem zawsze, takze przy otwartej szufladzie. Dwie wysokosci, nie trzy —
+     tresc panelu przewija sie w srodku, wiec "polowa" i "caly ekran" roznilyby sie
+     tylko tym, ile widac plotna, a plotno jest tu wazniejsze. --- */
+  .sidebar { position: fixed; left: 0; right: 0; bottom: var(--transport-h); z-index: 40;
+    grid-area: auto; height: 52px;
+    max-height: calc(100dvh - var(--nav-h) - var(--transport-h));
+    border-left: none; border-top: 1px solid var(--dim); background: var(--black);
+    transition: height 0.3s ease; }
+  /* Zwinieta szuflada nie moze sie przewijac w swoim 52-pikselowym pasku. */
+  .sidebar:not(.szuflada-otwarta) { overflow: hidden; }
+  .sidebar.szuflada-otwarta { height: 62dvh; }
+
+  /* Uchwyt jest `sticky`, a nie pierwszym elementem kolumny flex — dzieki temu
+     przewija sie samo WNETRZE panelu, a uchwyt zostaje na wierzchu bez dokladania
+     opakowania do markupu. */
+  .szuflada-uchwyt { display: flex; align-items: center; gap: var(--md);
+    position: sticky; top: 0; z-index: 2;
+    width: 100%; min-height: 52px; padding: 0 var(--lg);
+    background: var(--black); border: none; border-bottom: 1px solid var(--dim);
+    color: var(--white); font-family: var(--font-mono); font-weight: 500;
+    font-size: var(--fs-xs); letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: pointer; }
+  .szuflada-kreska { width: 28px; height: 2px; background: var(--mid); flex: none; }
+  .szuflada-etyk { flex: 1; text-align: left; }
+  /* Ta sama strzalka co w naglowkach sekcji. Azeret Mono nie ma znaku "w gore",
+     wiec kierunek robi obrot, a nie drugi znak. */
+  .szuflada-strzalka { color: var(--cyan); font-size: var(--fs-sm); transition: transform 0.3s; }
+  .sidebar.szuflada-otwarta .szuflada-strzalka { transform: rotate(180deg); }
+
+  /* --- BIBLIOTEKA NA PELNY EKRAN ------------------------------------------- */
+  .library-panel { position: fixed; inset: var(--nav-h) 0 0 0; z-index: 60;
+    grid-area: auto; width: auto; max-width: none;
+    border-right: none; background: var(--black); transition: none; }
+  .library-panel.collapsed { display: none; }
+  .lib-zamknij { display: flex; }
+
+  /* --- PASEK TRANSPORTU ----------------------------------------------------
+     Przy 390 px nazwa sceny lamala sie na dwie linie i rozpychala pasek. Liczniki
+     (Zrodel / Aktywnych) niosa wiecej niz nazwa, ktora i tak stoi w oknie eksportu. --- */
+  .transport { gap: var(--md); padding: 0 var(--md); }
+  .transport-scene { display: none; }
 }
 /* ============================================================
    SAL Design Manifest v3.0 - warstwa zgodnosci
@@ -462,6 +534,33 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .sal-burger span { width: 18px; height: 1.5px; background: var(--mid); display: block; }
 .sal-mobile-menu { display: none; }
 
+/* ============================================================================
+   PASEK MARKI NA TELEFONIE (<=900 px)
+   Ten blok stoi TUTAJ, a nie razem z reszta ukladu telefonu, bo reguly bazowe
+   paska (.sal-tabs, .sal-burger, .sal-desc) sa zadeklarowane powyzej i przy rownej
+   specyficznosci wygrywaja kolejnoscia w pliku. Zmierzone: z bloku przy ukladzie
+   burger sie nie zapalal ani na 360, ani na 412 px.
+
+   Prog 900, a nie 380: zmierzone szerokosci skladnikow paska to pigulka 113 +
+   nazwa 66 + zakladki 155 + separatory i marginesy = 434 px MINIMUM, juz bez opisu.
+   iPhone 14/15 ma 390 px, Pixel 412 px — w calym przedziale 381-900 px pasek dotad
+   wystawal za ekran i strona przewijala sie w poziomie (zmierzone: 435 px tresci
+   na 412 px ekranu).
+   ============================================================================ */
+@media (max-width: 900px) {
+  .sal-desc { display: none; }
+  .sal-sep--inline { display: none; }
+  .sal-tabs { display: none; }
+  .sal-burger { display: flex; }
+  /* top:100% zamiast sztywnych pikseli — pasek ma 68 px, a ponizej 380 px 60 px. */
+  .sal-mobile-menu.is-open { display: flex; flex-direction: column; position: absolute;
+    top: 100%; left: 0; right: 0; z-index: 50; background: var(--black);
+    border-bottom: 1px solid var(--dim); padding: 8px 12px 14px; gap: 4px; }
+  .sal-mobile-menu .sal-tab { padding: 10px 4px; border-bottom: 1px solid rgba(240,235,224,0.08); }
+}
+
+/* Najwezsze telefony. Ten blok zmniejsza juz TYLKO rozmiary — zakladki, burger
+   i menu mobilne przelacza blok <=900 px wyzej, bo tam jest ich prog. */
 @media (max-width: 380px) {
   .sal-bar { height: 60px; padding: 0 12px; }
   .sal-pill { padding: 5px 10px 5px 6px; gap: 8px; }
@@ -471,14 +570,6 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
   .sal-status-dot { width: 9px; height: 9px; margin-right: 10px; }
   .sal-name-wrap { flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; flex: 1; }
   .sal-name { font-size: 16px; }
-  .sal-desc { font-size: 11.5px; max-width: 100%; }
-  .sal-sep--inline { display: none; }
-  .sal-tabs { display: none; }
-  .sal-burger { display: flex; }
-  .sal-mobile-menu.is-open { display: flex; flex-direction: column; position: absolute; top: 60px;
-    left: 0; right: 0; z-index: 50; background: var(--black); border-bottom: 1px solid var(--dim);
-    padding: 8px 12px 14px; gap: 4px; }
-  .sal-mobile-menu .sal-tab { padding: 10px 4px; border-bottom: 1px solid rgba(240,235,224,0.08); }
 }
 
 /* --- par.12 ostrzezenie o sluchawkach --- */

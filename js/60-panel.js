@@ -291,8 +291,7 @@ function syncSubStates(){ odswiezWskazniki(); }
 // NASLUCHY — po jednym na typ zdarzenia, delegowane z calego panelu. Kontrolka nie
 // potrzebuje wlasnego addEventListener, wiec dodanie jej to nadal jeden obiekt w tablicy.
 // =========================================================================================
-const sidebar=$('sidebar');
-
+// Uchwyt `sidebar` deklaruje 10-stan.js razem z pozostalymi uchwytami DOM.
 sidebar.addEventListener('input', e=>{
   const k=WG_WEJSCIA[e.target.id];
   if(k && !k.wlasnyNasluch) zapisz(k, e.target.value);
