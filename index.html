@@ -76,6 +76,10 @@
          panel stoi tam po prawej i nie ma czego rozwijac. Ponizej 900 px panel jedzie
          na dol jako szuflada NAD paskiem transportu, a ten przycisk ja otwiera i zamyka. -->
     <button class="szuflada-uchwyt" id="szufladaUchwyt" type="button" aria-expanded="false" aria-controls="sidebar"><span class="szuflada-kreska"></span><span class="szuflada-etyk">Ustawienia sceny</span><span class="szuflada-strzalka">▾</span></button>
+    <!-- Skrocony panel telefonu. To, ktore kontrolki w nim zostaja, opisuje pole `telefon`
+         w rejestrze KONTROLKI (js/60-panel.js), a nie ta lista ani ten przycisk. Na
+         komputerze przycisk jest ukryty i nic nie chowa. -->
+    <button class="panel-przelacznik" id="panelPrzelacznik" type="button" aria-controls="sidebar" aria-expanded="false">Pokaż wszystkie ustawienia</button>
     <div class="acc-panel"><div class="acc-head" data-acc="add" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">1</span><span class="acc-title">Dodaj dźwięki</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
       <!-- Gotowe sceny stoja PRZED biblioteka i wlasnymi plikami, bo na telefonie to jest
            jedyne wejscie, ktore nie wymaga niczego znalezc. Przyciski rysuje
@@ -135,7 +139,7 @@
       <div class="param-row"><label>Wys</label><input type="range" id="heightSlider" min="-100" max="100" value="0"><span class="param-val" id="heightVal">0.0m</span></div>
 
       <div id="spatialSection">
-        <div class="sub-box">
+        <div class="sub-box" id="stereoBox">
           <div class="sub-summary" role="button" tabindex="0" aria-expanded="false"><span class="sub-num">3.1</span><span class="sub-key">Szerokość stereo</span><span class="sub-state stereo-indicator" id="stereoInd">Punkt</span></div>
           <div class="sub-body">
             <div class="param-row"><label>Szer.</label><input type="range" id="widthSlider" min="0" max="200" value="0" step="1"><span class="param-val" id="widthVal">0.0m</span></div>
@@ -163,7 +167,7 @@
 
     <div class="acc-panel"><div class="acc-head" data-acc="room" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">4</span><span class="acc-title">Przestrzeń</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
       <div class="param-row"><label>Master</label><input type="range" id="masterVolSlider" min="0" max="100" value="100"><span class="param-val" id="masterVolVal">100%</span></div>
-      <div class="sub-box">
+      <div class="sub-box" id="reverbBox">
         <div class="sub-summary" role="button" tabindex="0" aria-expanded="false"><span class="sub-num">4.1</span><span class="sub-key">Reverb</span><span class="sub-state" id="reverbState2">Włączony</span></div>
         <div class="sub-body">
           <div class="param-row"><label>Stan</label><button class="btn-toggle active" id="reverbEnableBtn" aria-pressed="true">Włączony</button></div>
@@ -177,7 +181,7 @@
     <!-- Eksport nie miesci sie juz w kolumnie 420 px: pol tuzina pol tekstowych, opis sceny
          i lista opcji. Naglowek sekcji otwiera dlatego pelnoekranowe okno, a panel zostaje
          przy tym, do czego sluzy — przy ukladaniu dzwiekow. -->
-    <div class="acc-panel">
+    <div class="acc-panel" id="eksportPanel">
       <div class="acc-head acc-head--akcja" id="openExport" role="button" tabindex="0" aria-haspopup="dialog">
         <div class="acc-head-left"><span class="acc-num">5</span><span class="acc-title">Eksport</span></div>
         <span class="acc-arrow acc-arrow--okno">&#8599;</span>
@@ -191,7 +195,10 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- Toast ma dwa zycia. Krotkie (domyslne) gasnie samo — to potwierdzenie, ze cos sie
+     stalo. Dlugie (showToast z czasem 0) zostaje, dopoki uzytkownik go nie zamknie:
+     podpowiedz gotowej sceny MOWI, CO ZROBIC, wiec musi przezyc czytanie. -->
+<div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-txt" id="toastTxt"></span><button class="toast-close" id="toastClose" type="button" aria-label="Zamknij podpowiedź">&times;</button></div>
 
 <!-- Potwierdzenie dzialan nieodwracalnych. Jedno okno obsluguje kasowanie zrodla
      i ostrzezenie przed eksportem, ktory po cichu pominalby czesc sceny. -->

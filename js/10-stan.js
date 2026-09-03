@@ -22,7 +22,7 @@ const $ = id => document.getElementById(id);
 const app=$('app'), mainCanvas=$('mainCanvas'), ctx=mainCanvas.getContext('2d');
 const minimapCanvas=$('minimapCanvas'), minimapCtx=minimapCanvas.getContext('2d');
 const compassNeedle=$('compassNeedle'), hudPos=$('hudPos'), hudRot=$('hudRot'), hudSrc=$('hudSrc');
-const targetIndicator=$('targetIndicator'), toastEl=$('toast');
+const targetIndicator=$('targetIndicator'), toastEl=$('toast'), toastTxtEl=$('toastTxt');
 const fileInput=$('fileInput'), fileDrop=$('fileDrop');
 const sourcesList=$('sourcesList'), selName=$('selName');
 const selAuthor=$('selAuthor'), selLicense=$('selLicense'), selUrl=$('selUrl'), attrState=$('attrState');

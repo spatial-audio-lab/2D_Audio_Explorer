@@ -109,7 +109,10 @@ async function uruchomSceneDemo(sc){
   const pole = $('sceneName'); if(pole) pole.value = sc.nazwa;
   selectSource(pierwsze);
   renderSources(); updateCounters(); odswiezWskazniki();
-  showToast(nieudane ? sc.nazwa+' — brakuje '+nieudane+' dźwięku' : sc.podpowiedz || sc.nazwa, 6000);
+  // Czas 0 = podpowiedz zostaje na ekranie, dopoki uzytkownik jej nie zamknie. To jest
+  // instrukcja ("nacisnij, przelacz, obroc sie"), a nie potwierdzenie — ma przezyc
+  // zakladanie sluchawek.
+  showToast(nieudane ? sc.nazwa+' — brakuje '+nieudane+' dźwięku' : sc.podpowiedz || sc.nazwa, 0);
 }
 
 wczytajScenyDemo();

@@ -135,9 +135,9 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .hint kbd { color: var(--cyan); font-family: inherit; font-weight: 700; }
 
 .sidebar { grid-area: side; display: flex; flex-direction: column; border-left: 1px solid var(--dim); background: rgba(10,12,8,0.5); overflow-y: auto; overflow-x: hidden; }
-/* Uchwyt szuflady. Na komputerze go nie ma — panel stoi po prawej i nic nie zwija.
-   Wyglad i zachowanie: blok <=900 px nizej. */
-.szuflada-uchwyt { display: none; }
+/* Uchwyt szuflady i przelacznik skroconego panelu. Na komputerze ich nie ma — panel
+   stoi po prawej, nic nie zwija i nic nie chowa. Wyglad: blok <=900 px nizej. */
+.szuflada-uchwyt, .panel-przelacznik { display: none; }
 .acc-panel { border-bottom: 1px solid var(--dim); }
 .acc-head { display: flex; align-items: center; justify-content: space-between; padding: 12px var(--lg); cursor: pointer; transition: background 0.2s; user-select: none; }
 .acc-head:hover { background: rgba(0,229,204,0.10); box-shadow: inset 3px 0 0 var(--cyan); }
@@ -357,8 +357,19 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .t-counter-num { font-family: var(--font-ui); font-size: 22px; font-weight: 300; color: var(--cyan); line-height: 1; }
 .t-counter-label { font-size: var(--fs-2xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
 
-.toast { position: fixed; bottom: calc(var(--transport-h) + var(--md)); left: 50%; transform: translateX(-50%) translateY(60px); border: 1px solid rgba(0,229,204,0.3); background: var(--surface); padding: var(--sm) var(--lg); font-size: var(--fs-sm); color: var(--white); z-index: 200; opacity: 0; transition: all 0.4s ease; pointer-events: none; }
+.toast { position: fixed; bottom: calc(var(--transport-h) + var(--md)); left: 50%; transform: translateX(-50%) translateY(60px); border: 1px solid rgba(0,229,204,0.3); background: var(--surface); padding: var(--sm) var(--lg); font-size: var(--fs-sm); color: var(--white); z-index: 200; opacity: 0; transition: all 0.4s ease; pointer-events: none;
+  display: flex; align-items: center; gap: var(--md); text-align: left; line-height: 1.45;
+  max-width: min(520px, calc(100vw - 2 * var(--md))); }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+/* Trwaly toast musi dac sie kliknac — krotki celowo nie lapie myszy, zeby nie zaslaniac
+   plotna pod soba. Ramka acid odroznia "przeczytaj i zrob" od "przyjete do wiadomosci". */
+.toast.trwaly { pointer-events: auto; border-color: var(--acid-dim); cursor: pointer; }
+.toast-close { display: none; align-items: center; justify-content: center; flex: none;
+  width: 28px; height: 28px; margin: -4px -10px -4px 0; background: none;
+  border: 1px solid var(--dim); color: var(--mid); font-family: var(--font-mono);
+  font-size: var(--fs-lg); line-height: 1; cursor: pointer; }
+.toast.trwaly .toast-close { display: flex; }
+.toast-close:hover { border-color: var(--acid); color: var(--acid); }
 
 /* --- Okno potwierdzenia dla dzialan nieodwracalnych (kasowanie zrodla, ryzykowny eksport) --- */
 .confirm-overlay { position: fixed; inset: 0; z-index: 400; display: none; align-items: center; justify-content: center; background: rgba(10,12,8,0.88); }
@@ -474,6 +485,19 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
      wiec kierunek robi obrot, a nie drugi znak. */
   .szuflada-strzalka { color: var(--cyan); font-size: var(--fs-sm); transition: transform 0.3s; }
   .sidebar.szuflada-otwarta .szuflada-strzalka { transform: rotate(180deg); }
+
+  /* --- SKROCONY PANEL ------------------------------------------------------
+     Jedenascie kontrolek zamiast dwudziestu dwoch. Ktore zostaja, mowi pole `telefon`
+     w rejestrze KONTROLKI — tutaj jest tylko chowanie. Klasa siedzi na #sidebar, wiec
+     przelaczenie to jeden przelot CSS, a nie 22 przestawienia klas.
+     Nic nie znika bezpowrotnie: przycisk pod uchwytem pokazuje reszte. --- */
+  .sidebar.panel-skrocony .poza-telefonem { display: none; }
+  .panel-przelacznik { display: block; width: 100%; min-height: 44px;
+    padding: 10px var(--lg); background: none; border: none;
+    border-bottom: 1px solid var(--dim); color: var(--cyan); cursor: pointer;
+    font-family: var(--font-mono); font-weight: 500; font-size: var(--fs-2xs);
+    letter-spacing: 0.15em; text-transform: uppercase; text-align: left; }
+  .panel-przelacznik:hover { background: rgba(0,229,204,0.06); }
 
   /* --- BIBLIOTEKA NA PELNY EKRAN ------------------------------------------- */
   .library-panel { position: fixed; inset: var(--nav-h) 0 0 0; z-index: 60;

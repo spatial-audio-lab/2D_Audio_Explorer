@@ -154,8 +154,8 @@ więc nowa kontrolka nie potrzebuje własnego `addEventListener`.
 Nowy suwak to jeden wiersz HTML w sekcji panelu i jeden obiekt:
 
 ```js
-{ nazwa:'wysokosc', typ:'suwak', wej:'heightSlider', pole:'heightVal', zasieg:'zrodlo',
-  skala:0.1, pusta:0, format:v=>v.toFixed(1)+'m',
+{ nazwa:'wysokosc', telefon:false, typ:'suwak', wej:'heightSlider', pole:'heightVal',
+  zasieg:'zrodlo', skala:0.1, pusta:0, format:v=>v.toFixed(1)+'m',
   czyta:s=>s.height||0,
   pisze:(s,v)=>{ s.height=v; updPanners(s); } }
 ```
@@ -166,8 +166,15 @@ Nowy suwak to jeden wiersz HTML w sekcji panelu i jeden obiekt:
 jednostki modelu. Obok są dwie mniejsze tablice: `WIDOCZNOSC` (kiedy sekcja się otwiera
 albo gaśnie) i `WSKAZNIKI` (podpisy stanu w nagłówkach podsekcji).
 
+`telefon` jest **obowiązkowe** i mówi, czy kontrolka zostaje w skróconym panelu poniżej
+900 px. Dziś jest ich jedenaście z dwudziestu dwóch; reszta czeka pod przyciskiem
+«Pokaż wszystkie ustawienia». `_diag-telefon.js` nie przepuści opisu bez tego pola —
+„zapomniałem” i „świadomie schowałem” wyglądają w kodzie tak samo, więc decyzja musi
+być jawna. Podsekcje i bloki markupu, których rejestr nie zna (atrybucja, 3.1, 4.1,
+sekcja 5), wylicza obok `POJEMNIKI_POZA_TELEFONEM`.
+
 Po zmianie uruchom `harness-panel.js` — sprawdza między innymi, czy **każdy** suwak
-w panelu ma swój opis w rejestrze.
+w panelu ma swój opis w rejestrze — oraz `_diag-telefon.js`.
 
 ## Publikacja na GitHub Pages
 

@@ -14,6 +14,11 @@
 // =========================================================================================
 // Pola opisu:
 //   nazwa     — klucz w kodzie, nie w DOM
+//   telefon   — czy kontrolka jest w SKROCONYM panelu telefonu. Pole jest OBOWIAZKOWE:
+//               harness nie przepusci opisu bez jawnej decyzji, bo "zapomnialem" i
+//               "swiadomie schowalem" wygladaja w kodzie tak samo. Ponizej 900 px
+//               kontrolki z `telefon:false` chowa klasa `poza-telefonem`, dopoki
+//               uzytkownik nie naciśnie "Pokaż wszystkie ustawienia".
 //   typ       — 'suwak' | 'tekst' | 'grupa'
 //   wej       — id elementu wejsciowego; dla grupy id pojemnika z przyciskami
 //   pole      — id elementu z podpisem wartosci (suwak)
@@ -26,22 +31,22 @@
 //   odswiezListe / odswiezWszystko — co przeliczyc po zmianie
 const KONTROLKI = [
   // ----- 3. Wybrany dzwiek -------------------------------------------------------------
-  { nazwa:'nazwa', typ:'tekst', wej:'selName', zasieg:'zrodlo',
+  { nazwa:'nazwa', telefon:true, typ:'tekst', wej:'selName', zasieg:'zrodlo',
     wlasnyNasluch:true, klasaPusta:'empty',
     czyta:s=>s.name },
 
-  { nazwa:'autor', typ:'tekst', wej:'selAuthor', zasieg:'zrodlo',
+  { nazwa:'autor', telefon:false, typ:'tekst', wej:'selAuthor', zasieg:'zrodlo',
     czyta:s=>s.attrAuthor||'', pisze:(s,v)=>{ s.attrAuthor=v.trim()||null; } },
-  { nazwa:'licencja', typ:'tekst', wej:'selLicense', zasieg:'zrodlo',
+  { nazwa:'licencja', telefon:false, typ:'tekst', wej:'selLicense', zasieg:'zrodlo',
     czyta:s=>s.attrLicense||'', pisze:(s,v)=>{ s.attrLicense=v.trim()||null; } },
-  { nazwa:'link', typ:'tekst', wej:'selUrl', zasieg:'zrodlo',
+  { nazwa:'link', telefon:false, typ:'tekst', wej:'selUrl', zasieg:'zrodlo',
     czyta:s=>s.attrUrl||'', pisze:(s,v)=>{ s.attrUrl=v.trim()||null; } },
 
   // Loop albo Raz. Slowo "petla" jest tu celowo NIEUZYTE — nizej stoi suwak Petla,
   // ktory dotyczy petli TRAJEKTORII (czy dzwiek wraca na poczatek sciezki). Dwie
   // "petle" w jednym panelu znaczylyby dwie rozne rzeczy.
   // Zmiana w trakcie grania dziala od razu: flaga loop wezla da sie przestawic na zywo.
-  { nazwa:'odtwarzanie', typ:'grupa', wej:'playbackToggle', atrybut:'playback', zasieg:'zrodlo',
+  { nazwa:'odtwarzanie', telefon:false, typ:'grupa', wej:'playbackToggle', atrybut:'playback', zasieg:'zrodlo',
     klasy:['active'], klasaAktywna:()=>'active',
     pusta:'loop', czyta:s=>s.playback||'loop',
     pisze:(s,v)=>{
@@ -56,42 +61,42 @@ const KONTROLKI = [
 
   // Sekunda sceny, w ktorej zrodlo wchodzi. Suwak zmienia PARAMETR — na biegnaca scene
   // nie wplywa, bo wejscia sa zaplanowane w Web Audio przy nacisnieciu Wszystkie.
-  { nazwa:'wejscie', typ:'suwak', wej:'startOffset', pole:'startOffsetVal', zasieg:'zrodlo',
+  { nazwa:'wejscie', telefon:false, typ:'suwak', wej:'startOffset', pole:'startOffsetVal', zasieg:'zrodlo',
     skala:0.5, pusta:0, format:v=>v.toFixed(1)+' s',
     czyta:s=>s.startOffset||0, pisze:(s,v)=>{ s.startOffset=v; },
     odswiezListe:true },
 
-  { nazwa:'routing', typ:'grupa', wej:'routingToggle', atrybut:'route', zasieg:'zrodlo',
+  { nazwa:'routing', telefon:true, typ:'grupa', wej:'routingToggle', atrybut:'route', zasieg:'zrodlo',
     klasy:['active','active-direct'], klasaAktywna:v=>v==='direct'?'active-direct':'active',
     pusta:'spatial', czyta:s=>s.routing,
     pisze:(s,v)=>{ setRouting(s,v); showToast(v==='direct'?'♫ Direct Stereo':'◎ Spatial HRTF'); },
     odswiezWszystko:true, odswiezListe:true },
 
-  { nazwa:'glosnosc', typ:'suwak', wej:'volSlider', pole:'volVal', zasieg:'zrodlo',
+  { nazwa:'glosnosc', telefon:true, typ:'suwak', wej:'volSlider', pole:'volVal', zasieg:'zrodlo',
     skala:0.01, pusta:0.7, format:v=>Math.round(v*100)+'%',
     czyta:s=>s.volume,
     pisze:(s,v)=>{ s.volume=v; s.gain.gain.setValueAtTime(v,audioCtx.currentTime); },
     odswiezListe:true },
 
-  { nazwa:'wysokosc', typ:'suwak', wej:'heightSlider', pole:'heightVal', zasieg:'zrodlo',
+  { nazwa:'wysokosc', telefon:false, typ:'suwak', wej:'heightSlider', pole:'heightVal', zasieg:'zrodlo',
     skala:0.1, pusta:0, format:v=>v.toFixed(1)+'m',
     czyta:s=>s.height||0,
     pisze:(s,v)=>{ s.height=v; updPanners(s); } },
 
-  { nazwa:'szerokosc', typ:'suwak', wej:'widthSlider', pole:'widthVal', zasieg:'zrodlo',
+  { nazwa:'szerokosc', telefon:false, typ:'suwak', wej:'widthSlider', pole:'widthVal', zasieg:'zrodlo',
     skala:0.1, pusta:0, format:v=>v.toFixed(1)+'m',
     czyta:s=>s.width,
     pisze:(s,v)=>{ s.width=v; updPanners(s); },
     odswiezListe:true },
 
-  { nazwa:'kat', typ:'suwak', wej:'angleSlider', pole:'angleVal', zasieg:'zrodlo',
+  { nazwa:'kat', telefon:false, typ:'suwak', wej:'angleSlider', pole:'angleVal', zasieg:'zrodlo',
     skala:1, pusta:0, format:v=>Math.round(v)+'°',
     czyta:s=>s.spreadAngle,
     pisze:(s,v)=>{ s.spreadAngle=v; updPanners(s); } },
 
   // Orbita i random licza sie wzgledem punktu, w ktorym dzwiek stal w chwili wlaczenia
   // trybu — dlatego origin zapisuje sie przy PRZEJSCIU, nie przy kazdym kliknieciu.
-  { nazwa:'ruch', typ:'grupa', wej:'motionModeRow', atrybut:'motion', zasieg:'zrodlo',
+  { nazwa:'ruch', telefon:true, typ:'grupa', wej:'motionModeRow', atrybut:'motion', zasieg:'zrodlo',
     klasy:['active'], klasaAktywna:()=>'active',
     pusta:'static', czyta:s=>s.motion.mode,
     pisze:(s,v)=>{
@@ -112,11 +117,11 @@ const KONTROLKI = [
     },
     odswiezWszystko:true },
 
-  { nazwa:'predkosc', typ:'suwak', wej:'motionSpeed', pole:'motionSpeedVal', zasieg:'zrodlo',
+  { nazwa:'predkosc', telefon:true, typ:'suwak', wej:'motionSpeed', pole:'motionSpeedVal', zasieg:'zrodlo',
     skala:0.1, pusta:2, format:v=>v.toFixed(1),
     czyta:s=>s.motion.speed, pisze:(s,v)=>{ s.motion.speed=v; } },
 
-  { nazwa:'promien', typ:'suwak', wej:'orbitRadius', pole:'orbitRadiusVal', zasieg:'zrodlo',
+  { nazwa:'promien', telefon:true, typ:'suwak', wej:'orbitRadius', pole:'orbitRadiusVal', zasieg:'zrodlo',
     skala:0.1, pusta:5, format:v=>v.toFixed(1)+'m',
     czyta:s=>s.motion.orbitRadius,
     // Okrag rosnie wokol swojego srodka, a dzwiek zostaje na jego brzegu.
@@ -125,41 +130,41 @@ const KONTROLKI = [
 
   // Start liczony od POLNOCY, bo tam patrzy sluchacz. To PARAMETR, nie odczyt biezacej
   // pozycji: od niego rusza odsluch, nagranie i powrot po nacisnieciu Stop.
-  { nazwa:'start', typ:'suwak', wej:'orbitStart', pole:'orbitStartVal', zasieg:'zrodlo',
+  { nazwa:'start', telefon:true, typ:'suwak', wej:'orbitStart', pole:'orbitStartVal', zasieg:'zrodlo',
     skala:1, pusta:0, format:v=>Math.round(v)+'°',
     czyta:s=>katStartu(s.motion),
     pisze:(s,v)=>{ ustawKatOrbity(s, v); },
     odswiezListe:true },
 
-  { nazwa:'obieg', typ:'suwak', wej:'orbitPeriod', pole:'orbitPeriodVal', zasieg:'zrodlo',
+  { nazwa:'obieg', telefon:true, typ:'suwak', wej:'orbitPeriod', pole:'orbitPeriodVal', zasieg:'zrodlo',
     skala:0.5, pusta:10, format:v=>v.toFixed(1)+' s',
     czyta:s=>s.motion.orbitPeriod||10, pisze:(s,v)=>{ s.motion.orbitPeriod=v; } },
 
-  { nazwa:'bladzenie', typ:'suwak', wej:'randomRange', pole:'randomRangeVal', zasieg:'zrodlo',
+  { nazwa:'bladzenie', telefon:true, typ:'suwak', wej:'randomRange', pole:'randomRangeVal', zasieg:'zrodlo',
     skala:0.1, pusta:8, format:v=>v.toFixed(1)+'m',
     czyta:s=>s.motion.randomRange, pisze:(s,v)=>{ s.motion.randomRange=v; } },
 
-  { nazwa:'petla', typ:'suwak', wej:'pathLoop', pole:'pathLoopVal', zasieg:'zrodlo',
+  { nazwa:'petla', telefon:true, typ:'suwak', wej:'pathLoop', pole:'pathLoopVal', zasieg:'zrodlo',
     skala:1, pusta:1, format:v=>v?'Tak':'Nie',
     czyta:s=>s.motion.pathLoop?1:0, pisze:(s,v)=>{ s.motion.pathLoop=v===1; } },
 
   // ----- 4. Przestrzen -----------------------------------------------------------------
-  { nazwa:'master', typ:'suwak', wej:'masterVolSlider', pole:'masterVolVal', zasieg:'scena',
+  { nazwa:'master', telefon:true, typ:'suwak', wej:'masterVolSlider', pole:'masterVolVal', zasieg:'scena',
     skala:0.01, format:v=>Math.round(v*100)+'%',
     czyta:()=>reverbState.masterVol,
     pisze:(_,v)=>{ reverbState.masterVol=v; masterGain.gain.setTargetAtTime(v,audioCtx.currentTime,0.02); } },
 
-  { nazwa:'wet', typ:'suwak', wej:'reverbWet', pole:'reverbWetVal', zasieg:'scena',
+  { nazwa:'wet', telefon:false, typ:'suwak', wej:'reverbWet', pole:'reverbWetVal', zasieg:'scena',
     skala:0.01, format:v=>Math.round(v*100)+'%',
     czyta:()=>reverbState.wet,
     pisze:(_,v)=>{ reverbState.wet=v; if(reverbState.enabled) reverbOutput.gain.setTargetAtTime(v,audioCtx.currentTime,0.05); } },
 
-  { nazwa:'rozmiar', typ:'suwak', wej:'reverbSize', pole:'reverbSizeVal', zasieg:'scena',
+  { nazwa:'rozmiar', telefon:false, typ:'suwak', wej:'reverbSize', pole:'reverbSizeVal', zasieg:'scena',
     skala:0.01, format:v=>v.toFixed(2),
     czyta:()=>reverbState.roomSize,
     pisze:(_,v)=>{ reverbState.roomSize=v; scheduleReverbUpdate(); } },
 
-  { nazwa:'tlumienie', typ:'suwak', wej:'reverbDamp', pole:'reverbDampVal', zasieg:'scena',
+  { nazwa:'tlumienie', telefon:false, typ:'suwak', wej:'reverbDamp', pole:'reverbDampVal', zasieg:'scena',
     skala:0.01, format:v=>v.toFixed(2),
     czyta:()=>reverbState.damping,
     pisze:(_,v)=>{ reverbState.damping=v; scheduleReverbUpdate(); } },
@@ -174,6 +179,46 @@ const WIDOCZNOSC = [
   { el:'pathParams',     klasa:'open',     gdy:s=>!!s && s.motion.mode==='path'   },
   { el:'spatialSection', klasa:'disabled', gdy:s=>!!s && s.routing==='direct'     },
 ];
+
+// Pojemniki, ktorych rejestr nie zna, bo nie sa kontrolkami: podsekcje i blok markupu.
+// Rejestr opisuje POJEDYNCZE kontrolki — cala podsekcja "Szerokosc stereo" to naglowek,
+// tresc i wskaznik stanu, wiec chowanie jej suwak po suwaku zostawiloby pusty naglowek.
+const POJEMNIKI_POZA_TELEFONEM = [
+  '#attrBox',      // atrybucja pojedynczego dzwieku — praca redakcyjna, nie demonstracja
+  '#stereoBox',    // 3.1 szerokosc stereo
+  '#reverbBox',    // 4.1 poglos
+  '#eksportPanel'  // 5. eksport — poza zakresem "salonu demonstracyjnego"
+];
+
+// Rozwiesza klase `poza-telefonem` na wszystkim, co nie nalezy do skroconego panelu.
+// Robione RAZ, przy starcie: to jest stala wlasnosc kontrolki, a nie stan, ktory
+// zmienia sie z zaznaczeniem zrodla. Widocznoscia steruje potem sama klasa CSS.
+function oznaczPozaTelefonem(){
+  for(const k of KONTROLKI){
+    if(k.telefon) continue;
+    const el=$(k.wej); if(!el) continue;
+    // Chowamy CALY wiersz, nie samo wejscie — inaczej zostaje podpis bez suwaka.
+    const wiersz=el.closest('.param-row')||el.closest('.routing-toggle')||el;
+    wiersz.classList.add('poza-telefonem');
+  }
+  for(const sel of POJEMNIKI_POZA_TELEFONEM)
+    document.querySelectorAll(sel).forEach(e=>e.classList.add('poza-telefonem'));
+}
+
+// Przelacznik skroconego panelu. Klasa siedzi na #sidebar, a nie na kazdym elemencie:
+// jeden przelot CSS zamiast dwudziestu dwoch przestawien klas przy kazdym kliknieciu.
+function ustawSkrotPanelu(skrocony){
+  sidebar.classList.toggle('panel-skrocony', skrocony);
+  const b=$('panelPrzelacznik'); if(!b) return;
+  b.textContent = skrocony ? 'Pokaż wszystkie ustawienia' : 'Pokaż tylko podstawowe';
+  b.setAttribute('aria-expanded', skrocony ? 'false' : 'true');
+}
+oznaczPozaTelefonem();
+(function wepnijPrzelacznikPanelu(){
+  const b=$('panelPrzelacznik'); if(!b) return;
+  b.addEventListener('click', ()=>ustawSkrotPanelu(!sidebar.classList.contains('panel-skrocony')));
+  ustawSkrotPanelu(true);
+})();
 
 const MOTION_LABEL={static:'Statyczny',orbit:'Orbita',random:'Random',path:'Ścieżka'};
 const MOTION_TOAST={static:'Statyczny',orbit:'Orbita',random:'Random Walk',path:'Ścieżka'};

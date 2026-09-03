@@ -2,7 +2,30 @@
 // Czesc Sceny rozbitej na klasyczne skrypty. Kolejnosc ladowania jest kontraktem:
 // patrz lista <script> na koncu index.html.
 
-function showToast(m, d=2500){ toastEl.textContent=m; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'),d); }
+// `d` w milisekundach; `d === 0` znaczy "zostaje, dopoki uzytkownik nie zamknie".
+// Trwaly toast dostaje krzyzyk i daje sie klikac — bez tego podpowiedz gotowej sceny
+// znikala po szesciu sekundach, czyli zanim ktos zdazyl zalozyc sluchawki i przeczytac,
+// co ma zrobic.
+// Zegar jest JEDEN i kasuje sie przy kazdym wywolaniu. Wczesniej kazdy toast zakladal
+// wlasny setTimeout, wiec zegar starszego komunikatu gasil nowszy — przy gotowej scenie
+// leci ich po kolei piec.
+let toastTimer=null;
+function showToast(m, d=2500){
+  clearTimeout(toastTimer); toastTimer=null;
+  toastTxtEl.textContent=m;
+  const trwaly = d===0;
+  toastEl.classList.toggle('trwaly', trwaly);
+  toastEl.classList.add('show');
+  if(!trwaly) toastTimer=setTimeout(()=>toastEl.classList.remove('show'), d);
+}
+function ukryjToast(){
+  clearTimeout(toastTimer); toastTimer=null;
+  toastEl.classList.remove('show','trwaly');
+}
+// Zamyka krzyzyk albo klikniecie w sam komunikat — na telefonie caly prostokat jest
+// wiekszym celem niz sam krzyzyk. Toast krotki i tak nie lapie klikniec
+// (pointer-events: none), wiec ten nasluch dotyczy wylacznie trwalego.
+toastEl.addEventListener('click', ukryjToast);
 
 // --- POTWIERDZENIE DZIALANIA NIEODWRACALNEGO -------------------------------------------
 // Zwraca Promise<boolean>. Escape i klikniecie w tlo = "nie" — domyslna odpowiedz zawsze
