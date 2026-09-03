@@ -3,26 +3,33 @@
 // Czesc Sceny rozbitej na klasyczne skrypty. Kolejnosc ladowania jest kontraktem:
 // patrz lista <script> na koncu index.html.
 
+// Zwraca zrodlo, zeby wolajacy mial czym dalej operowac — korzysta z tego
+// 55-sceny-demo.js, ktore po wczytaniu ustawia jeszcze pozycje, ruch i tor.
 function applyAttr(src, def){
-  if(!src) return;
+  if(!src) return src;
   // Biblioteka podaje autora tylko przy licencjach wymagajacych uznania autorstwa,
   // ale zrodlo warto zapisac zawsze — przy CC0 tez wypada podac, skad sie wzielo.
   if(def.author) src.attrAuthor=def.author;
   if(def.freesound_url) src.attrUrl=def.freesound_url;
   if(def.license) src.attrLicense=def.license.name || (def.license.attribution?'CC BY':'CC0');
+  return src;
 }
-async function loadFromLib(def, btn){
+// `poz` (opcjonalne {x,y}) stawia dzwiek w zadanym miejscu zamiast losowo — korzystaja
+// z tego gotowe sceny. Zwraca utworzone zrodlo albo null, jesli pobranie sie nie udalo.
+// Pobieranie i dekodowanie zostaje TUTAJ, w jednym miejscu: gotowe sceny wolaja te sama
+// funkcje, a nie wlasna kopie fetch → decodeAudioData → fallback na strumien.
+async function loadFromLib(def, btn, poz){
   const row=btn?btn.closest('.lib-sound'):null;
   if(btn){ btn.classList.add('loading'); btn.textContent='…'; }
   if(row) row.classList.add('is-loading');
   showToast('⏳ Pobieranie: '+def.label, 8000);
   try {
     const angle=Math.random()*Math.PI*2, dist=4+Math.random()*8;
-    const x=Math.cos(angle)*dist, y=Math.sin(angle)*dist;
-    if(def.file){ try { const r=await fetch(def.file); if(r.ok){ const ab=await r.arrayBuffer(); const d=await audioCtx.decodeAudioData(ab); applyAttr(createFromBuffer(d,def.label,x,y,def.id,def.defaultVolume||0.7),def); showToast('✓ '+def.label); return; } } catch(e){} }
-    if(def.preview_url){ try { const r=await fetch(def.preview_url); if(r.ok){ const ab=await r.arrayBuffer(); const d=await audioCtx.decodeAudioData(ab); applyAttr(createFromBuffer(d,def.label,x,y,def.id,def.defaultVolume||0.7),def); showToast('✓ '+def.label); return; } } catch(e){ applyAttr(await createFromStream(def.preview_url,def.label,x,y,def.id,def.defaultVolume||0.7),def); showToast('✓ '+def.label+' (bez HRTF)'); return; } }
+    const x=poz?poz.x:Math.cos(angle)*dist, y=poz?poz.y:Math.sin(angle)*dist;
+    if(def.file){ try { const r=await fetch(def.file); if(r.ok){ const ab=await r.arrayBuffer(); const d=await audioCtx.decodeAudioData(ab); const s=applyAttr(createFromBuffer(d,def.label,x,y,def.id,def.defaultVolume||0.7),def); showToast('✓ '+def.label); return s; } } catch(e){} }
+    if(def.preview_url){ try { const r=await fetch(def.preview_url); if(r.ok){ const ab=await r.arrayBuffer(); const d=await audioCtx.decodeAudioData(ab); const s=applyAttr(createFromBuffer(d,def.label,x,y,def.id,def.defaultVolume||0.7),def); showToast('✓ '+def.label); return s; } } catch(e){ const s=applyAttr(await createFromStream(def.preview_url,def.label,x,y,def.id,def.defaultVolume||0.7),def); showToast('✓ '+def.label+' (bez HRTF)'); return s; } }
     throw new Error('Brak źródła');
-  } catch(err){ showToast('⚠ Nie udało się pobrać: '+def.label); if(btn){btn.classList.remove('loading');btn.textContent='+';} } finally { if(row) row.classList.remove('is-loading'); updateLibBtns(); }
+  } catch(err){ showToast('⚠ Nie udało się pobrać: '+def.label); if(btn){btn.classList.remove('loading');btn.textContent='+';} return null; } finally { if(row) row.classList.remove('is-loading'); updateLibBtns(); }
 }
 
 // AUDIO ENGINE — Dual-panner + elevation + air absorption

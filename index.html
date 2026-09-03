@@ -77,6 +77,14 @@
          na dol jako szuflada NAD paskiem transportu, a ten przycisk ja otwiera i zamyka. -->
     <button class="szuflada-uchwyt" id="szufladaUchwyt" type="button" aria-expanded="false" aria-controls="sidebar"><span class="szuflada-kreska"></span><span class="szuflada-etyk">Ustawienia sceny</span><span class="szuflada-strzalka">▾</span></button>
     <div class="acc-panel"><div class="acc-head" data-acc="add" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">1</span><span class="acc-title">Dodaj dźwięki</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
+      <!-- Gotowe sceny stoja PRZED biblioteka i wlasnymi plikami, bo na telefonie to jest
+           jedyne wejscie, ktore nie wymaga niczego znalezc. Przyciski rysuje
+           55-sceny-demo.js z pliku sceny-demo.json; jesli ten sie nie wczyta (file://),
+           caly ten blok znika i sekcja wyglada jak przedtem. -->
+      <div class="demo-box" id="demoBox">
+        <div class="demo-label">Zacznij od gotowej sceny</div>
+        <div class="demo-row" id="demoRow"></div>
+      </div>
       <!-- Dwa zrodla dzwieku obok siebie. Wczesniej biblioteka byla zakladka w gornym pasku,
            wiec nie wygladala na czesc kroku "dodaj dzwieki" i latwo bylo jej nie zauwazyc. -->
       <div class="src-picker">
@@ -417,6 +425,7 @@
 <script src="js/30-widok.js"></script>
 <script src="js/40-biblioteka.js"></script>
 <script src="js/50-zrodlo.js"></script>
+<script src="js/55-sceny-demo.js"></script>
 <script src="js/60-panel.js"></script>
 <script src="js/70-pasek.js"></script>
 <script src="js/80-ruch.js"></script>

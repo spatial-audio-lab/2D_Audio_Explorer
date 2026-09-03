@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "opis": "Gotowe sceny na jedno dotkniecie. Kazda pokazuje JEDNA rzecz, ktorej Scena uczy. Dzwieki sa wskazywane po `sound` — identyfikatorze z library.json, wiec nie ma tu drugiej kopii adresow ani licencji. Uklad wspolrzednych taki sam jak w calej Scenie: przod = -y, prawo = +x, metry.",
+  "sceny": [
+    {
+      "id": "zegar",
+      "nazwa": "Chodzący zegar",
+      "czego_uczy": "że dźwięk krąży wokół głowy",
+      "podpowiedz": "Załóż słuchawki i naciśnij ▶. Zegar obchodzi Cię w 20 sekund.",
+      "zrodla": [
+        {
+          "sound": "sound_577457",
+          "vol": 0.85,
+          "ruch": { "mode": "orbit", "promien": 6, "start": 0, "obieg": 20 }
+        }
+      ]
+    },
+    {
+      "id": "las",
+      "nazwa": "Las dookoła",
+      "czego_uczy": "że scena otacza Cię ze wszystkich stron",
+      "podpowiedz": "Naciśnij ▶, potem przełącz na Eksplorację i obróć się — cztery dźwięki zostaną na swoich miejscach.",
+      "zrodla": [
+        { "sound": "sound_725046", "x": 0,  "y": -7, "vol": 0.8 },
+        { "sound": "sound_231536", "x": -8, "y": 0,  "vol": 0.6 },
+        { "sound": "sound_371781", "x": 7,  "y": 2,  "vol": 0.7 },
+        { "sound": "sound_805466", "x": 0,  "y": 9,  "vol": 0.5 }
+      ]
+    },
+    {
+      "id": "burza",
+      "nazwa": "Burza",
+      "czego_uczy": "różnicę między tłem a punktem w przestrzeni",
+      "podpowiedz": "Deszcz gra Bezpośrednio — jest wszędzie. Grzmot i kapanie mają swoje miejsce. W sekcji 3 przełącz deszcz na Spatial i posłuchaj, co się zmieni.",
+      "zrodla": [
+        { "sound": "sound_451153", "x": 0,  "y": 0,   "vol": 0.55, "routing": "direct" },
+        { "sound": "sound_243777", "x": 4,  "y": 14,  "vol": 0.8 },
+        { "sound": "sound_162116", "x": 3,  "y": -2,  "vol": 0.6 }
+      ]
+    }
+  ]
+}

@@ -159,6 +159,29 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .acc-body > .zwijane-wnetrze > .zwijane-tresc { padding: 0 var(--lg) var(--md); }
 .acc-head.collapsed + .acc-body { grid-template-rows: 0fr; }
 
+/* --- GOTOWE SCENY (sekcja 1) ---------------------------------------------------------
+   Kolumna, nie rzad: kazdy przycisk niesie dwie linie — nazwe i to, czego scena uczy —
+   a trzy takie obok siebie nie mieszcza sie ani w panelu 420 px, ani na telefonie.
+   Akcent to acid, jedyne miejsce we wnetrzu narzedzia poza pigulka SAL: to jest wejscie
+   dla kogos, kto uruchamia Scene pierwszy raz, i ma byc widoczne od razu. --- */
+.demo-box { margin-bottom: var(--md); }
+.demo-label { font-family: var(--font-mono); font-weight: 500; font-size: var(--fs-2xs);
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); margin-bottom: 6px; }
+/* Bez `gap` — przyciski maja sie stykac ramkami, a robi to `margin-top: -1px` nizej.
+   Ujemny `gap` nie istnieje w CSS i zostalby po cichu zignorowany. */
+.demo-row { display: flex; flex-direction: column; }
+.demo-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+  min-height: 52px; padding: 9px var(--md); border: 1px solid var(--dim); background: none;
+  cursor: pointer; text-align: left; transition: all 0.25s; }
+.demo-btn + .demo-btn { margin-top: -1px; }
+.demo-btn:hover { border-color: var(--acid); background: rgba(190,255,0,0.05); z-index: 1; }
+.demo-btn-nazwa { font-family: var(--font-ui); font-weight: 500; font-size: var(--fs-sm);
+  color: var(--white); line-height: 1.2; }
+.demo-btn:hover .demo-btn-nazwa { color: var(--acid); }
+.demo-btn-uczy { font-family: var(--font-mono); font-weight: 300; font-size: var(--fs-2xs);
+  color: var(--muted); line-height: 1.3; }
+.demo-btn.disabled { opacity: 0.35; pointer-events: none; }
+
 .src-picker { display: flex; gap: 0; margin-bottom: var(--sm); }
 .pick-btn { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 6px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.25s; text-align: center; }
 .pick-btn + .pick-btn { margin-left: -1px; }

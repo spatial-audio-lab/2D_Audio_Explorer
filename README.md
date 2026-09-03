@@ -130,6 +130,7 @@ pośredniej.
 | `js/30-widok.js` | skalowanie płócien, przełącznik Edycja / Eksploracja |
 | `js/40-biblioteka.js` | Biblioteka SAL: lewy panel, drzewo `library.json`, szukanie, wstawianie |
 | `js/50-zrodlo.js` | model źródła i jego graf węzłów, routing, słuchacz |
+| `js/55-sceny-demo.js` | gotowe sceny z `sceny-demo.json` — trzy przyciski w sekcji 1 |
 | `js/60-panel.js` | prawy panel: **rejestr kontrolek**, lista źródeł, liczniki |
 | `js/70-pasek.js` | pasek marki, modale Pomoc / O projekcie, klawiatura |
 | `js/80-ruch.js` | mysz i dotyk, ruch źródeł, symulacja trajektorii |
