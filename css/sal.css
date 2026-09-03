@@ -357,10 +357,16 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .t-counter-num { font-family: var(--font-ui); font-size: 22px; font-weight: 300; color: var(--cyan); line-height: 1; }
 .t-counter-label { font-size: var(--fs-2xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
 
-.toast { position: fixed; bottom: calc(var(--transport-h) + var(--md)); left: 50%; transform: translateX(-50%) translateY(60px); border: 1px solid rgba(0,229,204,0.3); background: var(--surface); padding: var(--sm) var(--lg); font-size: var(--fs-sm); color: var(--white); z-index: 200; opacity: 0; transition: all 0.4s ease; pointer-events: none;
+/* Srodkowanie przez `left/right` + `margin-inline: auto`, a NIE przez `left: 50%` z
+   translateX. Element o szerokosci dopasowanej do tresci liczy ja z miejsca, ktore mu
+   zostalo od lewej krawedzi — przy `left: 50%` to polowa ekranu. Zmierzone: podpowiedz
+   gotowej sceny dostawala 195 px z 390 px telefonu i lamala sie na siedem linii. */
+.toast { position: fixed; bottom: calc(var(--transport-h) + var(--md));
+  left: var(--md); right: var(--md); margin-inline: auto; width: fit-content;
+  transform: translateY(60px); border: 1px solid rgba(0,229,204,0.3); background: var(--surface); padding: var(--sm) var(--lg); font-size: var(--fs-sm); color: var(--white); z-index: 200; opacity: 0; transition: all 0.4s ease; pointer-events: none;
   display: flex; align-items: center; gap: var(--md); text-align: left; line-height: 1.45;
   max-width: min(520px, calc(100vw - 2 * var(--md))); }
-.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast.show { transform: translateY(0); opacity: 1; }
 /* Trwaly toast musi dac sie kliknac — krotki celowo nie lapie myszy, zeby nie zaslaniac
    plotna pod soba. Ramka acid odroznia "przeczytaj i zrob" od "przyjete do wiadomosci". */
 .toast.trwaly { pointer-events: auto; border-color: var(--acid-dim); cursor: pointer; }
