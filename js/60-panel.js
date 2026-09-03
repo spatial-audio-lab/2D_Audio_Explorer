@@ -404,6 +404,10 @@ selName.addEventListener('blur', ()=>{
 selName.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); selName.blur(); } });
 
 $('clearPathBtn').addEventListener('click', e=>{ e.stopPropagation(); if(!S.selectedSource) return; S.selectedSource.motion.waypoints=[]; S.selectedSource.motion.pathIndex=0; S.selectedSource.motion.pathDir=1; showToast('Ścieżka wyczyszczona'); });
+// Przelacznik dodawania punktow palcem. `ustawDodawaniePunktow` mieszka w 80-ruch.js,
+// czyli w pliku ladowanym PO tym — deklaracja funkcji sie hoistuje, a wolamy ja i tak
+// dopiero z klikniecia, wiec kolejnosc nie ma tu znaczenia.
+$('addPathBtn').addEventListener('click', e=>{ e.stopPropagation(); ustawDodawaniePunktow(!S.dodawaniePunktow); showToast(S.dodawaniePunktow?'Dotykaj sceny, żeby dokładać punkty':'Dodawanie punktów wyłączone'); });
 
 function setReverbEnabled(on){
   reverbState.enabled=on;

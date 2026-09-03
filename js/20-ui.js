@@ -86,7 +86,15 @@ function ustawSzuflade(otwarta){
   u.setAttribute('aria-expanded', otwarta?'true':'false');
   // Otwierana szuflada zaczyna od gory: po zamknieciu i ponownym otwarciu uzytkownik
   // ma zobaczyc sekcje 1, a nie miejsce, w ktorym skonczyl przewijac poprzednio.
-  if(otwarta) sidebar.scrollTop=0;
+  if(otwarta){
+    sidebar.scrollTop=0;
+    // Ostrzezenie o sluchawkach zwija sie przy pierwszym otwarciu szuflady. Zmierzone
+    // na iPhonie 14 (390x844): przy otwartej szufladzie zostawalo 99 px plotna z tym
+    // ostrzezeniem i 197 px bez niego. Kto siega do ustawien, ostrzezenie juz przeczytal.
+    // Warunek "pierwsze otwarcie" jest tu niepotrzebny — nie ma czym przywrocic
+    // ostrzezenia, wiec kazde kolejne wywolanie i tak trafia w element juz schowany.
+    const w=$('hpWarn'); if(w) w.classList.add('hidden');
+  }
 }
 (function wepnijSzuflade(){
   const u=$('szufladaUchwyt'); if(!u) return;

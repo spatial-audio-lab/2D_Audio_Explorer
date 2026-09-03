@@ -7,7 +7,17 @@
 function gcp(e){ const r=mainCanvas.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top, rect:r}; }
 function s2w(sx,sy,r){ const sz=Math.min(r.width,r.height), sc=sz/(S.worldSize*2), cx=r.width/2, cy=r.height/2; if(S.mode==='explore'){ const rad=S.listener.angle*Math.PI/180, dx=(sx-cx)/sc, dy=(sy-cy)/sc; return {x:S.listener.x+dx*Math.cos(rad)-dy*Math.sin(rad), y:S.listener.y+dx*Math.sin(rad)+dy*Math.cos(rad)}; } return {x:(sx-cx)/sc, y:(sy-cy)/sc}; }
 function w2s(wx,wy){ const r=mainCanvas.getBoundingClientRect(), sz=Math.min(r.width,r.height), sc=sz/(S.worldSize*2), cx=r.width/2, cy=r.height/2; if(S.mode==='explore'){ const rad=S.listener.angle*Math.PI/180, dx=wx-S.listener.x, dy=wy-S.listener.y; return {x:cx+(dx*Math.cos(rad)+dy*Math.sin(rad))*sc, y:cy+(-dx*Math.sin(rad)+dy*Math.cos(rad))*sc}; } return {x:cx+wx*sc, y:cy+wy*sc}; }
-function findAt(wx,wy,th=1.5){ for(const s of S.sources) if(Math.hypot(s.x-wx,s.y-wy)<th) return s; return null; }
+// Prog trafienia w dzwiek liczony w PIKSELACH EKRANU, nie w metrach sceny — z tego
+// samego powodu, dla ktorego tak liczy uchwytSrodka nizej. Staly prog 1.5 m znaczyl
+// co innego na kazdym ekranie: przy plotnie 700 px (komputer) wychodzilo 21 px, a przy
+// 390 px (telefon) 12 px, czyli polowa celu, ktorego potrzebuje palec. 22 px zostawia
+// komputer tam, gdzie byl, i podwaja cel na telefonie.
+const PROG_TRAFIENIA_PX = 22;
+function progTrafienia(){
+  const r=mainCanvas.getBoundingClientRect(), sz=Math.min(r.width,r.height);
+  return sz ? PROG_TRAFIENIA_PX*(S.worldSize*2)/sz : 1.5;
+}
+function findAt(wx,wy,th){ if(th===undefined) th=progTrafienia(); for(const s of S.sources) if(Math.hypot(s.x-wx,s.y-wy)<th) return s; return null; }
 // Czy kursor stoi na uchwycie srodka orbity albo bladzenia? Uchwyt istnieje tylko dla
 // ZAZNACZONEGO zrodla, bo tylko dla niego rysowany jest okrag. Dystans liczony w pikselach
 // ekranu, a nie w metrach sceny — inaczej przy malym zoomie uchwyt bylby nietrafialny.
@@ -16,7 +26,7 @@ function uchwytSrodka(px,py){
   if(!s || S.mode!=='edit') return null;
   if(s.motion.mode!=='orbit' && s.motion.mode!=='random') return null;
   const p=w2s(s.motion.originX, s.motion.originY);
-  return Math.hypot(p.x-px, p.y-py)<=16 ? s : null;
+  return Math.hypot(p.x-px, p.y-py)<=PROG_TRAFIENIA_PX ? s : null;
 }
 
 let dragSrc=null, dragOrigin=null, dragOff={x:0,y:0}, pDown=false, pMoved=false, pStart={x:0,y:0};
@@ -28,9 +38,20 @@ mainCanvas.addEventListener('touchstart', e=>{ e.preventDefault(); ptrDown(e.tou
 mainCanvas.addEventListener('touchmove', e=>{ e.preventDefault(); ptrMove(e.touches[0].clientX,e.touches[0].clientY); },{passive:false});
 mainCanvas.addEventListener('touchend', e=>{ ptrUp(pStart.x,pStart.y); },{passive:false});
 
+// Dodawanie punktow sciezki. Shift+klik zostaje dla myszy, ale telefon nie ma Shiftu —
+// tam ten sam tryb wlacza przycisk "Dodaj punkty" w sekcji 3.2.
+// Flaga siedzi w S, bo czyta ja ptrDown. Nie kasujemy jej przy zmianie zrodla ani trybu
+// ruchu: warunek nizej i tak wymaga trybu Sciezka, wiec flaga zostawiona na inny dzwiek
+// niczego nie zepsuje, a przycisk pokazuje wtedy prawde — tryb jest wlaczony.
+function ustawDodawaniePunktow(wlaczone){
+  S.dodawaniePunktow=!!wlaczone;
+  const b=$('addPathBtn');
+  if(b){ b.classList.toggle('active', S.dodawaniePunktow); b.setAttribute('aria-pressed', S.dodawaniePunktow?'true':'false'); }
+}
+
 function ptrDown(cx,cy,shiftKey){
   const{x,y,rect}=gcp({clientX:cx,clientY:cy}); const w=s2w(x,y,rect);
-  if(shiftKey && S.mode==='edit' && S.selectedSource && S.selectedSource.motion.mode==='path'){ S.selectedSource.motion.waypoints.push({x:w.x,y:w.y}); showToast('Punkt #'+S.selectedSource.motion.waypoints.length); return; }
+  if((shiftKey||S.dodawaniePunktow) && S.mode==='edit' && S.selectedSource && S.selectedSource.motion.mode==='path'){ S.selectedSource.motion.waypoints.push({x:w.x,y:w.y}); showToast('Punkt #'+S.selectedSource.motion.waypoints.length); return; }
   pDown=true; pMoved=false; pStart={x:cx,y:cy};
   if(S.mode==='edit'){
     const u=uchwytSrodka(x,y);

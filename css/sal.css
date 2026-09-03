@@ -188,6 +188,9 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .src-actions-row { display: flex; gap: var(--xs); margin-bottom: var(--sm); }
 .btn-sm { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; padding: 4px 10px; border: 1px solid var(--dim); background: none; color: var(--mid); cursor: pointer; transition: all 0.2s; flex: 1; text-align: center; }
 .btn-sm:hover { border-color: var(--cyan); color: var(--cyan); }
+/* Przycisk «⊕ Dodaj punkty» zostaje wcisniety, dopoki uzytkownik dotyka sceny — cyan
+   jest we wnetrzu narzedzia sygnalem aktywnosci, tak samo jak przy trybie ruchu. */
+.btn-sm.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,204,0.07); }
 
 .sel-name { display: block; width: 100%; font-family: var(--font-ui); font-size: var(--fs-lg); font-weight: 300; margin-bottom: var(--sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--amber); background: none; border: 1px solid transparent; border-bottom-color: var(--dim); padding: 4px 2px; transition: border-color 0.2s, background 0.2s; }
 .sel-name:hover:not(:disabled) { border-bottom-color: var(--amber); }
@@ -461,6 +464,12 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
      (Zrodel / Aktywnych) niosa wiecej niz nazwa, ktora i tak stoi w oknie eksportu. --- */
   .transport { gap: var(--md); padding: 0 var(--md); }
   .transport-scene { display: none; }
+
+  /* --- CELE DLA PALCA ------------------------------------------------------
+     Reszta kontrolek panelu ma juz 44 px (.btn-sm, .routing-btn, .param-row i tak
+     dalej). Przyciski ▶ i ✕ przy kazdym zrodle mialy 34 px — na myszy dosc, pod
+     palcem nie. Na komputerze zostaja 34 px, bo tam gestsza lista czyta sie lepiej. */
+  .src-btn { width: 44px; height: 44px; }
 }
 /* ============================================================
    SAL Design Manifest v3.0 - warstwa zgodnosci

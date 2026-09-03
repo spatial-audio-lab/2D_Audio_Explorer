@@ -11,7 +11,10 @@ const S = {
   sceneStart:null,
   listener:{x:0,y:0,angle:0}, target:null,
   sources:[], buffers:{}, selectedSource:null, keys:{},
-  worldSize:25, moveSpeed:6, rotSpeed:90, dragStartAngle:0
+  worldSize:25, moveSpeed:6, rotSpeed:90, dragStartAngle:0,
+  // Czy klikniecie w plotno dokłada punkt sciezki. Na myszy robi to Shift, na telefonie
+  // przycisk "Dodaj punkty" w sekcji 3.2 — obsluga w 80-ruch.js.
+  dodawaniePunktow:false
 };
 let libraryData = null, libSearchQuery = '';
 
