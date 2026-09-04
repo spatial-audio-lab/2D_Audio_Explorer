@@ -268,6 +268,32 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .path-hint { font-size: var(--fs-2xs); color: var(--mid); margin-top: 4px; line-height: 1.5; }
 .path-hint kbd { color: var(--cyan); font-family: inherit; }
 
+/* --- 6. PROJEKT (zapis roboczy) ---------------------------------------------------
+   Sekcja jest celowo uboga: dwa przyciski i jedna linijka stanu. Wszystko, co dotyczy
+   TRESCI sceny, dzieje sie wyzej; tutaj chodzi tylko o to, zeby robota nie przepadla. */
+.proj-wstep { font-size: var(--fs-2xs); color: var(--mid); line-height: 1.6; margin-bottom: var(--sm); }
+.proj-akcje { display: flex; gap: var(--xs); }
+.proj-stan { font-family: var(--font-mono); font-size: var(--fs-2xs); color: var(--mid); margin-top: var(--sm); letter-spacing: 0.08em; }
+.proj-stan.zapisano { color: var(--cyan); }
+/* Ramka bursztynowa, nie czerwona: brakujacy plik to zadanie do wykonania, a nie blad.
+   Scena jest wczytana i dziala, tylko czesc dzwiekow czeka na wskazanie. */
+.proj-braki { margin-top: var(--sm); padding: var(--sm); border: 1px solid rgba(255,176,0,0.45); background: rgba(255,176,0,0.06); }
+.proj-braki.hidden { display: none; }
+.proj-braki-txt { font-size: var(--fs-2xs); color: var(--white); line-height: 1.6; margin-bottom: var(--xs); }
+
+/* Pasek powrotu do sceny z autozapisu — nakladka na dole plotna. */
+.wznow-bar { position: absolute; bottom: var(--md); left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  gap: var(--sm); z-index: 6; max-width: calc(100% - 2 * var(--md));
+  padding: var(--sm) var(--md); border: 1px solid rgba(0,229,204,0.45); background: var(--surface); }
+.wznow-bar.hidden { display: none; }
+.wznow-txt { font-size: var(--fs-xs); color: var(--white); line-height: 1.5; }
+.wznow-btn { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; padding: 6px 12px;
+  border: 1px solid var(--cyan); background: rgba(0,229,204,0.07); color: var(--cyan); cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+.wznow-btn:hover { background: rgba(0,229,204,0.16); }
+.wznow-btn--cichy { border-color: var(--dim); background: none; color: var(--mid); }
+.wznow-btn--cichy:hover { border-color: var(--mid); background: none; color: var(--white); }
+
 .export-label { font-size: var(--fs-xs); color: var(--white); margin-bottom: var(--xs); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
 .export-input { width: 100%; background: rgba(240,235,224,0.04); border: 1px solid var(--dim); color: var(--white); font-family: var(--font-mono); font-size: var(--fs-sm); padding: 8px; text-align: left; transition: border-color 0.2s; }
 .export-input:focus { border-color: var(--cyan); outline: none; }

@@ -69,6 +69,16 @@
     <div class="minimap"><span class="minimap-label">Mapa</span><canvas id="minimapCanvas"></canvas></div>
     <div class="control-hints"><div class="hint"><kbd>WASD</kbd> ruch</div><div class="hint"><kbd>QE</kbd> obrót</div><div class="hint"><kbd>Space</kbd> play</div><div class="hint"><kbd>Shift</kbd>+klik ścieżka</div></div>
     <div class="target-indicator" id="targetIndicator"><div class="target-marker"></div></div>
+    <!-- Pasek powrotu do sceny z autozapisu. Stoi na dole plotna, bo gora nalezy do
+         przelacznika Edycja/Eksploracja, a dol srodka jest wolny przy kazdej szerokosci
+         (minimapa siedzi po lewej, podpowiedzi klawiszy po prawej, a na telefonie obie
+         znikaja). Pokazuje sie tylko wtedy, gdy w pamieci przegladarki naprawde cos
+         jest — obsluga w js/95-projekt.js. -->
+    <div class="wznow-bar hidden" id="wznowBar" role="status">
+      <span class="wznow-txt" id="wznowTxt">Znaleziono niezapisaną scenę.</span>
+      <button class="wznow-btn" type="button" id="wznowTak">Wróć do niej</button>
+      <button class="wznow-btn wznow-btn--cichy" type="button" id="wznowNie">Zacznij od nowa</button>
+    </div>
   </div>
 
   <aside class="sidebar" id="sidebar">
@@ -119,7 +129,10 @@
            jest jego obrazem. Wejscie liczy sie od zera, ktore stawia przycisk
            "Wszystkie" w sekcji 2 — pojedyncze play przy zrodle gra od razu. -->
       <div class="routing-toggle" id="playbackToggle"><button class="routing-btn active" data-playback="loop">Loop</button><button class="routing-btn" data-playback="once">Raz</button></div>
-      <div class="param-row"><label>Wejście</label><input type="range" id="startOffset" min="0" max="120" value="0"><span class="param-val" id="startOffsetVal">0.0 s</span></div>
+      <!-- `max` to tylko wartosc na start (60 podzialek przy skali 0,5 = domyslne 30 s
+           nagrania). Prawdziwy zakres wylicza pole `zakres` w rejestrze KONTROLKI
+           (js/60-panel.js) z czasu trwania w oknie eksportu — nie zmieniaj go tutaj. -->
+      <div class="param-row"><label>Wejście</label><input type="range" id="startOffset" min="0" max="60" value="0"><span class="param-val" id="startOffsetVal">0.0 s</span></div>
 
       <!-- Atrybucja nad przełącznikiem trybu: to metryczka dźwięku, a nie parametr brzmienia. -->
       <div class="sub-box" id="attrBox">
@@ -187,6 +200,27 @@
         <span class="acc-arrow acc-arrow--okno">&#8599;</span>
       </div>
     </div>
+
+    <!-- 6. Projekt — zapis ROBOCZY, nie eksport. Eksport (5) robi pliki do sluchania
+         i do oddania; projekt zapisuje to, co trzeba, zeby wrocic do ukladania sceny.
+         Dzwiekow w nim nie ma: plik audio z dysku wazy dziesiatki megabajtow i nie ma
+         jak go wlozyc do pliku opisu, wiec projekt zapamietuje jego NAZWE i prosi
+         o wskazanie go przy wczytaniu. Dzwieki z Biblioteki SAL wracaja same. -->
+    <div class="acc-panel" id="projektPanel"><div class="acc-head" data-acc="projekt" role="button" tabindex="0" aria-expanded="true"><div class="acc-head-left"><span class="acc-num">6</span><span class="acc-title">Projekt</span></div><span class="acc-arrow">▾</span></div><div class="acc-body">
+      <div class="proj-wstep">Zapis roboczy sceny: pozycje, ruch, wejścia, pogłos i pola eksportu.
+        Dźwięki z Biblioteki SAL wracają same; te z Twojego komputera trzeba wskazać ponownie.</div>
+      <div class="proj-akcje">
+        <button class="btn-sm" type="button" id="zapiszProjektBtn">⇩ Zapisz projekt</button>
+        <button class="btn-sm" type="button" id="wczytajProjektBtn">⇧ Wczytaj projekt</button>
+      </div>
+      <div class="proj-stan" id="projStan">Autozapis: czeka na pierwszy dźwięk</div>
+      <div class="proj-braki hidden" id="brakiBox">
+        <div class="proj-braki-txt" id="brakiTxt"></div>
+        <button class="btn-sm" type="button" id="brakiBtn">⇧ Wskaż pliki</button>
+      </div>
+      <input type="file" class="hidden-input" id="projektInput" accept=".json,application/json">
+      <input type="file" class="hidden-input" id="brakiInput" accept="audio/*" multiple>
+    </div></div>
   </aside>
 
   <div class="transport">
@@ -439,6 +473,7 @@
 <script src="js/84-fala.js"></script>
 <script src="js/85-rysowanie.js"></script>
 <script src="js/90-eksport.js"></script>
+<script src="js/95-projekt.js"></script>
 <script src="js/99-init.js"></script>
 </body>
 </html>

@@ -40,6 +40,9 @@ instalacji, bez backendu, bez konta. Część zestawu narzędzi **Spatial Audio 
 - **Atrybucja pojedynczego dźwięku** — autor, licencja i link do źródła przy każdym
   obiekcie. Dane z biblioteki wpisują się same, pliki wczytane ręcznie uzupełnia
   użytkownik. Wszystko trafia do metadanych i do `_SCENA.json`.
+- **Projekt roboczy** — sekcja 6 zapisuje układ sceny do pliku `.sal.json` i wczytuje go
+  z powrotem. Osobno działa **autozapis** w pamięci przeglądarki: po ponownym otwarciu
+  strony na dole płótna czeka pasek „Wróć do niej". Szczegóły niżej.
 - **Pomoc w trzech zakładkach** — *Podstawy*, *Zaawansowane* oraz **Banki dźwięków**
   (Freesound, radio aporee, Pixabay, Mixkit, BBC Sound Effects — z warunkami licencyjnymi
   każdego serwisu).
@@ -63,6 +66,46 @@ punkt na ekranie jedzie dalej po orbicie, a nagranie i tak zaczyna się od suwak
 
 Numer sceny jest opcjonalny: wyłączony, znika z nazw plików, z nagłówka mapy,
 z metadanych i z JSON-a.
+
+### Głośność nagrania — mierzona, nie zmieniana
+
+Eksport podaje **głośność scaloną w LUFS** (ITU-R BS.1770-4) i **szczyt próbkowy w dBFS**
+— w `_META.txt`, w polu `loudness` w `_SCENA.json` i w wierszu postępu przy generowaniu.
+
+To jest **pomiar, nie korekta**. Dźwięk w plikach nie jest ruszany (`applied: false`),
+bo wyrównanie głośności jest decyzją o tym, gdzie nagranie trafi: podcast celuje zwykle
+w −16 LUFS, audiobook w standardzie ACX w −23…−18 dB RMS przy szczycie poniżej −3 dBFS.
+Różnicę do celu dodaje się w narzędziu, którym składa się odcinek.
+
+Szczyt jest **próbkowy**, a nie *true peak*: między próbkami przebieg może iść nieco
+wyżej. Nazwa w plikach mówi to wprost, żeby nikt nie brał jednego za drugie.
+
+Mierzony jest tor **binauralny**, bo to jest plik, który się publikuje. Przy AmbiX
+głośność zależy od dekodera po drugiej stronie.
+
+## Projekt roboczy — żeby scena przeżyła zamknięcie karty
+
+Sekcja **6. Projekt** ma dwa przyciski i jedną linijkę stanu.
+
+- **Zapisz projekt** pobiera plik `.sal.json` z pozycjami, ruchem, wejściami, pogłosem
+  i wszystkimi polami okna eksportu.
+- **Wczytaj projekt** przywraca to z powrotem.
+- **Autozapis** trzyma ostatni stan w pamięci przeglądarki i sam się odzywa po ponownym
+  otwarciu strony — paskiem na dole płótna. Nie działa w trakcie odsłuchu (źródło w ruchu
+  ma inne współrzędne w każdej klatce, więc zapis z takiej chwili byłby pozycją z połowy
+  obiegu) i **nigdy nie nadpisuje zapisu pustą sceną**.
+
+**Czego w projekcie nie ma: dźwięków.** Plik audio z dysku waży dziesiątki megabajtów,
+a przeglądarka i tak nie odczyta go ponownie bez wskazania przez człowieka (File System
+Access API nie działa z `file://`). Projekt zapamiętuje więc **nazwę pliku** i po wczytaniu
+pokazuje bursztynową ramkę: *„2 dźwięki czekają na pliki z Twojego komputera"* — z guzikiem
+**Wskaż pliki**. Dopasowanie idzie po nazwie; plik, który do niczego nie pasuje, wchodzi
+do sceny jako nowy dźwięk, zamiast zniknąć bez słowa.
+
+Dźwięki z **Biblioteki SAL** wracają same — wystarczy ich identyfikator.
+
+Projekt zapisany **przed** wskazaniem brakujących plików nie gubi tych dźwięków: wracają
+do pliku razem z resztą, na swoje miejsca w kolejności.
 
 ## Współpraca ze Sferą
 
@@ -136,7 +179,8 @@ pośredniej.
 | `js/80-ruch.js` | mysz i dotyk, ruch źródeł, symulacja trajektorii |
 | `js/84-fala.js` | fala wybranego dźwięku i kursor odtwarzania w panelu |
 | `js/85-rysowanie.js` | pętla klatek, scena i mapa w rogu |
-| `js/90-eksport.js` | kodowanie WAV, obwiednia głośności, `exportScene()` |
+| `js/90-eksport.js` | kodowanie WAV, obwiednia głośności, pomiar głośności, `exportScene()` |
+| `js/95-projekt.js` | zapis projektu `.sal.json`, wczytanie i autozapis w przeglądarce |
 | `js/99-init.js` | start aplikacji — **musi zostać ostatni** |
 
 **Kolejność wczytywania jest kontraktem.** Prefiksy numeryczne odpowiadają kolejności

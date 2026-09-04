@@ -67,6 +67,12 @@ function buildSrc(id, name, x, y, vol, libId){
     playing:false, node:null,
     gain, airFilter, splitter, pannerL, pannerR, reverbSend,
     libraryId:libId||null, isStream:false, audioElement:null, mediaSource:null,
+    // Skad przyszedl dzwiek z DYSKU. Sam bufor nie da sie zapisac w projekcie (dziesiatki
+    // megabajtow), a przegladarka nie odczyta pliku ponownie bez wskazania go przez
+    // czlowieka. Zostaje wiec nazwa — po niej 95-projekt.js dopasowuje wskazane pliki
+    // do zrodel, ktore na nie czekaja. Pelnej sciezki przegladarka nie podaje; pole
+    // `plikSciezka` wypelnia sie tylko przy wyborze calego katalogu.
+    plikNazwa:null, plikSciezka:null, plikBajtow:0,
     attrAuthor:null, attrLicense:null, attrUrl:null,
     // orbitAngle to kat na okregu w konwencji parametrycznej (0 = wschod, rosnie zgodnie
     // z ruchem wskazowek na ekranie). Domyslne -PI/2 stawia dzwiek na POLNOCY, czyli
@@ -198,7 +204,7 @@ fileDrop.addEventListener('drop', e=>{ e.preventDefault(); fileDrop.classList.re
 fileInput.addEventListener('change', ()=>{ handleFiles(fileInput.files); fileInput.value=''; });
 async function handleFiles(files){
   let n=0;
-  for(const f of files){ try { if(!S.sceneCreatedAt) S.sceneCreatedAt=new Date(f.lastModified||Date.now()); const b=await f.arrayBuffer(); const d=await audioCtx.decodeAudioData(b); const a=Math.random()*Math.PI*2, r=4+Math.random()*10; createFromBuffer(d, cleanFileName(f.name), Math.cos(a)*r, Math.sin(a)*r); n++; } catch(e){ showToast('⚠ '+f.name); } }
+  for(const f of files){ try { if(!S.sceneCreatedAt) S.sceneCreatedAt=new Date(f.lastModified||Date.now()); const b=await f.arrayBuffer(); const d=await audioCtx.decodeAudioData(b); const a=Math.random()*Math.PI*2, r=4+Math.random()*10; const s=createFromBuffer(d, cleanFileName(f.name), Math.cos(a)*r, Math.sin(a)*r); s.plikNazwa=f.name; s.plikSciezka=f.webkitRelativePath||null; s.plikBajtow=f.size; n++; } catch(e){ showToast('⚠ '+f.name); } }
   if(n) showToast('Dodano '+n+' plik(ów)');
 }
 

@@ -19,6 +19,18 @@ const S = {
 let libraryData = null, libSearchQuery = '';
 
 const $ = id => document.getElementById(id);
+
+// Czas nagrania w sekundach — JEDNO miejsce, w ktorym czyta sie pole "Czas trwania"
+// z okna eksportu. Czytaja to dwa rozne mechanizmy: sam eksport (90-eksport.js) i zakres
+// suwaka Wejscie (60-panel.js). Rozjazd tych dwoch liczb juz raz kosztowal sesje: suwak
+// konczyl sie na 60 s (max 120 przy skali 0,5), a nagranie moglo trwac 600 s, wiec
+// ostatnich dziewieciu minut nie dalo sie uzyc na wejscie zrodla.
+function czasEksportu(){
+  const el=$('kpoDuration');
+  const v=el?parseFloat(el.value):NaN;
+  return (isFinite(v)&&v>0)?v:30;
+}
+
 const app=$('app'), mainCanvas=$('mainCanvas'), ctx=mainCanvas.getContext('2d');
 const minimapCanvas=$('minimapCanvas'), minimapCtx=minimapCanvas.getContext('2d');
 const compassNeedle=$('compassNeedle'), hudPos=$('hudPos'), hudRot=$('hudRot'), hudSrc=$('hudSrc');

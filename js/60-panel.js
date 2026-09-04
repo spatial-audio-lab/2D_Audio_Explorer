@@ -24,6 +24,9 @@
 //   pole      — id elementu z podpisem wartosci (suwak)
 //   zasieg    — 'zrodlo' (dotyczy wybranego dzwieku) | 'scena' (dotyczy calej sceny)
 //   skala     — wartosc modelu = surowa wartosc suwaka * skala
+//   zakres    — GORNA GRANICA suwaka w jednostkach modelu, przeliczana przy kazdym
+//               odswiezeniu panelu. Pole opcjonalne: bez niego obowiazuje `max` z HTML-a.
+//               Jest po to, zeby suwak, ktorego zakres zalezy od sceny, nie klamal.
 //   pusta     — co pokazac, gdy nie ma zaznaczonego zrodla
 //   czyta     — model -> wartosc; przy zasiegu 'scena' wolane bez argumentu
 //   pisze     — wartosc -> model, razem z efektem w grafie audio
@@ -61,8 +64,15 @@ const KONTROLKI = [
 
   // Sekunda sceny, w ktorej zrodlo wchodzi. Suwak zmienia PARAMETR — na biegnaca scene
   // nie wplywa, bo wejscia sa zaplanowane w Web Audio przy nacisnieciu Wszystkie.
+  // Zakres idzie za CZASEM NAGRANIA z okna eksportu, a nie za sztywnym `max` w HTML-u.
+  // Wczesniej konczyl sie na 60 s (max 120 przy skali 0,5) niezaleznie od tego, ze
+  // nagranie moze trwac 600 s — kwestii z drugiej polowy sluchowiska nie dalo sie ustawic.
+  // Skrocenie nagrania NIE przesuwa zrodla, ktore stoi dalej: gorna granica podnosi sie
+  // wtedy do jego wejscia, zeby suwak pokazywal prawde. Ze zrodla nie slychac, mowi lista
+  // (dopisek "poza nagraniem") i META.
   { nazwa:'wejscie', telefon:false, typ:'suwak', wej:'startOffset', pole:'startOffsetVal', zasieg:'zrodlo',
     skala:0.5, pusta:0, format:v=>v.toFixed(1)+' s',
+    zakres:s=>Math.max(czasEksportu(), s?(s.startOffset||0):0),
     czyta:s=>s.startOffset||0, pisze:(s,v)=>{ s.startOffset=v; },
     odswiezListe:true },
 
@@ -187,7 +197,8 @@ const POJEMNIKI_POZA_TELEFONEM = [
   '#attrBox',      // atrybucja pojedynczego dzwieku — praca redakcyjna, nie demonstracja
   '#stereoBox',    // 3.1 szerokosc stereo
   '#reverbBox',    // 4.1 poglos
-  '#eksportPanel'  // 5. eksport — poza zakresem "salonu demonstracyjnego"
+  '#eksportPanel', // 5. eksport — poza zakresem "salonu demonstracyjnego"
+  '#projektPanel'  // 6. projekt — zapis roboczy jest robota, a nie demonstracja
 ];
 
 // Rozwiesza klase `poza-telefonem` na wszystkim, co nie nalezy do skroconego panelu.
@@ -287,6 +298,9 @@ function pokaz(k){
   }
 
   const v = jestCel ? (k.zasieg==='scena' ? k.czyta() : k.czyta(s)) : k.pusta;
+  // Zakres PRZED wartoscia: przegladarka przycina `value` do biezacego `max`, wiec
+  // odwrotna kolejnosc gubilaby wejscie ustawione dalej, niz siega stary suwak.
+  if(k.zakres) el.max = Math.max(1, Math.round(k.zakres(jestCel?s:null)/k.skala));
   el.value = Math.round(v/k.skala);
   const pole=$(k.pole); if(pole) pole.textContent=k.format(v);
 }
@@ -352,6 +366,14 @@ sidebar.addEventListener('click', e=>{
   }
 });
 
+// Czas nagrania stoi w oknie eksportu, czyli POZA panelem — nasluch z `sidebar` go nie
+// widzi. A od niego zalezy zakres suwaka Wejscie i dopisek "poza nagraniem" na liscie,
+// wiec obie te rzeczy trzeba przeliczyc, gdy uzytkownik zmieni czas.
+(function pilnujCzasuNagrania(){
+  const el=$('kpoDuration'); if(!el) return;
+  el.addEventListener('input', ()=>{ updateSel(); renderSources(); });
+})();
+
 // =========================================================================================
 // LISTA ZRODEL I LICZNIKI
 // =========================================================================================
@@ -368,7 +390,14 @@ function renderSources(){
     // (jada po swojej trajektorii), ale nic z nich nie slychac — bez podpisu wygladaja
     // jak zepsute. Czekanie poznaje sie po zaplanowanym starcie w przyszlosci.
     const pTag=s.playback==='once'?' · raz':'';
-    const oTag=(s.startOffset||0)>0.01?' · wejście '+(s.startOffset).toFixed(1)+'s':'';
+    // Wejscie ustawione dalej niz czas nagrania nie jest bledem — moze byc etapem pracy
+    // ("najpierw ustaw, potem wydluz nagranie"). Ale w eksporcie takiego zrodla NIE MA
+    // (planOdtwarzania: gra = wejscie < dur), wiec lista musi to powiedziec od razu,
+    // a nie dopiero META po wygenerowaniu plikow.
+    const poza=(s.startOffset||0)>=czasEksportu();
+    const oTag=(s.startOffset||0)>0.01
+      ? ' · wejście '+(s.startOffset).toFixed(1)+'s'+(poza?' (poza nagraniem)':'')
+      : '';
     const czeka=s.playing&&s.startedAt!=null&&audioCtx.currentTime<s.startedAt;
     const sTag=s.playing&&!s.brzmi?(czeka?' · czeka':' · wybrzmiał'):'';
     const hAbs=Math.abs(s.height||0);

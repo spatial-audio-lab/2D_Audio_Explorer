@@ -171,6 +171,89 @@ function levelToB64(vals){
   return btoa(bin);
 }
 
+// --- GLOSNOSC SCALONA (ITU-R BS.1770-4) ------------------------------------------------
+// Po co to jest: nagranie, ktore w sluchawkach brzmi dobrze, potrafi byc o kilkanascie
+// decybeli za ciche albo za glosne wobec tego, czego oczekuje platforma. Do tej pory
+// eksport nie mowil o glosnosci NIC — jedyna liczba w plikach byl szczyt AmbiX, i to
+// tylko po to, zeby nie przesterowac.
+//
+// Ta funkcja NICZEGO NIE ZMIENIA W DZWIEKU. Mierzy tor binauralny i wpisuje wynik do
+// _META.txt oraz _SCENA.json. Wyrownanie glosnosci jest osobna decyzja i nalezy do
+// narzedzia, ktore sklada odcinek — tutaj bylaby cicha zmiana pliku bez pytania.
+const LUFS_KROK = 0.1;   // cwiartka okna pomiarowego; okno to 400 ms, czyli cztery kroki
+const LUFS_BRAMKA_ABS = -70;   // cisza miedzy zdaniami nie moze zanizac wyniku
+const LUFS_BRAMKA_WZGL = -10;  // ciche tlo tez nie, gdy scena ma glosne pierwsze plany
+
+// Dwa stopnie filtru K z zalacznika 1 do BS.1770-4: polka gorna (+4 dB, cien glowy)
+// i gorna przepustowa (bas nie niesie wrazenia glosnosci). Tablice w zalaczniku sa
+// podane WYLACZNIE dla 48 kHz, wiec wspolczynniki licza sie tutaj z czestotliwosci
+// i dobroci — pomiar jest ten sam takze na karcie 44,1 kHz.
+//
+// Wzor jest ten, ktorego uzywa libebur128, a nie zwykla polka gorna z ksiazki kucharskiej
+// RBJ. To NIE jest kosmetyka: ta druga, przy tych samych f0/G/Q, daje w 1 kHz wzmocnienie
+// 0,4382 dB zamiast 0,6977 dB, czyli caly pomiar wychodzi o 0,25 dB za nisko. Zmierzone
+// przez porownanie z tablica z normy — patrz _diag-lufs.js w katalogu harnessu, ktory
+// odtwarza wszystkie czternascie cyfr obu tablic.
+function filtrK(sr){
+  const f1=1681.974450955533, G=3.999843853973347, Q1=0.7071752369554196;
+  const f2=38.13547087602444, Q2=0.5003270373238773;
+  const K1=Math.tan(Math.PI*f1/sr), Vh=Math.pow(10,G/20), Vb=Math.pow(Vh,0.4996667741545416);
+  const d1=1+K1/Q1+K1*K1;
+  const K2=Math.tan(Math.PI*f2/sr), d2=1+K2/Q2+K2*K2;
+  return [
+    { b0:(Vh+Vb*K1/Q1+K1*K1)/d1, b1:2*(K1*K1-Vh)/d1, b2:(Vh-Vb*K1/Q1+K1*K1)/d1,
+      a1:2*(K1*K1-1)/d1, a2:(1-K1/Q1+K1*K1)/d1 },
+    { b0:1, b1:-2, b2:1,
+      a1:2*(K2*K2-1)/d2, a2:(1-K2/Q2+K2*K2)/d2 }
+  ];
+}
+
+// Zwraca { lufs, szczytDb, blokow }. `lufs` jest null, gdy nagranie jest krotsze niz
+// okno pomiarowe albo cisze — wtedy liczba bylaby wymyslona, a nie zmierzona.
+// Szczyt to szczyt PROBKOWY, liczony na sygnale surowym: miedzy probkami przebieg moze
+// isc wyzej, wiec nie nazywamy go true peak i nie udajemy, ze nim jest.
+function zmierzGlosnosc(buffer){
+  const sr=buffer.sampleRate, nCh=buffer.numberOfChannels, len=buffer.length;
+  const dl=Math.max(1,Math.round(sr*LUFS_KROK)), nSeg=Math.floor(len/dl);
+  const [F,H]=filtrK(sr);
+  let szczyt=0;
+  // Sumy kwadratow w cwiartkach okna. Okna zachodza na siebie w 75 %, wiec liczenie ich
+  // wprost policzyloby kazda probke cztery razy; blok 400 ms to po prostu cztery kolejne
+  // cwiartki. Ten sam wynik, jeden przebieg po probkach.
+  const segi=[];
+  for(let c=0;c<nCh;c++){
+    const d=buffer.getChannelData(c), s=new Float64Array(nSeg);
+    let x1=0,x2=0,y1=0,y2=0,u1=0,u2=0,v1=0,v2=0;
+    for(let i=0;i<len;i++){
+      const x=d[i], a=x<0?-x:x; if(a>szczyt) szczyt=a;
+      const y=F.b0*x+F.b1*x1+F.b2*x2-F.a1*y1-F.a2*y2; x2=x1; x1=x; y2=y1; y1=y;
+      const z=H.b0*y+H.b1*u1+H.b2*u2-H.a1*v1-H.a2*v2; u2=u1; u1=y; v2=v1; v1=z;
+      const seg=(i/dl)|0; if(seg<nSeg) s[seg]+=z*z;
+    }
+    segi.push(s);
+  }
+  const szczytDb = szczyt>0 ? 20*Math.log10(szczyt) : -Infinity;
+  const nBlok=nSeg-3;
+  if(nBlok<1) return { lufs:null, szczytDb, blokow:0 };
+  // Waga kanalu G wynosi 1,0 dla lewego i prawego (BS.1770-4 tab. 1). Kanaly tylne maja
+  // 1,41, ale tor binauralny jest dwukanalowy, wiec ten przypadek tu nie wystepuje.
+  const moc=new Float64Array(nBlok), probek=dl*4;
+  for(let j=0;j<nBlok;j++){
+    let sum=0;
+    for(let c=0;c<nCh;c++){ let q=0; for(let k=0;k<4;k++) q+=segi[c][j+k]; sum+=q/probek; }
+    moc[j]=sum;
+  }
+  const gl=m=>-0.691+10*Math.log10(m);
+  let suma=0, n=0;
+  for(let j=0;j<nBlok;j++) if(moc[j]>0 && gl(moc[j])>LUFS_BRAMKA_ABS){ suma+=moc[j]; n++; }
+  if(!n) return { lufs:null, szczytDb, blokow:0 };
+  const prog=gl(suma/n)+LUFS_BRAMKA_WZGL;
+  suma=0; n=0;
+  for(let j=0;j<nBlok;j++) if(moc[j]>0 && gl(moc[j])>LUFS_BRAMKA_ABS && gl(moc[j])>prog){ suma+=moc[j]; n++; }
+  if(!n) return { lufs:null, szczytDb, blokow:0 };
+  return { lufs:gl(suma/n), szczytDb, blokow:n };
+}
+
 // EXPORT 5 FILES
 $('generateExport').addEventListener('click', exportScene);
 
@@ -246,7 +329,9 @@ async function exportScene(){
   const opisSceny=($('sceneDesc').value||'').trim();
   const autorSceny=($('sceneAuthor').value||'').trim();
   const licencjaSceny=($('sceneLicense').value||'').trim();
-  const dur=parseFloat($('kpoDuration').value)||30;
+  // Ta sama funkcja karmi zakres suwaka Wejscie w panelu (10-stan.js) — czas nagrania
+  // jest jedna wielkoscia, a nie dwiema czytanymi osobno z tego samego pola.
+  const dur=czasEksportu();
   // Czestotliwosc probkowania DZIEDZICZONA z zywego kontekstu, nie zaszyta na 44100.
   // Powod: `generateIR()` buduje odpowiedz impulsowa pogloso w `audioCtx.sampleRate`, wiec na
   // karcie 48 kHz `ConvolverNode` odmawial jej przyjecia ("buffer sample rate 48000 does not
@@ -316,6 +401,9 @@ async function exportScene(){
     // 1. BINAURAL WAV
     const s1=exportStep('1/5 Binaural WAV — renderowanie HRTF…'+(nRuchome?` (ruch: ${nRuchome})`:''));
     let binauralBlob;
+    // Glosnosc mierzy sie na gotowym renderze binauralnym, bo to jest plik, ktory sie
+    // publikuje. AmbiX idzie do dekodera i tam glosnosc zalezy od ustawien odtwarzacza.
+    let glosnosc={ lufs:null, szczytDb:-Infinity, blokow:0 };
     try {
       const len=sr*dur;
       const off=new OfflineAudioContext(2,len,sr);
@@ -384,7 +472,10 @@ async function exportScene(){
       }
       const rendered=await off.startRendering();
       binauralBlob=bufToWav(rendered,2);
-      s1.textContent='✓ 1/5 Binaural WAV — OK'; s1.className='kpo-step done';
+      glosnosc=zmierzGlosnosc(rendered);
+      s1.textContent='✓ 1/5 Binaural WAV — OK'+(glosnosc.lufs!==null
+        ? ` · ${glosnosc.lufs.toFixed(1)} LUFS, szczyt ${glosnosc.szczytDb.toFixed(1)} dBFS` : '');
+      s1.className='kpo-step done';
     } catch(e){ s1.textContent='✗ 1/5 Binaural WAV — błąd: '+e.message; s1.className='kpo-step error'; throw e; }
 
     // 2. AMBIX 4-CH WAV — ACN/SN3D, renderowany na TYM SAMYM grafie co binaural
@@ -651,7 +742,18 @@ async function exportScene(){
     const s4=exportStep('4/5 Metadane TXT…');
     let metaBlob;
     try {
-      let txt=`SAL — Spatial Audio Lab\n${'═'.repeat(40)}\nScena: ${numerOn?nr+' — ':''}${tytul}\n${autorSceny?'Autor sceny: '+autorSceny+'\n':''}${licencjaSceny?'Licencja sceny: '+licencjaSceny+'\n':''}${opisSceny?'\nOpis:\n'+opisSceny+'\n':''}\nData: ${window._getDateFull()}\nCzas trwania: ${dur}s\nSample rate: ${sr} Hz\nReverb: ${includeReverb&&reverbState.enabled?'Tak (rozmiar:'+reverbState.roomSize.toFixed(2)+', tłumienie:'+reverbState.damping.toFixed(2)+', wet:'+Math.round(reverbState.wet*100)+'%)':'Nie'}\n\nListener: x=${S.listener.x.toFixed(2)}, y=${S.listener.y.toFixed(2)}, angle=${Math.round(S.listener.angle)}°\n\nŹródła (${srcs.length}):\n${'─'.repeat(40)}\n`;
+      // Glosnosc stoi obok czasu trwania i czestotliwosci probkowania, bo to ta sama
+      // kategoria: opis PLIKU, a nie opis sceny. Progi sa dopisane po to, zeby liczba
+      // cos znaczyla takze dla kogos, kto pierwszy raz widzi skrot LUFS.
+      const opisGlosnosci = glosnosc.lufs===null
+        ? 'Glosnosc scalona: nie zmierzona (nagranie krotsze niz okno 400 ms albo cisza)\n'
+        : `Glosnosc scalona: ${glosnosc.lufs.toFixed(1)} LUFS (ITU-R BS.1770-4, okien: ${glosnosc.blokow})\n`+
+          `Szczyt probkowy: ${glosnosc.szczytDb.toFixed(1)} dBFS\n`+
+          `   Podcast celuje zwykle w -16 LUFS, audiobook (ACX) w -23...-18 dB RMS przy szczycie ponizej -3 dBFS.\n`+
+          `   Plik NIE jest wyrownany: to pomiar, nie zmiana dzwieku. Roznice do celu dodaj w narzedziu,\n`+
+          `   ktorym skladasz odcinek. Szczyt jest probkowy, nie true peak — miedzy probkami przebieg\n`+
+          `   moze isc nieco wyzej.\n`;
+      let txt=`SAL — Spatial Audio Lab\n${'═'.repeat(40)}\nScena: ${numerOn?nr+' — ':''}${tytul}\n${autorSceny?'Autor sceny: '+autorSceny+'\n':''}${licencjaSceny?'Licencja sceny: '+licencjaSceny+'\n':''}${opisSceny?'\nOpis:\n'+opisSceny+'\n':''}\nData: ${window._getDateFull()}\nCzas trwania: ${dur}s\nSample rate: ${sr} Hz\n${opisGlosnosci}Reverb: ${includeReverb&&reverbState.enabled?'Tak (rozmiar:'+reverbState.roomSize.toFixed(2)+', tłumienie:'+reverbState.damping.toFixed(2)+', wet:'+Math.round(reverbState.wet*100)+'%)':'Nie'}\n\nListener: x=${S.listener.x.toFixed(2)}, y=${S.listener.y.toFixed(2)}, angle=${Math.round(S.listener.angle)}°\n\nŹródła (${srcs.length}):\n${'─'.repeat(40)}\n`;
       srcs.forEach((src,i)=>{
         // Pozycja z POCZATKU nagrania, nie z chwili, w ktorej ta petla akurat sie wykonuje.
         const p0=pozStartowa(src);
@@ -728,6 +830,16 @@ async function exportScene(){
         listener:{ x:+S.listener.x.toFixed(3), y:+S.listener.y.toFixed(3), angle:Math.round(S.listener.angle) },
         peak:+peakOut.toFixed(4),
         gainApplied:+normOut.toFixed(4),
+        // Pomiar toru BINAURALNEGO, opisowy tak samo jak `level` przy obiekcie: nic
+        // w dzwieku nie zostalo zmienione (`applied:false`) i odtwarzacz nie ma tu
+        // niczego przeliczac. Pole jest nowe, a czytniki starszych wersji po prostu
+        // go nie widza — tak samo jak `path` w v3 nie przeszkadzalo czytnikom v2.
+        loudness: glosnosc.lufs===null ? null : {
+          standard:'BS.1770-4', track:'binaural',
+          lufs:+glosnosc.lufs.toFixed(2),
+          peakDb:+glosnosc.szczytDb.toFixed(2),
+          peakType:'sample', applied:false
+        },
         objects:sceneObjects
       };
       sceneBlob=new Blob([JSON.stringify(scene)],{type:'application/json;charset=utf-8'});
