@@ -101,11 +101,32 @@ Na telefonie pasek stoi **nad** szufladą ustawień; wysokość zwiniętej szufl
 w zmiennej `--szuflada-h`, bo tę samą liczbę czytają trzy reguły naraz.
 
 **Czego w projekcie nie ma: dźwięków.** Plik audio z dysku waży dziesiątki megabajtów,
-a przeglądarka i tak nie odczyta go ponownie bez wskazania przez człowieka (File System
-Access API nie działa z `file://`). Projekt zapamiętuje więc **nazwę pliku** i po wczytaniu
-pokazuje bursztynową ramkę: *„2 dźwięki czekają na pliki z Twojego komputera"* — z guzikiem
-**Wskaż pliki**. Dopasowanie idzie po nazwie; plik, który do niczego nie pasuje, wchodzi
-do sceny jako nowy dźwięk, zamiast zniknąć bez słowa.
+a przeglądarka i tak nie odczyta go ponownie bez wskazania przez człowieka. Projekt
+zapamiętuje więc **nazwę pliku i ścieżkę**, a po wczytaniu pokazuje bursztynową ramkę:
+*„2 dźwięki czekają na pliki z Twojego komputera: Słuchowisko/tło/deszcz.wav…"*.
+
+### Jak oddać scenie brakujące dźwięki
+
+Trzy drogi, każda kończy się tym samym:
+
+| Sposób | Co robi |
+|---|---|
+| **Wskaż pliki** | zaznaczasz jeden albo wiele plików naraz; to, co nie pasuje do braków, wchodzi jako **nowy dźwięk** |
+| **Wskaż folder** | wskazujesz cały folder; Scena bierze z niego **tylko to, na co czeka**, reszty nie rusza |
+| **przeciągnięcie folderu** na pole w sekcji 1 | to samo, co przycisk — bez klikania |
+
+Rozróżnienie „pliki kontra folder" jest celowe: wskazanie katalogu z muzyką dołożyłoby
+inaczej kilkaset źródeł, a praktyczny sufit to **8–12 równoczesnych źródeł HRTF** na telefonie.
+
+**Pełnej ścieżki dyskowej (`C:\…`) przeglądarka nie podaje nigdy** — to blokada
+bezpieczeństwa, nie brak w aplikacji. Wyjątkiem jest wybór folderu: wtedy każdy plik niesie
+ścieżkę **względem wskazanego folderu** i tyle trafia do `.sal.json`. Dopasowanie próbuje po
+kolei: cała ścieżka → jej ogon (gdy wskażesz podfolder) → sama nazwa pliku.
+
+**Nazwa pliku to za słabe świadectwo tożsamości.** Projekt pamięta też długość nagrania,
+więc gdy wskażesz inne `kroki.wav` niż to zapisane, Scena wczyta je — ale powie wprost:
+*„Inne nagranie niż w projekcie: kroki.wav (1,50 s zamiast 0,50 s)"*. Ostrzeżenie zostaje
+na ekranie, dopóki go nie zamkniesz, bo to jedyny moment, w którym da się złapać pomyłkę.
 
 Dźwięki z **Biblioteki SAL** wracają same — wystarczy ich identyfikator.
 

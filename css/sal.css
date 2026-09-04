@@ -286,6 +286,8 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .proj-braki { margin-top: var(--sm); padding: var(--sm); border: 1px solid rgba(255,176,0,0.45); background: rgba(255,176,0,0.06); }
 .proj-braki.hidden { display: none; }
 .proj-braki-txt { font-size: var(--fs-2xs); color: var(--white); line-height: 1.6; margin-bottom: var(--xs); }
+.proj-braki-akcje { display: flex; gap: var(--xs); }
+.proj-braki-hint { font-size: var(--fs-2xs); color: var(--mid); line-height: 1.5; margin-top: var(--xs); }
 
 /* Pasek powrotu do sceny z autozapisu — nakladka na dole plotna.
    Krzyzyk jest trzecim wyjsciem, obok "Wroc do niej" i "Zacznij od nowa": zamyka pasek,

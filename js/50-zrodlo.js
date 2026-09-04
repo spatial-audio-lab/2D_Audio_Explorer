@@ -200,7 +200,24 @@ $('pickFiles').addEventListener('click', ()=>fileInput.click());
 fileDrop.addEventListener('click', ()=>fileInput.click());
 fileDrop.addEventListener('dragover', e=>{ e.preventDefault(); fileDrop.classList.add('dragover'); });
 fileDrop.addEventListener('dragleave', ()=>fileDrop.classList.remove('dragover'));
-fileDrop.addEventListener('drop', e=>{ e.preventDefault(); fileDrop.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+// Przeciagniety FOLDER nie jest plikiem: `dataTransfer.files` daje dla niego wpis, ktorego
+// decodeAudioData nie przyjmie, wiec do wrzesnia 2026 upuszczenie katalogu konczylo sie
+// seria ostrzezen "nie udalo sie odczytac". Teraz folder idzie inna droga niz pliki:
+// uzupelnia BRAKI wczytanego projektu i nie doklada do sceny niczego poza nimi
+// (js/95-projekt.js). Wpisy trzeba zebrac SYNCHRONICZNIE — `dataTransfer` jest wazny
+// tylko w trakcie obslugi zdarzenia i po pierwszym `await` bywa juz pusty.
+fileDrop.addEventListener('drop', async e=>{
+  e.preventDefault(); fileDrop.classList.remove('dragover');
+  const wpisy = (typeof wpisyZUpuszczenia==='function') ? wpisyZUpuszczenia(e.dataTransfer) : [];
+  const katalogi = wpisy.filter(w=>w.isDirectory);
+  if(katalogi.length && typeof rekordyZWpisow==='function'){
+    showToast('⏳ Przeglądam folder…', 8000);
+    const rekordy = await rekordyZWpisow(katalogi, '');
+    dopasujPliki(rekordy, { tylkoDopasowane:true });
+    return;
+  }
+  handleFiles(e.dataTransfer.files);
+});
 fileInput.addEventListener('change', ()=>{ handleFiles(fileInput.files); fileInput.value=''; });
 async function handleFiles(files){
   let n=0;

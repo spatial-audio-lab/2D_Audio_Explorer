@@ -9,10 +9,12 @@
 // przy sluchowisku na dziesiec minut przekresla robote.
 //
 // CZEGO W PROJEKCIE NIE MA I DLACZEGO. Dzwiekow. Plik audio z dysku wazy dziesiatki
-// megabajtow, a przegladarka i tak nie odczyta go ponownie bez wskazania przez czlowieka
-// (File System Access API nie dziala z file://). Projekt zapamietuje wiec NAZWE pliku
-// i przy wczytaniu prosi o wskazanie go raz jeszcze. Dzwieki z Biblioteki SAL wracaja
-// same, bo wystarczy ich identyfikator.
+// megabajtow, a przegladarka i tak nie odczyta go ponownie bez wskazania przez czlowieka.
+// Projekt zapamietuje wiec NAZWE pliku i — gdy uzytkownik wskazal caly folder — SCIEZKE
+// WZGLEDNA wobec tego folderu, po czym przy wczytaniu prosi o wskazanie zrodel raz jeszcze.
+// Pelnej sciezki dyskowej nie zapisujemy, bo przegladarka jej nie podaje: `<input
+// type="file">` oddaje nazwe, rozmiar i zawartosc, i nic ponadto. To blokada bezpieczenstwa,
+// nie brak w tym kodzie. Dzwieki z Biblioteki SAL wracaja same, bo wystarczy identyfikator.
 //
 // GRANICA WOBEC EKSPORTU. Eksport (5) robi pliki do sluchania i do oddania — jest
 // nieodwracalny w tym sensie, ze z .wav nie da sie wrocic do ukladania sceny. Projekt (6)
@@ -155,7 +157,10 @@ function opisBrakow(){
   const box=$('brakiBox'), txt=$('brakiTxt');
   if(!box||!txt) return;
   if(!czekajaceZrodla.length){ box.classList.add('hidden'); return; }
-  const nazwy=czekajaceZrodla.map(w=>w.dzwiek.plik).join(', ');
+  // Sciezka zamiast samej nazwy, gdy projekt ja zna — mowi, w KTORYM folderze szukac.
+  // Pelnej sciezki z dysku przegladarka nie podaje nigdy; to, co tu widac, jest
+  // sciezka wzgledem folderu, ktory uzytkownik kiedys wskazal.
+  const nazwy=czekajaceZrodla.map(w=>w.dzwiek.sciezka||w.dzwiek.plik).join(', ');
   txt.textContent=czekajaceZrodla.length===1
     ? 'Jeden dźwięk czeka na plik z Twojego komputera: '+nazwy
     : czekajaceZrodla.length+' dźwięki czekają na pliki z Twojego komputera: '+nazwy;
@@ -243,44 +248,176 @@ async function wczytajProjekt(dane, opcje){
   return true;
 }
 
-// Dopasowanie wskazanych plikow do wpisow, ktore na nie czekaja. Po nazwie, bez wzgledu
-// na wielkosc liter — sciezki przegladarka i tak nie podaje, wiec nazwa to wszystko, co
-// mamy. Plik, ktory do niczego nie pasuje, wchodzi do sceny jako NOWY dzwiek zamiast
-// zniknac bez slowa.
-async function dopasujPliki(pliki){
-  let dopasowane=0, nowe=0;
-  for(const f of pliki){
-    const nazwa=String(f.name).toLowerCase();
-    const i=czekajaceZrodla.findIndex(w=>String(w.dzwiek.plik||'').toLowerCase()===nazwa);
+// =========================================================================================
+// DOPASOWANIE PLIKOW DO WPISOW, KTORE NA NIE CZEKAJA
+// =========================================================================================
+// Czego przegladarka NIE daje: pelnej sciezki na dysku. `<input type="file">` oddaje nazwe,
+// rozmiar i zawartosc — nic wiecej, i to jest celowa blokada, a nie brak w tym kodzie.
+// Jedyny wyjatek to wybor CALEGO FOLDERU: wtedy kazdy plik niesie `webkitRelativePath`,
+// czyli sciezke wzgledem wskazanego folderu ("Sluchowisko/kroki/krok_01.wav"). Tyle da sie
+// zapisac w projekcie uczciwie i tyle wystarcza, zeby czlowiek wiedzial, gdzie szukac.
+
+const ROZSZERZENIA_AUDIO = /\.(wav|flac|mp3|ogg|opus|m4a|mp4|aac|aif|aiff|webm)$/i;
+// Roznica dlugosci, powyzej ktorej plik jest wprawdzie wczytywany, ale z ostrzezeniem.
+// Chodzi o przypadek "dwa rozne kroki.wav z dwoch projektow": nazwa ta sama, nagranie inne.
+const TOLERANCJA_DLUGOSCI_S = 0.1;
+
+// Wewnetrzny format: { f: File, sciezka: 'folder/podfolder/plik.wav' }. Sciezka bywa pusta
+// (wybor pojedynczych plikow) i wtedy zostaje sama nazwa. Funkcja przyjmuje tez zwykla
+// liste plikow, zeby wolajacy nie musial wiedziec, skad przyszly.
+function naRekordy(lista){
+  return Array.from(lista||[]).map(x =>
+    (x && x.f) ? x : { f:x, sciezka:(x && x.webkitRelativePath) || '' });
+}
+
+function male(t){ return String(t||'').toLowerCase(); }
+
+// Ktory czekajacy wpis pasuje do tego pliku. Kolejnosc prob idzie od najpewniejszej:
+//   1. cala sciezka wzgledna,
+//   2. ogon sciezki — uzytkownik wskazal podfolder albo folder o poziom wyzej,
+//   3. sama nazwa pliku.
+// Zwraca indeks w `czekajaceZrodla` albo -1.
+function znajdzCzekajacy(rek){
+  const sciezka=male(rek.sciezka), nazwa=male(rek.f.name);
+  if(sciezka){
+    let i=czekajaceZrodla.findIndex(w=>male(w.dzwiek.sciezka)===sciezka);
+    if(i>=0) return i;
+    i=czekajaceZrodla.findIndex(w=>{
+      const zap=male(w.dzwiek.sciezka);
+      if(!zap) return false;
+      return sciezka.endsWith('/'+zap) || zap.endsWith('/'+sciezka);
+    });
+    if(i>=0) return i;
+  }
+  return czekajaceZrodla.findIndex(w=>male(w.dzwiek.plik)===nazwa);
+}
+
+// `tylkoDopasowane` odroznia dwa zamiary uzytkownika, ktore wygladaja w kodzie tak samo:
+//   - wskazanie PLIKOW to "dodaj mi te dzwieki" — co nie pasuje do braków, wchodzi jako nowe,
+//   - wskazanie FOLDERU to "uzupelnij scene z tego folderu" — reszty nie ruszamy.
+// Bez tego rozroznienia wskazanie katalogu Muzyka dolozyloby do sceny kilkaset zrodel,
+// a praktyczny sufit to 8-12 zrodel HRTF na telefonie.
+async function dopasujPliki(pliki, opcje){
+  opcje=opcje||{};
+  const rekordy=naRekordy(pliki);
+  let dopasowane=0, nowe=0, pominiete=0, nieczytelne=0;
+  const inneNagranie=[];
+  for(const rek of rekordy){
+    const f=rek.f;
+    const i=znajdzCzekajacy(rek);
+    // Dekodowanie dopiero PO decyzji, czy ten plik jest nam potrzebny. Odwrotna kolejnosc
+    // znaczylaby dekodowanie calego folderu, zeby na koncu wyrzucic 490 z 500 wynikow.
+    if(i<0 && opcje.tylkoDopasowane){ pominiete++; continue; }
     let dane=null;
     try {
       const b=await f.arrayBuffer();
       dane=await audioCtx.decodeAudioData(b);
-    } catch(e){ showToast('⚠ Nie udało się odczytać: '+f.name); continue; }
+    } catch(e){
+      nieczytelne++;
+      if(!opcje.tylkoDopasowane) showToast('⚠ Nie udało się odczytać: '+f.name);
+      continue;
+    }
     if(i>=0){
       const z=czekajaceZrodla[i];
       const s=createFromBuffer(dane, z.nazwa||cleanFileName(f.name), z.x||0, z.y||0);
-      s.plikNazwa=f.name; s.plikSciezka=f.webkitRelativePath||null; s.plikBajtow=f.size;
+      s.plikNazwa=f.name; s.plikSciezka=rek.sciezka||null; s.plikBajtow=f.size;
       s.kolejnoscProjektu=z.kolejnosc;
       nalozZrodlo(s, z);
+      // Nazwa pliku to za slabe swiadectwo tozsamosci. Projekt pamieta dlugosc nagrania,
+      // wiec da sie powiedziec wprost, ze to NIE jest ten plik — zamiast po cichu postawic
+      // w scenie cudze kroki. Plik i tak wchodzi: moze byc po prostu przekodowany.
+      const zapisana=(z.dzwiek && z.dzwiek.sekundy)||0;
+      if(zapisana>0 && Math.abs(dane.duration-zapisana)>TOLERANCJA_DLUGOSCI_S){
+        inneNagranie.push(f.name+' ('+dane.duration.toFixed(2)+' s zamiast '+zapisana.toFixed(2)+' s)');
+      }
       czekajaceZrodla.splice(i,1);
       dopasowane++;
     } else {
       const a=Math.random()*Math.PI*2, r=4+Math.random()*10;
       const s=createFromBuffer(dane, cleanFileName(f.name), Math.cos(a)*r, Math.sin(a)*r);
-      s.plikNazwa=f.name; s.plikSciezka=f.webkitRelativePath||null; s.plikBajtow=f.size;
+      s.plikNazwa=f.name; s.plikSciezka=rek.sciezka||null; s.plikBajtow=f.size;
       nowe++;
     }
   }
   uporzadkujZrodla();
   opisBrakow();
   renderSources(); updateCounters(); updateSel();
-  if(dopasowane||nowe){
-    const cz=[];
-    if(dopasowane) cz.push('dopasowano '+dopasowane);
-    if(nowe) cz.push(nowe+' dodano jako nowe');
-    showToast(cz.join(', '));
+
+  // Ostrzezenie o innej dlugosci jest wazniejsze niz podsumowanie i zostaje na ekranie,
+  // dopoki uzytkownik go nie zamknie — to jedyny moment, w ktorym da sie zlapac pomylke.
+  if(inneNagranie.length){
+    showToast('⚠ Inne nagranie niż w projekcie: '+inneNagranie.join(', ')+
+              '. Wczytane mimo to — sprawdź, czy to właściwy plik.', 0);
+    return;
   }
+  const cz=[];
+  if(dopasowane) cz.push('dopasowano '+dopasowane);
+  if(nowe) cz.push(nowe+' dodano jako nowe');
+  if(!dopasowane && !nowe){
+    if(opcje.tylkoDopasowane)
+      showToast(czekajaceZrodla.length
+        ? 'W tym folderze nie ma dźwięków, na które czeka scena (przejrzano '+rekordy.length+')'
+        : 'Scena nie czeka na żadne pliki — przeciągnij pojedyncze dźwięki, żeby je dodać', 0);
+    else if(nieczytelne) showToast('⚠ Żadnego z '+nieczytelne+' plików nie dało się odczytać');
+    return;
+  }
+  if(pominiete) cz.push('pominięto '+pominiete+' spoza sceny');
+  showToast(cz.join(', '));
+}
+
+// =========================================================================================
+// PRZECIAGNIETY FOLDER
+// =========================================================================================
+// Folder nie jest plikiem. `dataTransfer.files` daje dla niego wpis, ktorego
+// `decodeAudioData` nie przyjmie — do wrzesnia 2026 przeciagniecie katalogu konczylo sie
+// seria ostrzezen "nie udalo sie odczytac". Sciezka przez `webkitGetAsEntry()` dziala
+// w kazdej dzisiejszej przegladarce, takze w Safari, i nie wymaga File System Access API.
+//
+// Dwie pulapki tego API, obie kosztowaly kiedys ludziom godziny:
+//   - `dataTransfer` jest wazny WYLACznie w trakcie obslugi zdarzenia, wiec wpisy trzeba
+//     zebrac synchronicznie, PRZED pierwszym `await`;
+//   - `readEntries()` oddaje najwyzej 100 pozycji naraz i trzeba je wolac w petli,
+//     az zwroci pusta tablice. Katalog na 120 plikow inaczej gubi dwadziescia.
+function wpisyZUpuszczenia(dt){
+  const wpisy=[];
+  if(!dt || !dt.items || !DataTransferItem.prototype.webkitGetAsEntry) return wpisy;
+  for(const it of dt.items){
+    const w=it.webkitGetAsEntry && it.webkitGetAsEntry();
+    if(w) wpisy.push(w);
+  }
+  return wpisy;
+}
+
+function czytajKatalog(reader){
+  return new Promise(ok=>reader.readEntries(w=>ok(w), ()=>ok([])));
+}
+function plikZWpisu(wpis){
+  return new Promise(ok=>wpis.file(f=>ok(f), ()=>ok(null)));
+}
+
+// Schodzi po katalogu i zbiera wylacznie pliki audio, budujac sciezke wzgledna taka sama,
+// jaka daje wybor folderu przez `webkitdirectory` — dzieki temu dopasowanie ma jedno
+// zrodlo prawdy niezaleznie od tego, czy folder przeciagnieto, czy wskazano przyciskiem.
+async function rekordyZWpisow(wpisy, prefiks){
+  const out=[];
+  for(const w of wpisy){
+    const sciezka=(prefiks?prefiks+'/':'')+w.name;
+    if(w.isFile){
+      if(!ROZSZERZENIA_AUDIO.test(w.name)) continue;
+      const f=await plikZWpisu(w);
+      if(f) out.push({ f, sciezka });
+    } else if(w.isDirectory){
+      const reader=w.createReader();
+      const dzieci=[];
+      for(;;){
+        const porcja=await czytajKatalog(reader);
+        if(!porcja.length) break;
+        dzieci.push(...porcja);
+      }
+      out.push(...await rekordyZWpisow(dzieci, sciezka));
+    }
+  }
+  return out;
 }
 
 // =========================================================================================
@@ -414,6 +551,20 @@ function przywrocAutozapis(){
   if(bBtn&&bInp){
     bBtn.addEventListener('click', ()=>bInp.click());
     bInp.addEventListener('change', ()=>{ dopasujPliki(bInp.files); bInp.value=''; });
+  }
+  // Wybor folderu. `webkitdirectory` jest w kazdej przegladarce desktopowej, ale na
+  // telefonie bywa go brak — wtedy przycisk ZNIKA, zamiast otwierac okno, ktore nic nie robi.
+  const fBtn=$('brakiFolderBtn'), fInp=$('brakiFolderInput');
+  if(fBtn&&fInp){
+    if(!('webkitdirectory' in fInp)) fBtn.style.display='none';
+    else {
+      fBtn.addEventListener('click', ()=>fInp.click());
+      fInp.addEventListener('change', ()=>{
+        // Z folderu bierzemy WYLACZNIE to, na co scena czeka — patrz `tylkoDopasowane`.
+        dopasujPliki(fInp.files, { tylkoDopasowane:true });
+        fInp.value='';
+      });
+    }
   }
   przywrocAutozapis();
   zegarAutozapisu=setInterval(autozapisTik, AUTOZAPIS_CO_MS);

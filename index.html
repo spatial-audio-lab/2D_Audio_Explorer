@@ -223,10 +223,18 @@
       <div class="proj-stan" id="projStan">Autozapis: czeka na pierwszy dźwięk</div>
       <div class="proj-braki hidden" id="brakiBox">
         <div class="proj-braki-txt" id="brakiTxt"></div>
-        <button class="btn-sm" type="button" id="brakiBtn">⇧ Wskaż pliki</button>
+        <div class="proj-braki-akcje">
+          <button class="btn-sm" type="button" id="brakiBtn">⇧ Wskaż pliki</button>
+          <!-- Przycisk znika w przegladarce, ktora nie umie wskazac folderu — obsluga
+               w js/95-projekt.js sprawdza `webkitdirectory` zamiast zakladac, ze jest. -->
+          <button class="btn-sm" type="button" id="brakiFolderBtn">◈ Wskaż folder</button>
+        </div>
+        <div class="proj-braki-hint">Z folderu Scena weźmie tylko te dźwięki, na które czeka.
+          Możesz go też przeciągnąć na pole w sekcji 1.</div>
       </div>
       <input type="file" class="hidden-input" id="projektInput" accept=".json,application/json">
       <input type="file" class="hidden-input" id="brakiInput" accept="audio/*" multiple>
+      <input type="file" class="hidden-input" id="brakiFolderInput" webkitdirectory multiple>
     </div></div>
   </aside>
 
