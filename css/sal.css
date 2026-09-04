@@ -25,6 +25,12 @@
   --font-mono: 'Azeret Mono', ui-monospace, monospace;
   --xs: 4px; --sm: 8px; --md: 16px; --lg: 24px; --xl: 40px;
   --nav-h: 64px; --lib-w: 300px; --side-w: 420px; --transport-h: 60px;
+  /* Wysokosc ZWINIETEJ szuflady prawego panelu ponizej 900 px. Liczba jest w trzech
+     miejscach naraz (wysokosc szuflady, uchwyt, odsuniecie paska powrotu od dolu),
+     wiec stoi w zmiennej — inaczej pasek powrotu chowa sie pod szuflada przy pierwszej
+     zmianie jej wysokosci. Zmierzone 04.09.2026 na 360x800: przycisk "Zacznij od nowa"
+     lezal w 687-715 px, a szuflada z z-index 40 zaczynala sie na 688 px. */
+  --szuflada-h: 52px;
   --fs-2xs: 12px; --fs-xs: 13px; --fs-sm: 14px; --fs-md: 16px; --fs-lg: 18px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -281,18 +287,28 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .proj-braki.hidden { display: none; }
 .proj-braki-txt { font-size: var(--fs-2xs); color: var(--white); line-height: 1.6; margin-bottom: var(--xs); }
 
-/* Pasek powrotu do sceny z autozapisu — nakladka na dole plotna. */
+/* Pasek powrotu do sceny z autozapisu — nakladka na dole plotna.
+   Krzyzyk jest trzecim wyjsciem, obok "Wroc do niej" i "Zacznij od nowa": zamyka pasek,
+   ale NIE kasuje zapisu. Bez niego pasek byl oknem bez wyjscia — zeby sie go pozbyc,
+   trzeba bylo podjac decyzje, ktorej uzytkownik moze jeszcze nie chciec podejmowac. */
 .wznow-bar { position: absolute; bottom: var(--md); left: 50%; transform: translateX(-50%);
   display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
   gap: var(--sm); z-index: 6; max-width: calc(100% - 2 * var(--md));
-  padding: var(--sm) var(--md); border: 1px solid rgba(0,229,204,0.45); background: var(--surface); }
+  padding: var(--sm) var(--md); padding-right: calc(var(--md) + 20px);
+  border: 1px solid rgba(0,229,204,0.45); background: var(--surface); }
 .wznow-bar.hidden { display: none; }
 .wznow-txt { font-size: var(--fs-xs); color: var(--white); line-height: 1.5; }
+.wznow-akcje { display: flex; align-items: center; gap: var(--sm); }
 .wznow-btn { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.1em; padding: 6px 12px;
   border: 1px solid var(--cyan); background: rgba(0,229,204,0.07); color: var(--cyan); cursor: pointer; white-space: nowrap; transition: all 0.2s; }
 .wznow-btn:hover { background: rgba(0,229,204,0.16); }
 .wznow-btn--cichy { border-color: var(--dim); background: none; color: var(--mid); }
 .wznow-btn--cichy:hover { border-color: var(--mid); background: none; color: var(--white); }
+.wznow-zamknij { position: absolute; top: 0; right: 0; width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; color: var(--mid); font-size: var(--fs-md);
+  line-height: 1; cursor: pointer; transition: color 0.2s; }
+.wznow-zamknij:hover { color: var(--white); }
 
 .export-label { font-size: var(--fs-xs); color: var(--white); margin-bottom: var(--xs); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
 .export-input { width: 100%; background: rgba(240,235,224,0.04); border: 1px solid var(--dim); color: var(--white); font-family: var(--font-mono); font-size: var(--fs-sm); padding: 8px; text-align: left; transition: border-color 0.2s; }
@@ -493,7 +509,7 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
      tresc panelu przewija sie w srodku, wiec "polowa" i "caly ekran" roznilyby sie
      tylko tym, ile widac plotna, a plotno jest tu wazniejsze. --- */
   .sidebar { position: fixed; left: 0; right: 0; bottom: var(--transport-h); z-index: 40;
-    grid-area: auto; height: 52px;
+    grid-area: auto; height: var(--szuflada-h);
     max-height: calc(100dvh - var(--nav-h) - var(--transport-h));
     border-left: none; border-top: 1px solid var(--dim); background: var(--black);
     transition: height 0.3s ease; }
@@ -501,12 +517,28 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
   .sidebar:not(.szuflada-otwarta) { overflow: hidden; }
   .sidebar.szuflada-otwarta { height: 62dvh; }
 
+  /* --- PASEK POWROTU NAD SZUFLADA ------------------------------------------
+     Zmierzone 04.09.2026 na 360x800: przy `bottom: var(--md)` przycisk "Zacznij od
+     nowa" lezal w 687-715 px, a zwinieta szuflada (z-index 40) zaczynala sie na 688.
+     Przycisk byl narysowany — po prostu pod szuflada. Dlatego pasek odsuwa sie od dolu
+     o jej wysokosc, a nie o sam odstep.
+     Na waskim ekranie pasek idzie tez na CALA szerokosc: przy `translateX(-50%)` pudelko
+     kurczylo sie do 205 px i lamalo kazdy przycisk do osobnej linii. --- */
+  .wznow-bar { left: var(--md); right: var(--md); transform: none;
+    bottom: calc(var(--szuflada-h) + var(--md));
+    max-width: none; padding-right: calc(var(--md) + 32px); }
+  .wznow-akcje { width: 100%; }
+  /* Rzad dzielony po polowie zamiast dwoch linii. `white-space: normal`, bo przy 320 px
+     "Zacznij od nowa" nie miesci sie w jednej linii i musi moc sie zlamac. */
+  .wznow-akcje .wznow-btn { flex: 1; white-space: normal; }
+  .wznow-zamknij { width: 44px; height: 44px; }
+
   /* Uchwyt jest `sticky`, a nie pierwszym elementem kolumny flex — dzieki temu
      przewija sie samo WNETRZE panelu, a uchwyt zostaje na wierzchu bez dokladania
      opakowania do markupu. */
   .szuflada-uchwyt { display: flex; align-items: center; gap: var(--md);
     position: sticky; top: 0; z-index: 2;
-    width: 100%; min-height: 52px; padding: 0 var(--lg);
+    width: 100%; min-height: var(--szuflada-h); padding: 0 var(--lg);
     background: var(--black); border: none; border-bottom: 1px solid var(--dim);
     color: var(--white); font-family: var(--font-mono); font-weight: 500;
     font-size: var(--fs-xs); letter-spacing: 0.15em; text-transform: uppercase;
@@ -716,7 +748,7 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 /* --- par.12 cele dotykowe >= 44px --- */
 .lib-add-btn, .src-btn, .transport-btn { width: 44px; height: 44px; }
 .source-item { grid-template-columns: 28px 1fr 44px 44px; }
-.btn-sm, .routing-btn, .btn-toggle, .motion-mode-btn, .help-tab, .mode-btn {
+.btn-sm, .routing-btn, .btn-toggle, .motion-mode-btn, .help-tab, .mode-btn, .wznow-btn {
   min-height: 44px; border-radius: 0; }
 .lib-cat-head { padding-top: 12px; padding-bottom: 12px; }
 .param-row { min-height: 44px; }

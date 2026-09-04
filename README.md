@@ -95,6 +95,11 @@ Sekcja **6. Projekt** ma dwa przyciski i jedną linijkę stanu.
   ma inne współrzędne w każdej klatce, więc zapis z takiej chwili byłby pozycją z połowy
   obiegu) i **nigdy nie nadpisuje zapisu pustą sceną**.
 
+Pasek ma trzy wyjścia, nie dwa: **Wróć do niej**, **Zacznij od nowa** (kasuje zapis)
+oraz **✕** — zamknij i zdecyduj później, zapis zostaje i wróci przy następnym otwarciu.
+Na telefonie pasek stoi **nad** szufladą ustawień; wysokość zwiniętej szuflady jest
+w zmiennej `--szuflada-h`, bo tę samą liczbę czytają trzy reguły naraz.
+
 **Czego w projekcie nie ma: dźwięków.** Plik audio z dysku waży dziesiątki megabajtów,
 a przeglądarka i tak nie odczyta go ponownie bez wskazania przez człowieka (File System
 Access API nie działa z `file://`). Projekt zapamiętuje więc **nazwę pliku** i po wczytaniu

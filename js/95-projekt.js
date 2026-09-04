@@ -390,6 +390,14 @@ function przywrocAutozapis(){
     try { localStorage.removeItem(AUTOZAPIS_KLUCZ); } catch(e){}
     stanAutozapisu('czeka na pierwszy dźwięk');
   }, { once:true });
+  // Krzyzyk to trzecie wyjscie: zamyka pasek i NIE kasuje zapisu. Bez niego pasek byl
+  // oknem bez wyjscia — zeby go zamknac, trzeba bylo podjac decyzje, ktorej uzytkownik
+  // moze jeszcze nie chciec podejmowac. Zapis wraca przy nastepnym otwarciu strony.
+  const zamknij=$('wznowZamknij');
+  if(zamknij) zamknij.addEventListener('click', ()=>{
+    bar.classList.add('hidden');
+    showToast('Zapis czeka — wróci przy następnym otwarciu strony');
+  }, { once:true });
 }
 
 // =========================================================================================

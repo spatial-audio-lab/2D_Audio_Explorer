@@ -76,8 +76,15 @@
          jest — obsluga w js/95-projekt.js. -->
     <div class="wznow-bar hidden" id="wznowBar" role="status">
       <span class="wznow-txt" id="wznowTxt">Znaleziono niezapisaną scenę.</span>
-      <button class="wznow-btn" type="button" id="wznowTak">Wróć do niej</button>
-      <button class="wznow-btn wznow-btn--cichy" type="button" id="wznowNie">Zacznij od nowa</button>
+      <!-- Przyciski w jednym pojemniku, zeby na waskim ekranie dzielily rzad po polowie,
+           zamiast lamac sie kazdy do wlasnej linii. -->
+      <div class="wznow-akcje">
+        <button class="wznow-btn" type="button" id="wznowTak">Wróć do niej</button>
+        <button class="wznow-btn wznow-btn--cichy" type="button" id="wznowNie">Zacznij od nowa</button>
+      </div>
+      <!-- Trzecie wyjscie: zamknij i zdecyduj pozniej. Zapis zostaje w pamieci. -->
+      <button class="wznow-zamknij" type="button" id="wznowZamknij"
+              aria-label="Zamknij — zdecyduję później">&times;</button>
     </div>
   </div>
 
