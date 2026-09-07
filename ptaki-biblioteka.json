@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "generated": "2026-09-07T21:09:17.973074+00:00",
-  "total_sounds": 16,
+  "generated": "2026-09-07T21:35:52.698297+00:00",
+  "total_sounds": 17,
   "stats": {
     "local_only": 0,
-    "stream_only": 16,
+    "stream_only": 17,
     "local_and_stream": 0
   },
   "categories": [
@@ -162,33 +162,6 @@
           "icon": "≋",
           "sounds": [
             {
-              "id": "xc_1176905",
-              "label": "Łabędź niemy",
-              "file": null,
-              "preview_url": "https://xeno-canto.org/1176905/download",
-              "source": "xeno-canto",
-              "source_url": "https://xeno-canto.org/1176905",
-              "author": "Paul Gosling",
-              "duration": 7,
-              "channels": null,
-              "type": "mp3",
-              "samplerate": null,
-              "tags": [
-                "łabędź niemy",
-                "cygnus olor"
-              ],
-              "license": {
-                "short": "CC BY NC SA 4.0",
-                "commercial": false,
-                "attribution": true,
-                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "ptaki_wodne",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
               "id": "xc_1176564",
               "label": "Czajka (w tle: gęgawa)",
               "file": null,
@@ -296,6 +269,60 @@
               "category": "ptaki_wodne",
               "has_local": false,
               "has_stream": true
+            },
+            {
+              "id": "xc_1166184",
+              "label": "Łabędź niemy",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1166184/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1166184",
+              "author": "Taras Vykhovanets",
+              "duration": 78,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "łabędź niemy",
+                "cygnus olor"
+              ],
+              "license": {
+                "short": "CC BY NC ND 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_wodne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_988172",
+              "label": "Żuraw",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/988172/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/988172",
+              "author": "Elias A. Ryberg",
+              "duration": 23,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "żuraw",
+                "grus grus"
+              ],
+              "license": {
+                "short": "CC BY NC ND 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_wodne",
+              "has_local": false,
+              "has_stream": true
             }
           ]
         },
@@ -347,33 +374,6 @@
               "tags": [
                 "sikora bogatka",
                 "parus major"
-              ],
-              "license": {
-                "short": "CC BY NC SA 4.0",
-                "commercial": false,
-                "attribution": true,
-                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "ptaki_miejskie",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "xc_1173112",
-              "label": "Kawka",
-              "file": null,
-              "preview_url": "https://xeno-canto.org/1173112/download",
-              "source": "xeno-canto",
-              "source_url": "https://xeno-canto.org/1173112",
-              "author": "Clément Bruneau",
-              "duration": 4,
-              "channels": null,
-              "type": "mp3",
-              "samplerate": null,
-              "tags": [
-                "kawka",
-                "coloeus monedula"
               ],
               "license": {
                 "short": "CC BY NC SA 4.0",
@@ -458,6 +458,33 @@
               "tags": [
                 "kos",
                 "turdus merula"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_miejskie",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_628606",
+              "label": "Kawka",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/628606/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/628606",
+              "author": "Lars Edenius",
+              "duration": 28,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "kawka",
+                "coloeus monedula"
               ],
               "license": {
                 "short": "CC BY NC SA 4.0",
