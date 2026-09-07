@@ -16,7 +16,7 @@ const S = {
   // przycisk "Dodaj punkty" w sekcji 3.2 — obsluga w 80-ruch.js.
   dodawaniePunktow:false
 };
-let libraryData = null, libSearchQuery = '';
+let libraryData = null, libSearchQuery = '', librarySourceFilter = 'all';
 
 const $ = id => document.getElementById(id);
 

@@ -62,6 +62,8 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .lib-count-badge { font-size: var(--fs-xs); letter-spacing: 0.15em; color: var(--amber); font-weight: 700; }
 .lib-search { width: 100%; background: rgba(240,235,224,0.04); border: 1px solid var(--dim); color: var(--white); font-family: var(--font-mono); font-size: var(--fs-sm); padding: var(--sm) 10px; transition: border-color 0.3s; }
 .lib-search:focus { border-color: var(--cyan); }
+.lib-source-select { width: 100%; margin-top: var(--sm); background: rgba(240,235,224,0.04); border: 1px solid var(--dim); color: var(--white); font-family: var(--font-mono); font-size: var(--fs-sm); padding: var(--sm) 10px; transition: border-color 0.3s; }
+.lib-source-select:focus { border-color: var(--cyan); }
 .lib-search::placeholder { color: var(--muted); }
 .lib-tree { flex: 1; overflow-y: auto; padding: var(--sm) 0; }
 .lib-cat { border-bottom: 1px solid rgba(240,235,224,0.08); }
@@ -757,9 +759,9 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .param-row { min-height: 44px; }
 
 /* --- par.06 formularze --- */
-.lib-search, .export-input { min-height: 44px; border-radius: 0; font-family: var(--font-mono);
+.lib-search, .export-input, .lib-source-select { min-height: 44px; border-radius: 0; font-family: var(--font-mono);
   font-weight: 400; background: var(--surface); color: var(--white); }
-.lib-search:focus, .export-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan); outline: none; }
+.lib-search:focus, .export-input:focus, .lib-source-select:focus { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan); outline: none; }
 select, option { background-color: var(--surface); color: var(--white); }
 input[type="range"] { accent-color: var(--cyan); }
 input[type="checkbox"] { accent-color: var(--cyan); }

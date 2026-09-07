@@ -17,7 +17,22 @@ const catIcons = {nature:'∿', mood:'◐', ptaki:'◈'};
 const subIcons = {nature_water:'≋', nature_fire:'△', nature_birds:'♪', nature_insects:'⁘', nature_mammals:'◦', mood_calm:'○', ptaki_lesne:'◦', ptaki_wodne:'≋', ptaki_miejskie:'⊕'};
 async function loadLibrary(){
   libTree.innerHTML='<div class="lib-empty-msg">Ładowanie…</div>';
-  try { const r=await fetch('library.json'); if(!r.ok) throw new Error('HTTP '+r.status); libraryData=await r.json(); libCountBadge.textContent=(libraryData.total_sounds||0)+' dźwięków'; renderLibTree(); }
+  try {
+    const r=await fetch('library.json'); if(!r.ok) throw new Error('HTTP '+r.status);
+    libraryData=await r.json();
+    // Ptaki zyja we wlasnym pliku (skrypt ptakoterapia_app.py go rozbudowuje bez ruszania
+    // library.json). Brak pliku nie jest bledem — biblioteka glowna dziala bez ptakow.
+    try {
+      const rp=await fetch('ptaki-biblioteka.json');
+      if(rp.ok){
+        const ptakiData=await rp.json();
+        libraryData.categories=libraryData.categories.concat(ptakiData.categories||[]);
+        libraryData.total_sounds=(libraryData.total_sounds||0)+(ptakiData.total_sounds||0);
+      }
+    } catch(e){ /* brak pliku ptakow — pomijamy */ }
+    libCountBadge.textContent=(libraryData.total_sounds||0)+' dźwięków';
+    renderLibTree();
+  }
   catch(e){ libTree.innerHTML='<div class="lib-empty-msg">Nie można załadować library.json</div>'; }
 }
 // Szukanie sklada polskie znaki do postaci bez ogonkow PO OBU STRONACH: 'strumien' znajduje
@@ -38,6 +53,7 @@ function renderLibTree(){
       // wiec wpisanie tego wprost ma pokazac caly dzial, a nie zero wynikow.
       const wDziale = bezOgonkow(cat.label+' '+sub.label).includes(q);
       const sounds=(sub.sounds||[]).filter(s => {
+        if(librarySourceFilter!=='all' && s.source!==librarySourceFilter) return false;
         if(!q || wDziale) return true;
         return bezOgonkow(s.label).includes(q)
             || (s.tags||[]).some(t=>bezOgonkow(t).includes(q))
@@ -65,4 +81,7 @@ function renderLibTree(){
 function findInLib(id){ if(!libraryData) return null; for(const c of libraryData.categories) for(const s of (c.subcategories||[])) for(const x of (s.sounds||[])) if(x.id===id) return x; return null; }
 function updateLibBtns(){ const ids=new Set(S.sources.map(s=>s.libraryId).filter(Boolean)); libTree.querySelectorAll('[data-add]').forEach(b=>{ if(ids.has(b.dataset.add)){b.classList.add('in-scene');b.classList.remove('loading');b.textContent='✓';}else{b.classList.remove('in-scene');if(!b.classList.contains('loading'))b.textContent='+';}}); }
 libSearch.addEventListener('input', () => { libSearchQuery=libSearch.value; if(libraryData) renderLibTree(); });
+// Zrodlo dzwieku (Freesound / Xeno-canto) to osobne pole 'source' w library.json i
+// ptaki-biblioteka.json — lista rozwijana filtruje po nim, bez osobnych zakladek.
+$('libSourceSelect').addEventListener('change', e => { librarySourceFilter=e.target.value; if(libraryData) renderLibTree(); });
 

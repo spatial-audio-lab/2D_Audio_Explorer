@@ -1,0 +1,451 @@
+{
+  "version": 1,
+  "generated": "2026-09-07T19:35:48.918Z",
+  "total_sounds": 15,
+  "stats": {
+    "local_only": 0,
+    "stream_only": 15,
+    "local_and_stream": 0
+  },
+  "categories": [
+    {
+      "id": "ptaki",
+      "label": "Ptaki",
+      "icon": "◈",
+      "subcategories": [
+        {
+          "id": "ptaki_lesne",
+          "label": "Ptaki leśne",
+          "icon": "◦",
+          "sounds": [
+            {
+              "id": "xc_1167219",
+              "label": "Zięba",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1167219/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1167219",
+              "author": "Stanislas Wroza",
+              "duration": 21,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "zięba",
+                "fringilla coelebs"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_lesne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1176191",
+              "label": "Kos",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1176191/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1176191",
+              "author": "Amselforscher",
+              "duration": 61,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "kos",
+                "turdus merula"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_lesne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1176604",
+              "label": "Puszczyk (w tle: świerszcz (Pteronemobius heydenii))",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1176604/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1176604",
+              "author": "Esperanza Poveda",
+              "duration": 100,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "puszczyk",
+                "strix aluco",
+                "świerszcz (Pteronemobius heydenii)"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_lesne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1168981",
+              "label": "Dzięcioł duży",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1168981/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1168981",
+              "author": "Stanislas Wroza",
+              "duration": 119,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "dzięcioł duży",
+                "dendrocopos major"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_lesne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1168806",
+              "label": "Kukułka",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1168806/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1168806",
+              "author": "Stanislas Wroza",
+              "duration": 148,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "kukułka",
+                "cuculus canorus"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_lesne",
+              "has_local": false,
+              "has_stream": true
+            }
+          ]
+        },
+        {
+          "id": "ptaki_wodne",
+          "label": "Ptaki wodne",
+          "icon": "≋",
+          "sounds": [
+            {
+              "id": "xc_1176905",
+              "label": "Łabędź niemy",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1176905/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1176905",
+              "author": "Paul Gosling",
+              "duration": 7,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "łabędź niemy",
+                "cygnus olor"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_wodne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1176564",
+              "label": "Czajka (w tle: gęgawa)",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1176564/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1176564",
+              "author": "András Schmidt",
+              "duration": 17,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "czajka",
+                "vanellus vanellus",
+                "gęgawa"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_wodne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1176932",
+              "label": "Żuraw",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1176932/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1176932",
+              "author": "Juha Saari",
+              "duration": 20,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "żuraw",
+                "grus grus"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_wodne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1169691",
+              "label": "Krzyżówka",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1169691/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1169691",
+              "author": "David Darrell-Lambert",
+              "duration": 22,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "krzyżówka",
+                "anas platyrhynchos"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_wodne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1134998",
+              "label": "Perkoz dwuczuby",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1134998/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1134998",
+              "author": "Stanislas Wroza",
+              "duration": 150,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "perkoz dwuczuby",
+                "podiceps cristatus"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_wodne",
+              "has_local": false,
+              "has_stream": true
+            }
+          ]
+        },
+        {
+          "id": "ptaki_miejskie",
+          "label": "Ptaki miejskie",
+          "icon": "⊕",
+          "sounds": [
+            {
+              "id": "xc_1176624",
+              "label": "Wróbel (w tle: sierpówka)",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1176624/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1176624",
+              "author": "Philippe Grange",
+              "duration": 10,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "wróbel",
+                "passer domesticus",
+                "sierpówka"
+              ],
+              "license": {
+                "short": "CC0",
+                "commercial": true,
+                "attribution": false,
+                "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_miejskie",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1167229",
+              "label": "Sikora bogatka",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1167229/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1167229",
+              "author": "Stanislas Wroza",
+              "duration": 28,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "sikora bogatka",
+                "parus major"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_miejskie",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1173112",
+              "label": "Kawka",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1173112/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1173112",
+              "author": "Clément Bruneau",
+              "duration": 4,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "kawka",
+                "coloeus monedula"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_miejskie",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1166650",
+              "label": "Jaskółka dymówka (w tle: sierpówka, wróbel)",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1166650/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1166650",
+              "author": "João Ferreira Tomás",
+              "duration": 268,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "jaskółka dymówka",
+                "hirundo rustica",
+                "sierpówka",
+                "wróbel"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_miejskie",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_726245",
+              "label": "Gołąb miejski (w tle: kawka)",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/726245/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/726245",
+              "author": "Olivier SWIFT",
+              "duration": 27,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "gołąb miejski",
+                "columba livia",
+                "kawka"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_miejskie",
+              "has_local": false,
+              "has_stream": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
