@@ -92,6 +92,7 @@ body::before { content: ''; position: fixed; inset: 0; background-image: linear-
 .lib-badge { font-size: var(--fs-2xs); letter-spacing: 0.1em; text-transform: uppercase; padding: 1px 5px; border: 1px solid var(--dim); color: var(--mid); }
 .lib-badge.cc0 { border-color: rgba(0,229,204,0.4); color: var(--cyan); }
 .lib-badge.stream { color: var(--amber); border-color: rgba(255,171,0,0.4); }
+.lib-badge.nc { color: var(--danger); border-color: rgba(255,51,85,0.4); }
 .lib-sound-attr { font-size: var(--fs-2xs); color: var(--muted); margin-top: 2px; }
 .lib-sound-attr a { color: var(--amber); text-decoration: none; }
 .lib-sound-attr a:hover { text-decoration: underline; color: var(--white); }

@@ -10,7 +10,9 @@ function applyAttr(src, def){
   // Biblioteka podaje autora tylko przy licencjach wymagajacych uznania autorstwa,
   // ale zrodlo warto zapisac zawsze — przy CC0 tez wypada podac, skad sie wzielo.
   if(def.author) src.attrAuthor=def.author;
-  if(def.freesound_url) src.attrUrl=def.freesound_url;
+  // source_url jest polem ogolnym (dziala dla kazdego zrodla biblioteki);
+  // freesound_url zostaje jako zapasowe dla wpisow sprzed wprowadzenia source_url.
+  if(def.source_url||def.freesound_url) src.attrUrl=def.source_url||def.freesound_url;
   if(def.license) src.attrLicense=def.license.name || (def.license.attribution?'CC BY':'CC0');
   return src;
 }

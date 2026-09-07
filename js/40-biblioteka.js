@@ -13,8 +13,8 @@ function ustawBiblioteke(otwarta){
   if(otwarta && !libraryData) loadLibrary();
 }
 $('pickLibrary').addEventListener('click', ()=>ustawBiblioteke(libPanel.classList.contains('collapsed')));
-const catIcons = {nature:'∿', mood:'◐'};
-const subIcons = {nature_water:'≋', nature_fire:'△', nature_birds:'♪', nature_insects:'⁘', nature_mammals:'◦', mood_calm:'○'};
+const catIcons = {nature:'∿', mood:'◐', ptaki:'◈'};
+const subIcons = {nature_water:'≋', nature_fire:'△', nature_birds:'♪', nature_insects:'⁘', nature_mammals:'◦', mood_calm:'○', ptaki_lesne:'◦', ptaki_wodne:'≋', ptaki_miejskie:'⊕'};
 async function loadLibrary(){
   libTree.innerHTML='<div class="lib-empty-msg">Ładowanie…</div>';
   try { const r=await fetch('library.json'); if(!r.ok) throw new Error('HTTP '+r.status); libraryData=await r.json(); libCountBadge.textContent=(libraryData.total_sounds||0)+' dźwięków'; renderLibTree(); }
@@ -45,8 +45,8 @@ function renderLibTree(){
       });
       if(!sounds.length) continue;
       const sh=sounds.map(s => {
-        const dur=s.duration?Math.round(s.duration)+'s':'', lic=s.license?.short||'?', licCls=lic==='CC0'?'cc0':'', isStream=!s.file;
-        const attr=s.license?.attribution?`<div class="lib-sound-attr">© <a href="${s.freesound_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${s.author}</a></div>`:'';
+        const dur=s.duration?Math.round(s.duration)+'s':'', lic=s.license?.short||'?', licCls=lic==='CC0'?'cc0':(!s.license?.commercial?'nc':''), isStream=!s.file, url=s.source_url||s.freesound_url;
+        const attr=s.license?.attribution?`<div class="lib-sound-attr">© <a href="${url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${s.author}</a></div>`:'';
         return `<div class="lib-sound"><div><div class="lib-sound-name" title="${s.label}">${s.label}</div><div class="lib-sound-meta">${dur?'<span>'+dur+'</span>':''}<span class="lib-badge ${licCls}">${lic}</span>${isStream?'<span class="lib-badge stream">Stream</span>':''}</div>${attr}<div class="lib-sound-status">⏳ Pobieranie…</div></div><button class="lib-add-btn" data-add="${s.id}">+</button></div>`;
       }).join('');
       subs.push(`<div><div class="lib-sub-head${zwin?' collapsed':''}" data-tsub="${sub.id}" role="button" tabindex="0" aria-expanded="${zwin?'false':'true'}"><i class="ico">${subIcons[sub.id]||'·'}</i><span>${sub.label}</span><span class="cnt">${sounds.length}</span><span class="arrow">▾</span></div><div class="lib-sub-body" id="sub-${sub.id}">${sh}</div></div>`);
