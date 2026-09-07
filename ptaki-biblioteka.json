@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "generated": "2026-09-07T21:35:52.698297+00:00",
-  "total_sounds": 17,
+  "generated": "2026-09-07T21:51:18.210926+00:00",
+  "total_sounds": 16,
   "stats": {
     "local_only": 0,
-    "stream_only": 17,
+    "stream_only": 16,
     "local_and_stream": 0
   },
   "categories": [
@@ -177,33 +177,6 @@
                 "czajka",
                 "vanellus vanellus",
                 "gęgawa"
-              ],
-              "license": {
-                "short": "CC BY NC SA 4.0",
-                "commercial": false,
-                "attribution": true,
-                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
-              },
-              "defaultVolume": 0.7,
-              "category": "ptaki_wodne",
-              "has_local": false,
-              "has_stream": true
-            },
-            {
-              "id": "xc_1176932",
-              "label": "Żuraw",
-              "file": null,
-              "preview_url": "https://xeno-canto.org/1176932/download",
-              "source": "xeno-canto",
-              "source_url": "https://xeno-canto.org/1176932",
-              "author": "Juha Saari",
-              "duration": 20,
-              "channels": null,
-              "type": "mp3",
-              "samplerate": null,
-              "tags": [
-                "żuraw",
-                "grus grus"
               ],
               "license": {
                 "short": "CC BY NC SA 4.0",
