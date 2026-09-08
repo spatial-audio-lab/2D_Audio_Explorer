@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "generated": "2026-09-07T21:51:18.210926+00:00",
-  "total_sounds": 16,
+  "generated": "2026-09-08T13:54:41.680178+00:00",
+  "total_sounds": 22,
   "stats": {
     "local_only": 0,
-    "stream_only": 16,
+    "stream_only": 22,
     "local_and_stream": 0
   },
   "categories": [
@@ -136,6 +136,87 @@
               "source_url": "https://xeno-canto.org/1168806",
               "author": "Stanislas Wroza",
               "duration": 148,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "kukułka",
+                "cuculus canorus"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_lesne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1168986",
+              "label": "Świergotek drzewny",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1168986/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1168986",
+              "author": "Stanislas Wroza",
+              "duration": 75,
+              "channels": null,
+              "type": "wav",
+              "samplerate": null,
+              "tags": [
+                "świergotek drzewny",
+                "anthus trivialis"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_lesne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_1079557",
+              "label": "Lelek",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/1079557/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/1079557",
+              "author": "Marc Anderson",
+              "duration": 40,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "lelek",
+                "caprimulgus europaeus"
+              ],
+              "license": {
+                "short": "CC BY NC ND 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_lesne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_830613",
+              "label": "Kukułka",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/830613/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/830613",
+              "author": "Jack Berteau",
+              "duration": 85,
               "channels": null,
               "type": "mp3",
               "samplerate": null,
@@ -291,6 +372,87 @@
                 "commercial": false,
                 "attribution": true,
                 "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_wodne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_713421",
+              "label": "Bąk",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/713421/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/713421",
+              "author": "Romuald Mikusek",
+              "duration": 29,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "bąk",
+                "botaurus stellaris"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_wodne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_550202",
+              "label": "Rokitniczka",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/550202/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/550202",
+              "author": "Jarek Matusiak",
+              "duration": 27,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "rokitniczka",
+                "acrocephalus schoenobaenus"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              },
+              "defaultVolume": 0.7,
+              "category": "ptaki_wodne",
+              "has_local": false,
+              "has_stream": true
+            },
+            {
+              "id": "xc_483819",
+              "label": "Kulik wielki",
+              "file": null,
+              "preview_url": "https://xeno-canto.org/483819/download",
+              "source": "xeno-canto",
+              "source_url": "https://xeno-canto.org/483819",
+              "author": "Lars Edenius",
+              "duration": 47,
+              "channels": null,
+              "type": "mp3",
+              "samplerate": null,
+              "tags": [
+                "kulik wielki",
+                "numenius arquata"
+              ],
+              "license": {
+                "short": "CC BY NC SA 4.0",
+                "commercial": false,
+                "attribution": true,
+                "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
               },
               "defaultVolume": 0.7,
               "category": "ptaki_wodne",
