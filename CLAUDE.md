@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Nadrzędne zasady (język, ton, commity, „mierz, nie zgaduj") leżą w `..\..\CLAUDE.md` —
+Nadrzędne zasady (język, ton, commity, „mierz, nie zgaduj") leżą w `..\CLAUDE.md` —
 nie powtarzam ich tu. Tylko to, co dotyczy **Sceny**.
 
 ## Czym to jest
